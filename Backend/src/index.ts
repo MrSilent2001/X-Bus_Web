@@ -2,11 +2,12 @@ import express, {Application, Request, Response, NextFunction} from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import {PORT, APP_ORIGIN} from "./constants/env";
-import pool from "./config/connectDB";
+import AppDataSource from "./config/connectDB";
 import cookieParser from "cookie-parser";
 import errorHandler from "./middleware/errorHandler";
 import catchErrors from "./utils/catchErrors";
 import {OK} from "./constants/http";
+import authRoutes from "./routes/auth.routes";
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ app.use(
 app.use(cookieParser());
 
 //Routes
+app.use("/auth", authRoutes);
 app.get("/", (req: Request, res: Response, next: NextFunction) => {
         res.status(OK).json({
             status: "success",
@@ -51,16 +53,15 @@ app.get("/users", async(req, res) => {
 * */
 
 //Initialize Database
-const DBConnection = (async () => {
+const DBConnection = async () => {
     try {
-        const client = await pool.connect();
+        await AppDataSource.initialize();
         console.log("Database connection successful");
-        client.release();
     } catch (err) {
         console.error("Database connection failed", err);
         process.exit(1);
     }
-});
+};
 DBConnection();
 
 

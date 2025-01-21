@@ -1,15 +1,18 @@
-import {Pool} from 'pg';
+import {DataSource} from 'typeorm';
 import {DB_PORT, DB_HOST, DB_PASSWORD, DB_NAME, DB_USERNAME} from "../constants/env"
+import {User} from "../models/user.model";
 
 
-const pool = new Pool({
-    port: parseInt(DB_PORT, 10),
+const AppDataSource = new DataSource({
+    type: "postgres",
     host: DB_HOST,
-    user: DB_USERNAME,
+    port: parseInt(DB_PORT, 10),
+    username: DB_USERNAME,
     password: DB_PASSWORD,
     database: DB_NAME,
+    entities: [User],
+    synchronize: true,
 });
-export default pool;
 
-
+export default AppDataSource;
 

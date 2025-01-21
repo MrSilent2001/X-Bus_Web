@@ -3,3 +3,6 @@ node_modules/
 
 # Build directory (if applicable)
 build/
+
+#Environment Variables
+.env
