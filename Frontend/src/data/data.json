@@ -1,0 +1,50 @@
+{
+  "footerData": {
+    "email": "xbus@gmail.com",
+    "contact": "0112-854296",
+    "address": "No: 23/A, Galle Road, Colombo 03",
+    "copyright": "Copyright © 2024. X-Bus Initiative."
+  },
+
+  "busData": [
+    { "id": 1, "number": "NB 2345", "route": "EX01", "description": "Galle - Makumbura" },
+    { "id": 2, "number": "NB 5678", "route": "EX02", "description": "Colombo - Kandy" },
+    { "id": 3, "number": "NB 9101", "route": "EX01", "description": "Galle - Kaduwela" },
+    { "id": 4, "number": "NB 1121", "route": "EX02", "description": "Matara - Kadawatha" },
+    { "id": 5, "number": "NB 3141", "route": "EX01", "description": "Jaffna - Colombo" },
+    { "id": 6, "number": "NB 3423", "route": "EX01", "description": "Piliyandala - Matara" }
+  ],
+
+  "revenue": {
+    "labels": [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ],
+    "datasets": [
+      {
+        "label": "Revenue (Rs)",
+        "data": [12000, 19000, 3000, 5000, 20000, 15000, 23000, 34000, 89000, 156000, 23000, 78000],
+        "backgroundColor": "rgb(154,68,68)",
+        "borderColor": "rgb(255,255,255)",
+        "borderWidth": 1
+      }
+    ]
+  },
+
+  "expenses": {
+    "labels": [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ],
+    "datasets": [
+      {
+        "label": "Expenses (Rs)",
+        "data": [12000, 19000, 3000, 5000, 20000, 15000, 23000, 34000, 89000, 156000, 23000, 78000],
+        "backgroundColor": "rgb(236,112,112)",
+        "borderColor": "rgb(255,255,255)",
+        "borderWidth": 1
+      }
+    ]
+  }
+}
+
