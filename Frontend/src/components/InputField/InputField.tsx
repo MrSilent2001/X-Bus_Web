@@ -1,11 +1,12 @@
-import React, { useState, forwardRef } from 'react';
+import React, { useState, forwardRef } from "react";
 
 interface InputFieldProps {
     id: string;
     type: string;
     value?: string;
-    placeholder: string;
+    placeholder?: string;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    accept?: string;
     icon?: React.ReactNode;
     width?: string;
     ariaLabel?: string;
@@ -15,76 +16,78 @@ interface InputFieldProps {
     uppercase?: boolean;
 }
 
-const InputField = forwardRef<HTMLInputElement, InputFieldProps>(({
-                                                                      id,
-                                                                      type,
-                                                                      value,
-                                                                      placeholder,
-                                                                      onChange,
-                                                                      className = ``,
-                                                                      icon,
-                                                                      width = 'w-full',
-                                                                      ariaLabel,
-                                                                      label = false,
-                                                                      labelName,
-                                                                      uppercase = false,
-                                                                      ...rest
-                                                                  }, ref) => {
-    const [isFocused, setIsFocused] = useState(false);
+const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
+    (
+        {
+            id,
+            type,
+            value,
+            placeholder,
+            onChange,
+            accept,
+            className = "",
+            icon,
+            width = "w-full",
+            ariaLabel,
+            label = false,
+            labelName,
+            uppercase = false,
+            ...rest
+        },
+        ref
+    ) => {
+        const [isFocused, setIsFocused] = useState(false);
 
-    const handleFocus = () => setIsFocused(true);
-    const handleBlur = () => setIsFocused(false);
+        const handleFocus = () => setIsFocused(true);
+        const handleBlur = () => setIsFocused(false);
 
-    const hasValue = !!value;
+        const hasValue = !!value;
 
-    return (
-        <div className="relative flex flex-col items-start">
-            <style>
-                {`
-          input:-webkit-autofill {
-            -webkit-box-shadow: 0 0 0px 1000px white inset !important;
-            box-shadow: 0 0 0px 1000px white inset !important;
-          }
-        `}
-            </style>
-
-            {label && labelName && (
-                <label
-                    htmlFor={id}
-                    className={`absolute left-3 transition-all duration-200 text-sm font-medium ${isFocused || hasValue
-                        ? '-top-3 bg-white px-1 font-medium z-[1] text-carnation-500'
-                        : 'top-2 text-gray-400'
-                    }`}
-                >
-                    {labelName}
-                </label>
-            )}
-
-            <div className="relative flex items-center w-full">
-                <input
-                    id={id}
-                    type={type}
-                    value={value}
-                    onChange={onChange}
-                    placeholder={placeholder}
-                    onFocus={handleFocus}
-                    onBlur={handleBlur}
-                    ref={ref}
-                    className={`block ${width} h-10 py-2 px-3 text-sm text-black border rounded-md border-gray-400 focus:outline-none focus:ring-gray-700 focus:border-carnation-300 ${uppercase ? 'uppercase' : ''} ${className}`}
-                    style={{ textTransform: uppercase ? 'uppercase' : 'none' }}
-                    aria-label={ariaLabel || placeholder}
-                    {...rest}
-                />
-                {icon && (
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                        {icon}
-                    </div>
+        return (
+            <div className="relative flex flex-col items-start">
+                {/* Label for text inputs */}
+                {label && labelName && type !== "file" && (
+                    <label
+                        htmlFor={id}
+                        className={`absolute left-3 transition-all duration-200 text-sm font-medium ${
+                            isFocused || hasValue
+                                ? "-top-3 bg-white px-1 font-medium z-[1] text-carnation-500"
+                                : "top-2 text-gray-400"
+                        }`}
+                    >
+                        {labelName}
+                    </label>
                 )}
-            </div>
-        </div>
-    );
-});
 
-InputField.displayName = 'InputField';
+                <div className="relative flex items-center w-full">
+                    <input
+                        id={id}
+                        type={type}
+                        value={type !== "file" ? value : undefined}
+                        onChange={onChange}
+                        placeholder={type !== "file" ? placeholder : undefined}
+                        accept={type === "file" ? accept : undefined}
+                        onFocus={handleFocus}
+                        onBlur={handleBlur}
+                        ref={ref}
+                        className={`block ${width} h-10 py-2 px-3 text-sm text-black border rounded-md border-gray-400 focus:outline-none focus:ring-gray-700 focus:border-carnation-300 ${
+                            uppercase ? "uppercase" : ""
+                        } ${className}`}
+                        style={{ textTransform: uppercase ? "uppercase" : "none" }}
+                        aria-label={ariaLabel || placeholder}
+                        {...rest}
+                    />
+                    {icon && type !== "file" && (
+                        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                            {icon}
+                        </div>
+                    )}
+                </div>
+            </div>
+        );
+    }
+);
+
+InputField.displayName = "InputField";
 
 export default InputField;
