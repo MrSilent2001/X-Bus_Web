@@ -1,15 +1,17 @@
 import Navbar from "@/components/TopNavbar/Navbar.tsx";
 import Footer from "@/components/Footer/Footer.tsx";
+import FeedbackCard from "@/components/Card/FeedbackCard.tsx";
 
-const Feedback = () =>{
+const Feedback = () => {
     return (
-        <div>
+        <div className="min-h-screen bg-gray-100">
             <Navbar/>
 
-            <h1>Feedbacks</h1>
+            <FeedbackCard/>
 
             <Footer/>
         </div>
+
     );
 }
 
