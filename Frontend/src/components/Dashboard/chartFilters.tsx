@@ -7,11 +7,15 @@ const ChartFilters = () =>{
     const [toDate, setToDate] = useState<Date | undefined>();
 
     const busOptions = [{ label: "Bus ID", value: "bus_id" }];
+
+    console.log("From Date:", fromDate);
+    console.log("To Date:", toDate);
+
     return(
         <div className="flex space-x-2">
-            <DatePicker selectedDate={fromDate} onDateChange={setFromDate} width="120px"
+            <DatePicker onDateChange={setFromDate} width="120px"
                         placeholder="From"/>
-            <DatePicker selectedDate={toDate} onDateChange={setToDate} width="120px" placeholder="To"/>
+            <DatePicker onDateChange={setToDate} width="120px" placeholder="To"/>
             <Dropdown options={busOptions} width="120px" placeholder="Bus Id"/>
         </div>
     );

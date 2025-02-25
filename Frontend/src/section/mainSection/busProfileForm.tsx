@@ -1,8 +1,8 @@
 import CustomButton from "@/components/Button/CustomButton.tsx";
 import InputField from "@/components/InputField/InputField.tsx";
-import React, {FormEvent, useState} from "react";
-import {registerBus} from "@/api/busAPI.ts";
-import {BusRegisterSchema} from "@/schema/busSchema.ts";
+import React, { FormEvent, useState } from "react";
+import { registerBus } from "@/api/busAPI.ts";
+import { BusRegisterSchema } from "@/schema/busSchema.ts";
 import ImageUploader from "@/components/ImageUploader/ImageUpload.tsx";
 
 interface BusRegisterFormValues {
@@ -28,9 +28,9 @@ const BusProfileForm = () => {
         confirmPassword: ''
     });
 
-    const [errors, setErrors] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [isEditing, setIsEditing] = useState(false);
+    const [errors, setErrors] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(false);
+    const [isEditing, setIsEditing] = useState<boolean>(false);
     const [profileImage, setProfileImage] = useState<string | null>(null);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, value: keyof BusRegisterFormValues) => {
@@ -63,9 +63,10 @@ const BusProfileForm = () => {
                 password: '',
                 confirmPassword: ''
             });
+            setErrors('');
         } catch (error: unknown) {
             console.log(error);
-            setErrors("Invalid input");
+            setErrors("Error occurred while registering the bus");
         } finally {
             setLoading(false);
         }
@@ -87,7 +88,7 @@ const BusProfileForm = () => {
         setProfileImage(image);
     }
 
-    return(
+    return (
         <>
             <div className="w-full mt-32 mb-16 flex">
                 <div className="w-1/3 rounded-lg bg-white border-r border-gray-300 flex flex-col items-center justify-center">
@@ -99,7 +100,6 @@ const BusProfileForm = () => {
                             onImageUpload={handleImageUpload}
                         />
                     ) : (
-
                         profileImage ? (
                             <img
                                 src={profileImage}
@@ -107,7 +107,6 @@ const BusProfileForm = () => {
                                 className="w-90 h-72 rounded-full object-cover"
                             />
                         ) : (
-
                             <div className="w-72 h-72 rounded-full bg-gray-300 flex items-center justify-center text-white"
                                  style={{ borderRadius: "3%" }}
                             >
@@ -117,6 +116,11 @@ const BusProfileForm = () => {
                     )}
                 </div>
                 <div className="w-2/3 p-6 bg-white rounded-lg shadow-md max-w-4xl mx-auto">
+                    {errors && (
+                        <div className="text-red-500 text-sm mb-4">
+                            {errors}
+                        </div>
+                    )}
 
                     <form className="grid grid-cols-2 gap-4" onSubmit={handleCreateBusAccount}>
                         <div>
@@ -187,7 +191,7 @@ const BusProfileForm = () => {
                                 id="seatingCapacity"
                                 type="number"
                                 placeholder="Seating Capacity"
-                                value={formData.seatingCapacity}
+                                value={formData.seatingCapacity.toString()}
                                 onChange={(e) => handleInputChange(e, 'seatingCapacity')}
                                 icon={undefined}
                                 label={false}
@@ -204,7 +208,7 @@ const BusProfileForm = () => {
                                 id="busFare"
                                 type="number"
                                 placeholder="Bus Fare"
-                                value={formData.busFare || 0 }
+                                value={formData.busFare.toString()}
                                 onChange={(e) => handleInputChange(e, 'busFare')}
                                 icon={undefined}
                                 label={false}
@@ -266,9 +270,10 @@ const BusProfileForm = () => {
                     ) : (
                         <div className="mt-8 mb-4">
                             <CustomButton
-                                buttonLabel="Edit Bus Account"
-                                buttonClassName="w-full text-white bg-gradient-to-r from-red-200 to-red-200 rounded-lg h-10 text-red-800 hover:bg-red-300 cursor-pointer"
+                                buttonLabel={loading ? "Saving..." : "Edit Bus Account"}
+                                buttonClassName={`w-full text-white ${loading ? 'bg-gray-400' : 'bg-gradient-to-r from-red-200 to-red-200'} rounded-lg h-10 text-red-800 hover:bg-red-300 cursor-pointer`}
                                 onClick={toggleEditMode}
+                                disabled={loading}
                             />
                         </div>
                     )}

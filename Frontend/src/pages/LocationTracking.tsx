@@ -6,7 +6,9 @@ const LocationTracking = () =>{
         <div>
             <Navbar/>
 
-            <h1>Location Tracking</h1>
+            <div className="h-screen">
+                <h1>Location Tracking</h1>
+            </div>
 
             <Footer/>
         </div>

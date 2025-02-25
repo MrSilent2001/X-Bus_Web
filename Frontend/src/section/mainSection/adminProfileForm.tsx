@@ -27,7 +27,6 @@ const AdminProfileForm = () => {
     });
 
     const [errors, setErrors] = useState('');
-    const [loading, setLoading] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [profileImage, setProfileImage] = useState<string | null>(null);
 
@@ -47,7 +46,7 @@ const AdminProfileForm = () => {
             setErrors(validation.error.errors[0]?.message || "Invalid input");
             return;
         }
-        setLoading(true);
+
         try {
             await userSignUp(formData);
             console.log("Username: ", formData.username, "Password: ", formData.password);
@@ -63,8 +62,6 @@ const AdminProfileForm = () => {
         } catch (error: unknown) {
             console.log(error);
             setErrors("Invalid input");
-        } finally {
-            setLoading(false);
         }
     }
 
@@ -197,7 +194,7 @@ const AdminProfileForm = () => {
                                     id="age"
                                     type="number"
                                     placeholder="Age"
-                                    value={formData.age}
+                                    value={formData.age.toString()}
                                     onChange={(e) => handleInputChange(e, 'age')}
                                     icon={undefined}
                                     label={false}

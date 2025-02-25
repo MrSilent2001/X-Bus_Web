@@ -1,6 +1,6 @@
 import {Link, useNavigate} from "react-router-dom";
 import Logo from "../../assets/images/logo.png";
-import ProfilePic from "../../assets/images/profilePic.jpeg";
+import PopOver from "@/components/PopOver/PopOver.tsx";
 
 const Navbar = () => {
     const navigate = useNavigate();
@@ -8,13 +8,16 @@ const Navbar = () => {
     const handleRedirect = () =>{
         navigate("/dashboard");
     }
+
+
     return (
         <nav className="fixed top-0 left-0 w-full px-6 py-2 bg-gradient-to-r from-red-100 to-white shadow-md z-50">
             <div className="flex items-center justify-between">
 
                 {/* Logo Section */}
                 <div className="flex items-center space-x-2">
-                    <img className="h-12 w-auto cursor-pointer" src={Logo} alt="Logo"  onClick={handleRedirect}/>
+                        <img className="h-12 w-auto cursor-pointer" src={Logo} alt="Logo" onClick={handleRedirect}/>
+
                 </div>
 
                 {/* Navigation Links */}
@@ -25,10 +28,7 @@ const Navbar = () => {
                     <Link to="/summery" className="hover:text-red-600">Summery</Link>
                 </div>
 
-                {/* Profile Icon */}
-                <div>
-                    <img className="h-10 w-10 rounded-full object-cover" src={ProfilePic} alt="User Profile"/>
-                </div>
+                <PopOver/>
             </div>
         </nav>
     );

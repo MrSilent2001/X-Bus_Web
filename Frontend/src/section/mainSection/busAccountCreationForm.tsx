@@ -1,8 +1,8 @@
 import CustomButton from "@/components/Button/CustomButton.tsx";
 import InputField from "@/components/InputField/InputField.tsx";
-import React, {FormEvent, useState} from "react";
-import {registerBus} from "@/api/busAPI.ts";
-import {BusRegisterSchema} from "@/schema/busSchema.ts";
+import React, { FormEvent, useState } from "react";
+import { registerBus } from "@/api/busAPI.ts";
+import { BusRegisterSchema } from "@/schema/busSchema.ts";
 import ImageUploader from "@/components/ImageUploader/ImageUpload.tsx";
 
 interface BusRegisterFormValues {
@@ -28,16 +28,15 @@ const BusAccountCreationForm = () => {
         confirmPassword: ''
     });
 
-    const [errors, setErrors] = useState('');
+    const [errors, setErrors] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
-
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, value: keyof BusRegisterFormValues) => {
         setFormData({
             ...formData,
             [value]: e.target.value
         });
-    }
+    };
 
     const handleCreateBusAccount = async (e: FormEvent) => {
         e.preventDefault();
@@ -64,20 +63,19 @@ const BusAccountCreationForm = () => {
             });
         } catch (error: unknown) {
             console.log(error);
-            setErrors("Invalid input");
+            setErrors("An error occurred while creating the account");
         } finally {
             setLoading(false);
         }
-    }
+    };
 
-    return(
+    return (
         <>
             <div className="w-full mt-32 mb-16 flex">
                 <div className="w-1/3 rounded-lg bg-white border-r border-gray-300 flex flex-col items-center justify-center">
                     <ImageUploader height="300px" width="350px" />
                 </div>
                 <div className="w-2/3 p-6 bg-white rounded-lg shadow-md max-w-4xl mx-auto">
-
                     <form className="grid grid-cols-2 gap-4" onSubmit={handleCreateBusAccount}>
                         <div>
                             <label htmlFor="userName" className="block text-sm font-medium text-carnation-400">
@@ -147,7 +145,7 @@ const BusAccountCreationForm = () => {
                                 id="seatingCapacity"
                                 type="number"
                                 placeholder="Seating Capacity"
-                                value={formData.seatingCapacity}
+                                value={formData.seatingCapacity.toString()}
                                 onChange={(e) => handleInputChange(e, 'seatingCapacity')}
                                 icon={undefined}
                                 label={false}
@@ -164,7 +162,7 @@ const BusAccountCreationForm = () => {
                                 id="busFare"
                                 type="number"
                                 placeholder="Bus Fare"
-                                value={formData.busFare }
+                                value={formData.busFare.toString()}
                                 onChange={(e) => handleInputChange(e, 'busFare')}
                                 icon={undefined}
                                 label={false}
@@ -204,17 +202,24 @@ const BusAccountCreationForm = () => {
                         </div>
                     </form>
 
-                    <div className="mt-8 mb-4">
-                        <CustomButton
-                            buttonLabel={"Create New Account"}
-                            buttonClassName="w-full text-white bg-gradient-to-r from-red-200 to-red-200 rounded-lg h-10 text-red-800 transition-all duration-300 transform hover:bg-gradient-to-r hover:from-red-300 hover:to-red-300 cursor-pointer"
-                        />
-                    </div>
+                    {errors && (
+                        <div className="text-red-500 mt-4">{errors}</div>
+                    )}
 
+                    <div className="mt-8 mb-4">
+                        {loading ? (
+                            <div className="w-full text-center text-gray-500">Loading...</div>
+                        ) : (
+                            <CustomButton
+                                buttonLabel={"Create New Account"}
+                                buttonClassName="w-full text-white bg-gradient-to-r from-red-200 to-red-200 rounded-lg h-10 text-red-800 transition-all duration-300 transform hover:bg-gradient-to-r hover:from-red-300 hover:to-red-300 cursor-pointer"
+                            />
+                        )}
+                    </div>
                 </div>
             </div>
         </>
     );
-}
+};
 
 export default BusAccountCreationForm;

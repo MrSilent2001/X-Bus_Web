@@ -6,7 +6,7 @@ import React, { useState, useRef, useEffect } from 'react';
 interface DatePickerProps {
     id?: string;
     labelName?: string;
-    onDateChange: (date: string) => void;
+    onDateChange: (date: Date | undefined) => void;
     width?: string;
     placeholder?: string;
     defaultDate?: string;
@@ -22,16 +22,17 @@ export const DatePicker: React.FC<DatePickerProps> = ({
                                                           placeholder = '',
                                                           defaultDate = '',
                                                       }) => {
-    const [selectedDate, setSelectedDate] = useState<string>(defaultDate || '');
-    const dateInputRef = useRef<HTMLInputElement>(null);
+    const [selectedDate, setSelectedDate] = useState<Date | undefined>(defaultDate ? new Date(defaultDate) : undefined);    const dateInputRef = useRef<HTMLInputElement>(null);
 
 
     useEffect(() => {
-        setSelectedDate(defaultDate || '');
+        if (defaultDate) {
+            setSelectedDate(new Date(defaultDate));
+        }
     }, [defaultDate]);
 
     const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const date = e.target.value;
+        const date = e.target.value ? new Date(e.target.value) : undefined;
         setSelectedDate(date);
         onDateChange(date);
     };
@@ -58,7 +59,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
                 <input
                     id={id || 'date-picker-input'}
                     type="date"
-                    value={selectedDate}
+                    value={selectedDate ? selectedDate.toISOString().split('T')[0] : ''}
                     onChange={handleDateChange}
                     placeholder=""
                     ref={dateInputRef}

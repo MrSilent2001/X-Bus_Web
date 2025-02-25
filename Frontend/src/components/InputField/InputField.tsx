@@ -3,7 +3,7 @@ import React, { useState, forwardRef } from "react";
 interface InputFieldProps {
     id: string;
     type: string;
-    value?: string;
+    value?: string | number;
     placeholder?: string;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     accept?: string;
@@ -14,6 +14,8 @@ interface InputFieldProps {
     label?: boolean;
     labelName?: string;
     uppercase?: boolean;
+    min?: number;
+    max?: number;
 }
 
 const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
@@ -32,6 +34,8 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             label = false,
             labelName,
             uppercase = false,
+            min,
+            max,
             ...rest
         },
         ref
@@ -63,7 +67,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
                     <input
                         id={id}
                         type={type}
-                        value={type !== "file" ? value : undefined}
+                        value={type !== "file" ? String(value) : undefined}
                         onChange={onChange}
                         placeholder={type !== "file" ? placeholder : undefined}
                         accept={type === "file" ? accept : undefined}
@@ -75,6 +79,8 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
                         } ${className}`}
                         style={{ textTransform: uppercase ? "uppercase" : "none" }}
                         aria-label={ariaLabel || placeholder}
+                        min={type === "number" ? min : undefined}
+                        max={type === "number" ? max : undefined}
                         {...rest}
                     />
                     {icon && type !== "file" && (
