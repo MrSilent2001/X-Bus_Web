@@ -11,7 +11,7 @@ const Navbar = () => {
 
 
     return (
-        <nav className="fixed top-0 left-0 w-full px-6 py-2 bg-gradient-to-r from-red-100 to-white shadow-md z-50">
+        <nav className="fixed top-0 left-0 w-full px-6 py-2 bg-gradient-to-r from-red-300 via-red-200 to-white from-0% via-10% to-100% shadow-md z-50">
             <div className="flex items-center justify-between">
 
                 {/* Logo Section */}
@@ -21,7 +21,7 @@ const Navbar = () => {
                 </div>
 
                 {/* Navigation Links */}
-                <div className="hidden md:flex gap-x-6 font-medium text-red-800">
+                <div className="hidden md:flex gap-x-12 font-light text-lg text-red-900">
                     <Link to="/dashboard" className="hover:text-red-600">Home</Link>
                     <Link to="/locationTracking" className="hover:text-red-600">Location</Link>
                     <Link to="/feedback" className="hover:text-red-600">Feedback</Link>

@@ -64,7 +64,7 @@ const SignUpForm = () =>{
         }
     }
     return (
-        <div className="flex min-h-screen bg-gradient-to-r from-red-300 to-white">
+        <div className="flex min-h-screen bg-gradient-to-r from-red-100 via-red-100 to-[#FAFAFA] from-0% via-50% to-100%">
             {/* Left Section */}
             <div className="w-1/2 flex flex-col items-center justify-center">
                 <img className="h-screen w-auto" src={AuthImg} alt="Auth Image"/>
@@ -78,10 +78,8 @@ const SignUpForm = () =>{
                     </h3>
                 </div>
                 <div className="bg-white p-10 rounded-lg shadow-lg w-3/4">
-                    <div className="flex items-center mb-6">
-                        <div>
-                            <h3 className="text-4xl text-red font-bold">SignUp</h3>
-                        </div>
+                    <div className="flex items-center justify-center mb-6">
+                            <h3 className="text-3xl font-bold">SignUp</h3>
                     </div>
 
                     <form onSubmit={handleSignUp}>
@@ -156,9 +154,9 @@ const SignUpForm = () =>{
 
                         {/* Register Link */}
                         <div className="text-left">
-                            <p className="text-gray-500">
+                            <p className="text-grey-200">
                                 Already Have an Account ?
-                                <Link className="text-blue-600 font-semibold" to="/auth/login">
+                                <Link className="text-grey-200 font-semibold" to="/login">
                                     Login
                                 </Link>
 
@@ -169,7 +167,7 @@ const SignUpForm = () =>{
                         <div className="mt-6">
                             <CustomButton
                                 buttonLabel={loading ? "Signing in..." : "SignUp"}
-                                buttonClassName="w-full h-10 py-3 text-white bg-gradient-to-r from-red-500 to-red-700 rounded-lg"
+                                buttonClassName="w-full h-10 py-3 text-red-800 bg-red-200 rounded-lg transition-all duration-300 transform hover:bg-gradient-to-r hover:from-red-300 hover:to-red-300 hover:scale-102 cursor-pointer"
                             />
                         </div>
                     </form>

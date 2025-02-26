@@ -10,9 +10,10 @@ const config: Config = {
     ],
     theme: {
         extend: {
-            // fontFamily: {
-            //     sans: ['Inter', 'sans-serif'],
-            // },
+            fontFamily: {
+                sans: ['Inter', 'sans-serif'],
+                poppins: ["Poppins", "sans-serif"],
+            },
             boxShadow: {
                 'custom-light': '0 2px 4px rgba(0, 0, 0, 0.1)',
                 'custom-dark': '0 5px 8px rgba(0, 0, 0, 0.3)',
@@ -23,39 +24,42 @@ const config: Config = {
             colors: {
                 background: 'hsl(var(--background))',
                 foreground: 'hsl(var(--foreground))',
-                carnation: {
-                    '50': '#fff1f1',
-                    '100': '#ffe1e1',
-                    '200': '#ffc7c7',
-                    '250': '#FFE4E4',
-                    '300': '#ffa0a0',
-                    '350': '#FDCCCC',
-                    '400': '#ff5757',
-                    '450': '#FFC9C9',
-                    '500': '#f83b3b',
-                    '550': '#FD7B7B',
-                    '600': '#e51d1d',
-                    '700': '#c11414',
-                    '750': '#922323',
-                    '800': '#a01414',
-                    '900': '#841818',
-                    '950': '#480707'
-                },
+                // carnation: {
+                //     '50': '#fff1f1',
+                //     '100': '#ffe1e1',
+                //     '200': '#ffc7c7',
+                //     '250': '#FFE4E4',
+                //     '300': '#ffa0a0',
+                //     '350': '#FDCCCC',
+                //     '400': '#ff5757',
+                //     '450': '#FFC9C9',
+                //     '500': '#f83b3b',
+                //     '550': '#FD7B7B',
+                //     '600': '#e51d1d',
+                //     '700': '#c11414',
+                //     '750': '#922323',
+                //     '800': '#a01414',
+                //     '900': '#841818',
+                //     '950': '#480707'
+                // },
                 red: {
-                    '50': '#fef2f2',
-                    '100': '#fee2e2',
+                    '50': '#EBCAC7',
+                    '100': '#EBCAC7',
                     '200': '#F2BBB7',
-                    '300': '#EBCAC7',
-                    '400': '#f87171',
+                    '250': '#FFC8BE',
+                    '300': '#E88B84',
+                    '400': '#FFC8BE',
                     '500': '#ef4444',
                     '600': '#dc2626',
                     '700': '#b91c1c',
                     '800': '#8C252B',
-                    '900': '#7f1d1d'
+                    '900': '#78232A'
                 },
-                fontFamily: {
-                    inter: 'Inter'
+                grey:{
+                    '50': '#F5DFDD',
+                    '200':'#696666'
                 },
+
                 card: {
                     DEFAULT: 'hsl(var(--card))',
                     foreground: 'hsl(var(--card-foreground))'

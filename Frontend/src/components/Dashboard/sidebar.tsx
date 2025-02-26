@@ -17,10 +17,10 @@ const Sidebar = () =>{
             <div className="max-h-[500px] overflow-y-auto">
                 {busData.map((bus) => (
                     <Link key={bus.id} to="/busProfile">
-                        <div key={bus.id} className="flex items-center p-3 mb-3 bg-red-100 rounded-lg ">
+                        <div key={bus.id} className="flex items-center p-3 mb-3 bg-red-100 rounded-lg hover:bg-red-300 hover:font-semibold">
                             <img src={Bus} alt="Bus" className="w-16 h-16 rounded"/>
                             <div className="ml-3">
-                                <p className="font-semibold">{bus.number}</p>
+                                <p className="font-bold">{bus.number}</p>
                                 <p className="text-sm">{bus.route}</p>
                                 <p className="text-xs text-gray-500">{bus.description}</p>
                             </div>

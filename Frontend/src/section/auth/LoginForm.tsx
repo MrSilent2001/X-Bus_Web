@@ -52,7 +52,7 @@ const LoginForm = () =>{
 
     }
     return (
-        <div className="flex min-h-screen bg-gradient-to-r from-red-300 to-white">
+        <div className="flex min-h-screen bg-gradient-to-r from-red-100 via-red-100 to-[#FAFAFA] from-0% via-50% to-100%">
             {/* Left Section */}
             <div className="w-1/2 flex flex-col items-center justify-center">
                 <img className="h-screen w-auto" src={AuthImg} alt="Auth Image"/>
@@ -66,10 +66,8 @@ const LoginForm = () =>{
                     </h3>
                 </div>
                 <div className="bg-white p-10 rounded-lg shadow-lg w-3/4">
-                    <div className="flex items-center justify-between mb-6">
-                        <div>
-                            <h3 className="text-4xl font-bold">Login</h3>
-                        </div>
+                    <div className="flex items-center justify-center mb-6">
+                            <h3 className="text-3xl font-bold">Login</h3>
                     </div>
 
                     <form onSubmit={handleLogin}>
@@ -104,9 +102,9 @@ const LoginForm = () =>{
 
                         {/* Register Link */}
                         <div className="text-left mt-6">
-                            <p className="text-gray-500 ">
+                            <p className="text-grey-200 ">
                                 Don't You Have an Account?
-                                <Link className="text-blue-600 font-semibold" to="/auth/signup">
+                                <Link className="text-grey-500 font-semibold" to="/signup">
                                     Register
                                 </Link>
                             </p>
@@ -116,7 +114,7 @@ const LoginForm = () =>{
                         <div className="mt-6">
                             <CustomButton
                                 buttonLabel={loading ? "Logging in..." : "Continue"}
-                                buttonClassName="w-full py-3 text-white bg-gradient-to-r from-red-500 to-red-700 rounded-lg h-10"
+                                buttonClassName="w-full py-3 text-red-800 bg-red-200 rounded-lg h-10 transition-all duration-300 transform hover:bg-gradient-to-r hover:from-red-300 hover:to-red-300 hover:scale-102 cursor-pointer"
                             />
                         </div>
                     </form>
@@ -125,7 +123,7 @@ const LoginForm = () =>{
                     {errors && <p className="text-red-500 text-center mt-4">{errors}</p>}
 
                     <Link to="/auth/forgotPassword">
-                        <p className="text-center text-blue-600 mt-3 cursor-pointer">Forgot Password?</p>
+                        <p className="text-center text-grey-200 mt-3 cursor-pointer">Forgot Password?</p>
                     </Link>
 
                 </div>
