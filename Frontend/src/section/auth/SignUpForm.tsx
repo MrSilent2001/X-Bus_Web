@@ -116,7 +116,7 @@ const SignUpForm = () =>{
                                     id="nic"
                                     type="text"
                                     placeholder="NIC"
-                                    value={formData.username || ''}
+                                    value={formData.nic || ''}
                                     onChange={(e) => handleInputChange(e, 'nic')}
                                     icon={undefined}
                                     label={false}

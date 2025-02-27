@@ -3,17 +3,18 @@ import {LoginSchema} from "@/schema/auth/LoginSchema.ts";
 import {userLogin} from "@/api/authAPI.ts";
 import InputField from "@/components/InputField/InputField.tsx";
 import CustomButton from "@/components/Button/CustomButton.tsx";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import AuthImg from "../../assets/images/authImage.png";
 
 interface LoginFormValues {
-    username: string;
+    email: string;
     password: string;
 }
 
 const LoginForm = () =>{
+    const navigate = useNavigate();
     const [formData, setFormData] = useState<LoginFormValues>({
-        username: '',
+        email: '',
         password: ''
     });
 
@@ -40,8 +41,9 @@ const LoginForm = () =>{
         setLoading(true);
         try {
             await userLogin(formData);
-            console.log("Username: ", formData.username, "Password: ", formData.password);
-            setFormData({ username: '', password: '' });
+            console.log("Email: ", formData.email, "Password: ", formData.password);
+            setFormData({ email: '', password: '' });
+            navigate("/dashboard");
         } catch (error: unknown) {
             console.log(error);
             setErrors("Invalid input");
@@ -75,14 +77,14 @@ const LoginForm = () =>{
                         <div className="my-8">
                             <div className="mb-4 mt-4">
                                 <InputField
-                                    id="username"
-                                    type="text"
-                                    placeholder="Username"
-                                    value={formData.username || ''}
-                                    onChange={(e) => handleInputChange(e, 'username')}
+                                    id="email"
+                                    type="email"
+                                    placeholder="Email"
+                                    value={formData.email || ''}
+                                    onChange={(e) => handleInputChange(e, 'email')}
                                     icon={undefined}
                                     label={false}
-                                    labelName="username"
+                                    labelName="email"
                                 />
                             </div>
                             <div className="mb-4">
@@ -94,7 +96,7 @@ const LoginForm = () =>{
                                     onChange={(e) => handleInputChange(e, 'password')}
                                     icon={undefined}
                                     label={false}
-                                    labelName=""
+                                    labelName="password"
                                 />
                             </div>
 

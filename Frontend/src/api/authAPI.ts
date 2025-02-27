@@ -2,25 +2,25 @@ import axios from "axios";
 
 const api = axios.create({
     // baseURL: process.env.NEXT_PUBLIC_BASE_URL
-    baseURL: "http://localhost:5173"
+    baseURL: "http://localhost:8080"
 });
 
 
 
 export const userLogin = async (formData: {
-    username: string;
+    email: string;
     password: string;
 }) => {
 
     try {
         const response = await api.post("/auth/login", {
-            username: formData.username,
+            email: formData.email,
             password: formData.password
         });
 
         if (response.status === 200) {
 
-            const token = response.data.token;
+            const token = response.data.accessToken;
             console.log(token);
             localStorage.setItem('accessToken', token);
 
@@ -37,13 +37,8 @@ export const userLogin = async (formData: {
                 return JSON.parse(jsonPayload);
             }
 
-            // Get the decoded token
             const decodedToken = parseJwt(token);
-            console.log('Decoded Token:', decodedToken);
-
-            // Extract role
             const userRole = decodedToken.role;
-            console.log('User Role:', userRole);
 
             return { token, userRole };
 
