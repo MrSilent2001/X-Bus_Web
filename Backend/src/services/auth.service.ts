@@ -17,34 +17,44 @@ export const registerUser = async(userData: UserReg) =>{
 
     const hashedPassword = await hashPassword(userData.password, 10);
     const user = userRepository.create({...userData, password: hashedPassword});
-    console.log("New User", user);
     await userRepository.save(user);
 
     return user;
 }
 
-export const loginUser = async (email: string, password: string) =>{
+export const loginUser = async (email: string, password: string) => {
 
-    const existingUser = await userRepository.findOneBy({email: email});
+    const existingUser = await userRepository.findOneBy({ email: email });
     if (!existingUser) {
         throw new Error("Invalid Credentials");
     }
 
-    const isPasswordMatch = await comparePassword(password,existingUser.password);
-    console.log(password,existingUser.password);
+    const isPasswordMatch = await comparePassword(password, existingUser.password);
+
     if (!isPasswordMatch) {
         throw new Error("Invalid Password");
     }
 
-    const accessToken = generateAccessToken({id: existingUser.id, email: existingUser.email, role: existingUser.role});
-    const refreshToken = generateRefreshToken({id: existingUser.id, email: existingUser.email, role: existingUser.role});
+    const accessToken = generateAccessToken({
+        id: existingUser.id,
+        email: existingUser.email,
+        role: existingUser.role
+    });
+
+    const refreshToken = generateRefreshToken({
+        id: existingUser.id,
+        email: existingUser.email,
+        role: existingUser.role
+    });
 
     return {
         userId: existingUser.id,
         accessToken: accessToken,
-        refreshToken :refreshToken
+        refreshToken: refreshToken
     };
-}
+};
+
+
 
 export const generateVerification = async(email: string) =>{
     const existingUser = await userRepository.findOneBy({email: email});

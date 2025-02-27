@@ -21,7 +21,7 @@ export const authController = {
           const {userId, accessToken, refreshToken} = await loginUser(email, password);
 
           setAuthCookies({res, accessToken, refreshToken})
-          res.status(OK).json({userId});
+          res.status(OK).json({userId, accessToken, refreshToken});
       }catch(error){
           next(error);
       }

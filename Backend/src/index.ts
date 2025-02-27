@@ -5,7 +5,6 @@ import {PORT, APP_ORIGIN} from "./constants/env";
 import AppDataSource from "./config/connectDB";
 import cookieParser from "cookie-parser";
 import errorHandler from "./middleware/errorHandler";
-import catchErrors from "./utils/catchErrors";
 import {OK} from "./constants/http";
 import authRoutes from "./routes/auth.routes";
 
