@@ -53,16 +53,21 @@ export const userLogin = async (formData: {
 export const userSignUp = async (formData: {
                                      username: string;
                                      email: string;
+                                     nic: string;
                                      password: string;
-                                     confirmPassword: string
+                                     confirmPassword: string;
+                                     role: string;
                                  }
 ) => {
     try {
         const response = await api.post("/auth/signup", {
-            username: formData.username,
+            name: formData.username,
+            nic: formData.nic,
+            contactNo:'0112345678',
             email: formData.email,
             password: formData.password,
             confirmPassword: formData.confirmPassword,
+            role: formData.role
         });
 
         if (response.status === 200) {

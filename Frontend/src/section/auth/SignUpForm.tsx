@@ -13,6 +13,7 @@ interface SignUpFormValues {
     nic: string;
     password: string;
     confirmPassword: string;
+    role:string;
 }
 
 const SignUpForm = () =>{
@@ -21,7 +22,8 @@ const SignUpForm = () =>{
         email: '',
         nic: '',
         password: '',
-        confirmPassword: ''
+        confirmPassword: '',
+        role: ''
     });
 
     const [errors, setErrors] = useState('');
@@ -54,7 +56,8 @@ const SignUpForm = () =>{
                 email: '',
                 nic: '',
                 password: '',
-                confirmPassword: ''
+                confirmPassword: '',
+                role:'admin'
             });
         } catch (error: unknown) {
             console.log(error);

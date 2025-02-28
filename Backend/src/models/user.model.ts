@@ -13,7 +13,7 @@ export class User {
     @Column()
     contactNo!: string;
 
-    @Column({unique:true,nullable:false})
+    @Column({unique:true})
     email!: string;
 
     @Column({nullable:false})

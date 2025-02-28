@@ -13,10 +13,11 @@ const userVerificationRepository = AppDataSource.getRepository(UserVerification)
 export const registerUser = async(userData: UserReg) =>{
 
     const existingUser = await userRepository.findOneBy({email: userData.email});
-    appAssert(existingUser, CONFLICT,"User already exists");
+    appAssert(!existingUser, CONFLICT,"User already exists");
 
     const hashedPassword = await hashPassword(userData.password, 10);
     const user = userRepository.create({...userData, password: hashedPassword});
+    console.log(user);
     await userRepository.save(user);
 
     return user;

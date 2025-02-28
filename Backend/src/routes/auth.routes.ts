@@ -4,7 +4,7 @@ import {authController} from "../controllers/auth.controller";
 const authRoutes = Router();
 
 //prefix:auth
-authRoutes.post("/register", authController.signUp);
+authRoutes.post("/signup", authController.signUp);
 authRoutes.post("/login", authController.login);
 authRoutes.post("/forgotPassword", authController.forgotPassword);
 authRoutes.post("/resetPassword", authController.resetPassword);
