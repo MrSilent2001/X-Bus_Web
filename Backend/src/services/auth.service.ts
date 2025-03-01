@@ -66,7 +66,7 @@ export const generateVerification = async(email: string) =>{
     const verificationCode = generateVerificationCode();
     const expireAt = expireVerification();
 
-    //Send verification code via a n email to the user
+    //Send verification code via an email to the user
 
     const userVerification = userVerificationRepository.create({
         id: existingUser.id, email: existingUser.email, verificationCode: verificationCode, expiryDate: expireAt

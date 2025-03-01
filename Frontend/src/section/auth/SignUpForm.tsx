@@ -2,7 +2,7 @@ import {FormEvent, useState} from "react";
 import InputField from "@/components/InputField/InputField.tsx";
 import CheckBox from "@/components/CheckBox/CheckBox.tsx";
 import CustomButton from "@/components/Button/CustomButton.tsx";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {SignupSchema} from "@/schema/auth/SignupSchema.ts";
 import {userSignUp} from "@/api/authAPI.ts";
 import AuthImg from "../../assets/images/authImage.png";
@@ -13,17 +13,16 @@ interface SignUpFormValues {
     nic: string;
     password: string;
     confirmPassword: string;
-    role:string;
 }
 
 const SignUpForm = () =>{
+    const navigate = useNavigate();
     const [formData, setFormData] = useState<SignUpFormValues>({
         username: '',
         email: '',
         nic: '',
         password: '',
-        confirmPassword: '',
-        role: ''
+        confirmPassword: ''
     });
 
     const [errors, setErrors] = useState('');
@@ -56,9 +55,12 @@ const SignUpForm = () =>{
                 email: '',
                 nic: '',
                 password: '',
-                confirmPassword: '',
-                role:'admin'
+                confirmPassword: ''
             });
+            setIsChecked(false);
+
+            navigate("/login");
+
         } catch (error: unknown) {
             console.log(error);
             setErrors("Invalid input");
@@ -170,7 +172,10 @@ const SignUpForm = () =>{
                         <div className="mt-6">
                             <CustomButton
                                 buttonLabel={loading ? "Signing in..." : "SignUp"}
-                                buttonClassName="w-full h-10 py-3 text-red-800 bg-red-200 rounded-lg transition-all duration-300 transform hover:bg-gradient-to-r hover:from-red-300 hover:to-red-300 hover:scale-102 cursor-pointer"
+                                buttonClassName={`w-full h-10 py-3 text-red-800 bg-red-200 rounded-lg transition-all duration-300 transform 
+                                                  hover:bg-gradient-to-r hover:from-red-300 hover:to-red-300 hover:scale-102 cursor-pointer 
+                                                  ${!isChecked ? "opacity-50 cursor-not-allowed" : ""}`}
+                                disabled={!isChecked || loading}
                             />
                         </div>
                     </form>
