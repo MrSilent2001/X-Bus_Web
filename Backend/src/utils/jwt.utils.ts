@@ -9,10 +9,10 @@ export const generateRefreshToken = (payload:object): string =>{
     return jwt.sign(payload, JWT_SECRET,{expiresIn: '7d'});
 }
 
-export const verifyToken = (token:string): JwtPayload | string | null =>{
-    try{
-        return jwt.verify(token, JWT_SECRET);
-    }catch(e){
-        return null;
+export const verifyToken = (token: string): JwtPayload | null => {
+    try {
+        return jwt.verify(token, JWT_SECRET) as JwtPayload;
+    } catch (error: any) {
+        return error.message;
     }
-}
+};

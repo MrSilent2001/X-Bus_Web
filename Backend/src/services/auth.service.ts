@@ -1,7 +1,7 @@
 import AppDataSource from "../config/connectDB";
 import {User} from "../models/user.model";
 import {UserVerification} from "../models/userVerification.model";
-import {UserReg} from "../schema/registerSchema";
+import {UserReg} from "../schema/userSchema";
 import {generateAccessToken, generateRefreshToken} from "../utils/jwt.utils";
 import {comparePassword, hashPassword} from "../utils/bcrypt";
 import {expireVerification, generateVerificationCode} from "../utils/verification";

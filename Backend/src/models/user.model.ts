@@ -10,14 +10,17 @@ export class User {
     @Column()
     nic!: string;
 
-    @Column()
-    contactNo!: string;
+    @Column({ type: 'varchar', nullable: true })
+    contactNo!: "" | string | undefined;
 
     @Column({unique:true})
     email!: string;
 
     @Column({nullable:false})
     password!: string;
+
+    @Column({nullable:true})
+    profilePicture?: string;
 
     @Column({nullable:false})
     role!:string;

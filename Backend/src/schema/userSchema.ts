@@ -28,6 +28,7 @@ const userSchema = z.object({
         .regex(/[a-z]/, "Password must contain at least one lowercase letter")
         .regex(/\d/, "Password must contain at least one number")
         .regex(/[@$!%*?&#]/, "Password must contain at least one special character"),
+    profilePicture: z.string().url("Profile picture must be a valid URL").optional(),
     role: z.string().min(1, "Role is required"),
 }).refine(data => data.password === data.confirmPassword, {
     message: "Passwords don't match",

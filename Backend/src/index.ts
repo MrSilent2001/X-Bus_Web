@@ -7,14 +7,17 @@ import cookieParser from "cookie-parser";
 import errorHandler from "./middleware/errorHandler";
 import {OK} from "./constants/http";
 import authRoutes from "./routes/auth.routes";
+import busRoutes from "./routes/bus.routes";
+import userRoutes from "./routes/userRoutes";
 
 dotenv.config();
 
 const app:Application = express();
 
 //Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '20mb' }));
+app.use(express.urlencoded({ limit: '20mb', extended: true }));
+
 app.use(
     cors({
         origin: APP_ORIGIN,
@@ -25,6 +28,9 @@ app.use(cookieParser());
 
 //Routes
 app.use("/auth", authRoutes);
+app.use("/bus", busRoutes);
+app.use("/user", userRoutes);
+
 app.get("/", (req: Request, res: Response, next: NextFunction) => {
         res.status(OK).json({
             status: "success",

@@ -1,5 +1,5 @@
 import {generateVerification, loginUser, registerUser, resetPassword} from "../services/auth.service";
-import {userSchema} from "../schema/registerSchema";
+import {userSchema} from "../schema/userSchema";
 import {Request, Response, NextFunction} from "express";
 import {CREATED, OK} from "../constants/http";
 import {setAuthCookies} from "../utils/cookies";

@@ -2,6 +2,7 @@ import {DataSource} from 'typeorm';
 import {DB_PORT, DB_HOST, DB_PASSWORD, DB_NAME, DB_USERNAME} from "../constants/env"
 import {User} from "../models/user.model";
 import {UserVerification} from "../models/userVerification.model";
+import {Bus} from "../models/bus.model";
 
 
 const AppDataSource = new DataSource({
@@ -11,7 +12,7 @@ const AppDataSource = new DataSource({
     username: DB_USERNAME,
     password: DB_PASSWORD,
     database: DB_NAME,
-    entities: [User, UserVerification],
+    entities: [User, UserVerification, Bus],
     synchronize: true,
     logging: false
 });
