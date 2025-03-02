@@ -1,31 +1,29 @@
 import axios from "axios";
+import {Bus} from "@/types/bus.ts";
 
 const api = axios.create({
     // baseURL: process.env.NEXT_PUBLIC_BASE_URL
-    baseURL: "http://localhost:5173"
+    baseURL: "http://localhost:8080"
 });
 
-export const registerBus = async (formData: {
-    regNo: string;
-    fleetName: string;
-    routeNo: string;
-    route: string;
-    seatingCapacity: number;
-    busFare: number;
-    password: string;
-    confirmPassword: string;
-                                 }
-) => {
+const token = localStorage.getItem("accessToken");
+
+export const registerBus = async (formData: Bus) => {
     try {
         const response = await api.post("/bus/register", {
+            ownerId: formData.ownerId,
             regNo: formData.regNo,
             fleetName: formData.fleetName,
             routeNo: formData.routeNo,
             route: formData.route,
             seatingCapacity: formData.seatingCapacity,
-            busFare: formData.busFare,
+            busFare: formData.busFare.toString(),
             password: formData.password,
-            confirmPassword: formData.confirmPassword,
+            profilePicture: formData.profilePicture
+        }, {
+            headers:{
+                Authorization: `Bearer ${token}`
+            }
         });
 
         if (response.status === 200) {
@@ -35,3 +33,49 @@ export const registerBus = async (formData: {
         console.error("Registration failed:", error);
     }
 }
+
+export const getAllBuses = async (): Promise<Bus[]> =>{
+    try {
+        const response = await api.get("/bus/getAllBuses",{
+            headers:{
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        if (response.status === 200) {
+            console.log("Data Fetching Successful:");
+            return response.data;
+        }
+
+        return [];
+
+    } catch (error){
+        console.log("Failed to fetch data", error);
+        return [];
+
+    }
+}
+
+export const getBusById = async (): Promise<Bus[]> =>{
+    try {
+        const response = await api.get("/bus/getBusById",{
+            headers:{
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        if (response.status === 200) {
+            console.log("Data Fetching Successful:");
+            return response.data;
+        }
+
+        return [];
+
+    } catch (error){
+        console.log("Failed to fetch data", error);
+        return [];
+
+    }
+}
+
+

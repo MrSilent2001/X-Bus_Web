@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import InputField from "@/components/InputField/InputField.tsx";
 
 interface ImageUploaderProps {
@@ -6,9 +6,16 @@ interface ImageUploaderProps {
     width?: string;
     borderRadius?: string;
     onImageUpload?: (imageUrl: string) => void;
+    reset?: boolean;
 }
 
-const ImageUploader: React.FC<ImageUploaderProps> = ({ height = "350px", width = "100%", borderRadius = "3%", onImageUpload }) => {
+const ImageUploader: React.FC<ImageUploaderProps> = ({
+                                                         height = "350px",
+                                                         width = "100%",
+                                                         borderRadius = "3%",
+                                                         reset = false,
+                                                         onImageUpload
+}) => {
     const [image, setImage] = useState<string | null>(null);
 
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -18,11 +25,20 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ height = "350px", width =
             reader.onloadend = () => {
                 const imageUrl = reader.result as string;
                 setImage(imageUrl);
-                onImageUpload && onImageUpload(imageUrl);
+                if (onImageUpload) {
+                    onImageUpload(imageUrl);
+                }
             };
             reader.readAsDataURL(file);
         }
     };
+
+    // reset the image when `reset` prop is true
+    useEffect(() => {
+        if (reset) {
+            setImage(null);
+        }
+    }, [reset]);
 
     return (
         <div

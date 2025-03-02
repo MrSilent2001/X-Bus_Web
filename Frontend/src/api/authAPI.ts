@@ -1,4 +1,5 @@
 import axios from "axios";
+import {parseJwt} from "@/utils/functions/parseJWT.ts";
 
 const api = axios.create({
     // baseURL: process.env.NEXT_PUBLIC_BASE_URL
@@ -23,19 +24,6 @@ export const userLogin = async (formData: {
             const token = response.data.accessToken;
             console.log(token);
             localStorage.setItem('accessToken', token);
-
-            // Decode the token
-            function parseJwt(token: string) {
-                const base64Url = token.split('.')[1];
-                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-                const jsonPayload = decodeURIComponent(
-                    atob(base64)
-                        .split('')
-                        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-                        .join('')
-                );
-                return JSON.parse(jsonPayload);
-            }
 
             const decodedToken = parseJwt(token);
             const userRole = decodedToken.role;

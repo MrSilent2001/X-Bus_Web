@@ -16,6 +16,7 @@ const PopOver = () =>{
     }
 
     const handleLogout = ()=>{
+        localStorage.removeItem("accessToken");
         navigate("/");
     }
 
