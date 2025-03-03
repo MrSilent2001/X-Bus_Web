@@ -1,16 +1,39 @@
-import { feedbackData } from "@/data/data.json";
 import Pagination from "@/components/Pagination/Pagination.tsx";
-import { useState, useMemo } from "react";
+import {useState, useMemo, useEffect} from "react";
+import {Feedback} from "@/types/feedback.ts";
+import {getAllFeedbacks} from "@/api/feedbackAPI.ts";
 
 const ITEMS_PER_PAGE = 5;
 
 const FeedbackCard = () => {
     const [currentPage, setCurrentPage] = useState(1);
+    const[feedback, setFeedback] = useState<Feedback[]>([])
 
-    const totalPages = useMemo(() => Math.ceil(feedbackData.length / ITEMS_PER_PAGE), []);
+    useEffect(() => {
+        const fetchFeedbacks = async () => {
+            try {
+                const response = await getAllFeedbacks();
+                setFeedback(response);
+            } catch (error) {
+                console.error("Error fetching buses:", error);
+            }
+        };
 
+        fetchFeedbacks();
+    }, [])
+
+    const totalPages = useMemo(() => Math.ceil(feedback.length / ITEMS_PER_PAGE), []);
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    const currentFeedbacks = feedbackData.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+    const currentFeedbacks = feedback.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+    const formatDate = (isoString: string) => {
+        return new Date(isoString).toISOString().split("T")[0]; // Extract YYYY-MM-DD
+    };
+
+    const formatTime = (timeString: string) => {
+        return timeString.slice(0, 5); // Extract HH:MM
+    };
+
 
     return (
         <div className="max-w-screen-lg mx-auto px-4">
@@ -23,12 +46,12 @@ const FeedbackCard = () => {
                 >
                     <div className="flex flex-col space-y-2">
                         <div className="flex justify-between items-center">
-                            <h2 className="text-lg font-bold">{item.customerName}</h2>
+                            <h2 className="text-lg font-bold">{item.passengerName}</h2>
                             <h3 className="text-red-700 font-bold">{item.busRegNo}</h3>
                         </div>
 
-                        <span className="text-xs text-gray-500">{item.date}</span>
-                        <span className="text-gray-700 text-xs">{item.time}</span>
+                        <span className="text-xs text-gray-500">{formatDate(item.date)}</span>
+                        {item.time && <span className="text-gray-700 text-xs">{formatTime(item.time)}</span>}
 
                         <p className="text-md">{item.message}</p>
                     </div>

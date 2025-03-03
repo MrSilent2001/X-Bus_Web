@@ -3,6 +3,7 @@ import {DB_PORT, DB_HOST, DB_PASSWORD, DB_NAME, DB_USERNAME} from "../constants/
 import {User} from "../models/user.model";
 import {UserVerification} from "../models/userVerification.model";
 import {Bus} from "../models/bus.model";
+import {Feedback} from "../models/feedback";
 
 
 const AppDataSource = new DataSource({
@@ -12,7 +13,7 @@ const AppDataSource = new DataSource({
     username: DB_USERNAME,
     password: DB_PASSWORD,
     database: DB_NAME,
-    entities: [User, UserVerification, Bus],
+    entities: [User, UserVerification, Bus, Feedback],
     synchronize: true,
     logging: false
 });

@@ -9,6 +9,7 @@ import {OK} from "./constants/http";
 import authRoutes from "./routes/auth.routes";
 import busRoutes from "./routes/bus.routes";
 import userRoutes from "./routes/userRoutes";
+import feedbackRoutes from "./routes/feedback.routes";
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ app.use(cookieParser());
 app.use("/auth", authRoutes);
 app.use("/bus", busRoutes);
 app.use("/user", userRoutes);
+app.use("/feedback", feedbackRoutes);
 
 app.get("/", (req: Request, res: Response, next: NextFunction) => {
         res.status(OK).json({
