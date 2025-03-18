@@ -7,7 +7,6 @@ const api = axios.create({
 });
 
 
-
 export const userLogin = async (formData: {
     email: string;
     password: string;
@@ -68,7 +67,7 @@ export const userSignUp = async (formData: {
 
 export const forgotPassword = async (formData: { email: string; }) => {
     try {
-        const response = await api.post(`/forgot-password/${formData.email}`);
+        const response = await api.post(`auth/forgot-password/${formData.email}`);
 
         if (response.status === 200) {
             console.log("SignUp Successful:");
@@ -83,10 +82,7 @@ export const forgotPassword = async (formData: { email: string; }) => {
 
 export const verifyOTP = async (email: string, otp: string) => {
     try {
-        const response = await api.post(`/verify-otp/${otp}/${email}`);
-
-        const url = `/verify-otp/${otp}/${email}`;
-        console.log("Request URL: ", url);
+        const response = await api.post(`auth/verify-otp/${otp}/${email}`);
 
         if (response.status === 200) {
             console.log("OTP Verified:");
@@ -99,12 +95,15 @@ export const verifyOTP = async (email: string, otp: string) => {
 
 
 export const resetPassword = async (
-    formData: { password: string; confirmPassword: string },
+    formData: {
+        password: string;
+        confirmPassword: string
+    },
     email: string,
 ) => {
     console.log(email)
     try {
-        const response = await api.post(`/reset-password/${email}`, {
+        const response = await api.post(`auth/reset-password/${email}`, {
             password: formData.password,
             confirmPassword: formData.confirmPassword,
         });

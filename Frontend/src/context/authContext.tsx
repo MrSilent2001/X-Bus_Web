@@ -4,7 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 
 interface AuthContextType {
-    user: { username: string } | null;
+    user: { email: string } | null;
     loading: boolean;
     login: (token: string) => void;
     logout: () => void;
@@ -13,7 +13,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-    const [user, setUser] = useState<{ username: string } | null>(null);
+    const [user, setUser] = useState<{ email: string } | null>(null);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
@@ -22,8 +22,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
         if (token) {
             try {
-                const decoded: { username: string } = jwtDecode(token);
-                setUser({ username: decoded.username });
+                const decoded: { email: string } = jwtDecode(token);
+                setUser({ email: decoded.email });
             } catch (error) {
                 console.error("Invalid token:", error);
                 logout();
@@ -35,8 +35,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const login = (token: string) => {
         localStorage.setItem("accessToken", token);
-        const decoded: { username: string } = jwtDecode(token);
-        setUser({ username: decoded.username });
+        const decoded: { email: string } = jwtDecode(token);
+        setUser({ email: decoded.email });
 
         setTimeout(() => {
             navigate("/dashboard");

@@ -16,7 +16,7 @@ const VerifyOTPForm = () => {
     useEffect(() => {
         const email = localStorage.getItem("userEmail");
         if (email) {
-            setEmail(JSON.parse(email));
+            setEmail(email);
         }
     }, []);
 
@@ -42,6 +42,7 @@ const VerifyOTPForm = () => {
             await verifyOTP(email, value);
             setValue("")
             setErrors("");
+            navigate("/reset-password");
         } catch (error: unknown) {
             console.log(error);
             setErrors("Invalid input");

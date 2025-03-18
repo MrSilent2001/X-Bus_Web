@@ -7,9 +7,49 @@ import ProfileAvatar from "@/components/Avatar/ProfilePic.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import CustomButton from "@/components/Button/CustomButton.tsx";
 import {useNavigate} from "react-router-dom";
+import {getDecodedTokenValue} from "@/utils/functions/decodeToken.ts";
+import {useEffect, useState} from "react";
+import {getUserById} from "@/api/userAPI.ts";
+
 
 const PopOver = () =>{
     const navigate = useNavigate();
+
+    const [email, setEmail] = useState<string>("");
+    const [name, setName] = useState<string>("");
+
+    const token = localStorage.getItem("accessToken");
+
+    useEffect(() => {
+        if (token) {
+            const decodedEmail = getDecodedTokenValue<{ email: string }>(token, "email");
+            if (decodedEmail) {
+                setEmail(decodedEmail);
+                localStorage.setItem("userEmail", decodedEmail);
+            }
+        } else {
+            const storedEmail = localStorage.getItem("userEmail");
+            if (storedEmail) {
+                setEmail(storedEmail);
+            }
+        }
+    }, [token]);
+
+    // Fetch user data once the email is available
+    useEffect(() => {
+        if (email) {
+            const fetchUser = async () => {
+                try {
+                    const response = await getUserById(email);
+                    console.log(response);
+                    setName(response.name);
+                } catch (error) {
+                    console.error("Error fetching user data:", error);
+                }
+            };
+            fetchUser();
+        }
+    }, [email]);
 
     const handleEditProfile = ()=>{
         navigate("/adminProfile");
@@ -32,7 +72,7 @@ const PopOver = () =>{
                     <div className="space-y-2 flex justify-center">
                         <ProfileAvatar size="w-20 h-20"/>
                     </div>
-                    <h4 className="font-medium leading-none text-center">Hi John</h4>
+                    <h4 className="font-medium leading-none text-center">Hi {name}</h4>
                     <div className="grid gap-2">
                         <div className="w-full gap-4">
                             <CustomButton

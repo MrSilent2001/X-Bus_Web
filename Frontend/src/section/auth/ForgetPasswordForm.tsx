@@ -1,10 +1,10 @@
 import {FormEvent, useState} from "react";
-import {LoginSchema} from "@/schema/auth/LoginSchema.ts";
 import {forgotPassword} from "@/api/authAPI.ts";
 import InputField from "@/components/InputField/InputField.tsx";
 import CustomButton from "@/components/Button/CustomButton.tsx";
 import {useNavigate} from "react-router-dom";
 import AuthImg from "../../assets/images/authImage.png";
+import {ForgotPasswordSchema} from "@/schema/auth/ForgotPasswordSchema.ts";
 
 interface ForgotPasswordFormValues {
     email: string;
@@ -30,7 +30,7 @@ const ForgetPasswordForm = () =>{
     const handleLogin = async (e: FormEvent) => {
         e.preventDefault();
 
-        const validation = LoginSchema.safeParse(formData);
+        const validation = ForgotPasswordSchema.safeParse(formData);
 
         if (!validation.success) {
             setErrors(validation.error.errors[0]?.message || "Invalid input");
@@ -41,6 +41,7 @@ const ForgetPasswordForm = () =>{
             await forgotPassword(formData);
             console.log("Email: ", formData.email);
             setFormData({ email: '',});
+            localStorage.setItem("userEmail", formData.email);
             navigate("/verifyOTP");
         } catch (error: unknown) {
             console.log(error);
@@ -92,7 +93,6 @@ const ForgetPasswordForm = () =>{
                             </div>
                         </div>
 
-                        {/* Login Button */}
                         <div className="mt-6 flex gap-6">
                             <CustomButton
                                 onClick={handleCancel}
@@ -100,7 +100,7 @@ const ForgetPasswordForm = () =>{
                                 buttonClassName="w-full py-3 text-red-800 bg-red-200 rounded-lg h-10 transition-all duration-300 transform hover:bg-gradient-to-r hover:from-red-300 hover:to-red-300 hover:scale-102 cursor-pointer"
                             />
                             <CustomButton
-                                buttonLabel={loading ? "Logging in..." : "Continue"}
+                                buttonLabel={loading ? "Loading..." : "Continue"}
                                 buttonClassName="w-full py-3 text-red-800 bg-red-200 rounded-lg h-10 transition-all duration-300 transform hover:bg-gradient-to-r hover:from-red-300 hover:to-red-300 hover:scale-102 cursor-pointer"
                             />
                         </div>

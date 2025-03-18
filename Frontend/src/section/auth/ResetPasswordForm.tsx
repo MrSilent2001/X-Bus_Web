@@ -1,10 +1,10 @@
 import {FormEvent, useEffect, useState} from "react";
-import {SignupSchema} from "@/schema/auth/SignupSchema.ts";
 import {resetPassword} from "@/api/authAPI.ts";
 import InputField from "@/components/InputField/InputField.tsx";
 import CustomButton from "@/components/Button/CustomButton.tsx";
 import {useNavigate} from "react-router-dom";
 import AuthImg from "../../assets/images/authImage.png";
+import {ResetPasswordSchema} from "@/schema/auth/ResetPasswordSchema.ts";
 
 interface ResetPasswordFormValues {
     password: string;
@@ -24,7 +24,7 @@ const ResetPasswordForm = () =>{
 
     useEffect(()=>{
         const userEmail = localStorage.getItem("userEmail");
-        setEmail(userEmail ? JSON.parse(userEmail) : "");
+        setEmail(userEmail ? (userEmail) : "");
     },[])
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, value: keyof ResetPasswordFormValues) => {
@@ -37,7 +37,7 @@ const ResetPasswordForm = () =>{
     const handleLogin = async (e: FormEvent) => {
         e.preventDefault();
 
-        const validation = SignupSchema.safeParse(formData);
+        const validation = ResetPasswordSchema.safeParse(formData);
 
         if (!validation.success) {
             setErrors(validation.error.errors[0]?.message || "Invalid input");
