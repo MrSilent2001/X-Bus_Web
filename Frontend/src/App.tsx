@@ -1,12 +1,15 @@
 import './App.css'
 import {BrowserRouter} from "react-router-dom"
 import PageRoutes from "@/Routes/pageRoutes.tsx";
+import {AuthProvider} from "@/context/authContext.tsx";
 
 function App() {
 
   return (
       <BrowserRouter>
-          <PageRoutes/>
+          <AuthProvider>
+              <PageRoutes/>
+          </AuthProvider>
       </BrowserRouter>
   )
 }

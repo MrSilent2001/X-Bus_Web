@@ -12,6 +12,7 @@ import SummeryReport from "@/pages/SummeryReport.tsx";
 import ForgetPassword from "@/pages/auth/ForgetPassword.tsx";
 import VerifyOTP from "@/pages/auth/VerifyOTP.tsx";
 import ResetPassword from "@/pages/auth/ResetPassword.tsx";
+import ProtectedRoute from "@/components/ProtectedRoute/ProtectedRoute.tsx";
 
 const PageRoutes = () =>{
     return (
@@ -24,13 +25,15 @@ const PageRoutes = () =>{
             <Route path="/verifyOTP" element={<VerifyOTP/>}/>
             <Route path="/reset-password" element={<ResetPassword/>}/>
 
-            <Route path="/dashboard" element={<Dashboard/>}/>
-            <Route path="/create-bus-account" element={<CreateBusAccount/>}/>
-            <Route path="/adminProfile" element={<AdminProfile/>}/>
-            <Route path="/busProfile" element={<BusProfile/>}/>
-            <Route path="/locationTracking" element={<LocationTracking/>}/>
-            <Route path="/feedback" element={<Feedback/>}/>
-            <Route path="/summery" element={<SummeryReport/>}/>
+            <Route element={<ProtectedRoute/>}>
+                    <Route path="/dashboard" element={<Dashboard/>}/>
+                    <Route path="/create-bus-account" element={<CreateBusAccount/>}/>
+                    <Route path="/adminProfile" element={<AdminProfile/>}/>
+                    <Route path="/busProfile" element={<BusProfile/>}/>
+                    <Route path="/locationTracking" element={<LocationTracking/>}/>
+                    <Route path="/feedback" element={<Feedback/>}/>
+                    <Route path="/summery" element={<SummeryReport/>}/>
+            </Route>
         </Routes>
     );
 }

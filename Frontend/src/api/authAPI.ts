@@ -22,7 +22,6 @@ export const userLogin = async (formData: {
         if (response.status === 200) {
 
             const token = response.data.accessToken;
-            console.log(token);
             localStorage.setItem('accessToken', token);
 
             const decodedToken = parseJwt(token);
