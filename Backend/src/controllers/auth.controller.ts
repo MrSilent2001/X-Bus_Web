@@ -1,4 +1,4 @@
-import {generateVerification, loginUser, registerUser, resetPassword} from "../services/auth.service";
+import {generateVerification, loginUser, registerUser, resetPassword, verifyOTP} from "../services/auth.service";
 import {userSchema} from "../schema/userSchema";
 import {Request, Response, NextFunction} from "express";
 import {CREATED, OK} from "../constants/http";
@@ -29,7 +29,8 @@ export const authController = {
 
     forgotPassword: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try{
-            const {email} = req.body;
+            const {email} = req.params;
+            console.log(email);
             const response = await generateVerification(email);
             res.status(OK).json({response});
         }catch (error){
@@ -37,10 +38,23 @@ export const authController = {
         }
     },
 
+    verifyOTP: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const {email, otp} = req.params;
+            const response = await verifyOTP(email, otp);
+            res.status(OK).json({response});
+        }catch(error){
+            next(error);
+        }
+    },
+
     resetPassword: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const {email, userInput, newPassword} = req.body;
-            const response = await resetPassword(email,userInput, newPassword);
+            const {email} = req.params;
+            const {password} = req.body;
+
+            console.log(email, password);
+            const response = await resetPassword(email, password);
             res.status(OK).json({response});
         }catch(error){
             next(error);

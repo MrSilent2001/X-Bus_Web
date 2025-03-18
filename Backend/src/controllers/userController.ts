@@ -15,7 +15,7 @@ export const userController = {
 
     getUserById: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const user = await getUserById(req.body.id);
+            const user = await getUserById(req.params.id);
             res.status(OK).json(user);
         } catch (error) {
             next(error);

@@ -7,6 +7,8 @@ import {comparePassword, hashPassword} from "../utils/bcrypt";
 import {expireVerification, generateVerificationCode} from "../utils/verification";
 import appAssert from "../utils/appAssert";
 import {CONFLICT} from "../constants/http";
+import nodemailer from 'nodemailer';
+import {EMAIL_PASSWORD, SENDER_EMAIL} from "../constants/env";
 
 const userRepository = AppDataSource.getRepository(User);
 const userVerificationRepository = AppDataSource.getRepository(UserVerification);
@@ -56,7 +58,6 @@ export const loginUser = async (email: string, password: string) => {
 };
 
 
-
 export const generateVerification = async(email: string) =>{
     const existingUser = await userRepository.findOneBy({email: email});
     if (!existingUser) {
@@ -68,12 +69,37 @@ export const generateVerification = async(email: string) =>{
 
     //Send verification code via an email to the user
 
-    const userVerification = userVerificationRepository.create({
-        id: existingUser.id, email: existingUser.email, verificationCode: verificationCode, expiryDate: expireAt
+    const transporter = nodemailer.createTransport({
+        secure: true,
+        host: 'smtp.gmail.com',
+        auth: {
+            user: SENDER_EMAIL,
+            pass: EMAIL_PASSWORD,
+        },
     });
 
-    console.log("verificationCode", verificationCode);
+    // Send email with OTP
+    const mailOptions = {
+        from: SENDER_EMAIL,
+        to: email,
+        subject: 'Your Verification Code',
+        text: `Your verification code is: ${verificationCode}. It expires at ${expireAt}.`,
+    };
+
+
     try {
+        await transporter.sendMail(mailOptions);
+        console.log(`Verification code sent to ${email}`);
+
+        const userVerification = userVerificationRepository.create({
+            id: existingUser.id,
+            email: existingUser.email,
+            verificationCode: verificationCode,
+            expiryDate: expireAt
+        });
+
+        console.log("verificationCode", verificationCode);
+
         await userVerificationRepository.save(userVerification);
         return userVerification;
     } catch (error) {
@@ -82,13 +108,13 @@ export const generateVerification = async(email: string) =>{
     }
 }
 
-export const resetPassword = async(email: string, userInput: string, newPassword: string) =>{
+export const verifyOTP = async (email: string, otp: string) => {
     const verification = await userVerificationRepository.findOneBy({email: email});
     if (!verification) {
         throw new Error("No verification record found");
     }
 
-    if (verification.verificationCode !== userInput) {
+    if (verification.verificationCode !== otp) {
         throw new Error("Invalid Verification Code");
     }
 
@@ -96,6 +122,11 @@ export const resetPassword = async(email: string, userInput: string, newPassword
     if (verification.expiryDate < currentTime) {
         throw new Error("Verification code has expired");
     }
+
+    return { message: "OTP verified successfully" };
+}
+
+export const resetPassword = async(email: string, newPassword: string) =>{
 
     const existingUser = await userRepository.findOneBy({ email: email });
     if (!existingUser) {

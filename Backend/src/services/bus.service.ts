@@ -20,7 +20,6 @@ export const registerNewBus = async (busData: BusReg) => {
 
 export const getAllBuses = async(): Promise<Bus[]>=> {
     const busData = await busRepository.find();
-    console.log(busData);
 
     return busData;
 }
