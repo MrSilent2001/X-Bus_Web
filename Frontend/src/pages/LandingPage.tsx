@@ -2,6 +2,8 @@ import Logo from "@/assets/images/logo.png";
 import Bus from "@/assets/images/Bus.png";
 import CustomButton from "@/components/Button/CustomButton.tsx";
  import {useNavigate} from "react-router-dom";
+import {faArrowRight} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 const LandingPage = () =>{
     const navigate = useNavigate();
@@ -31,8 +33,9 @@ const LandingPage = () =>{
             <div className="h-1/6 w-full flex flex-col items-center justify-center ">
                 <CustomButton
                     onClick={handleGetStartedClick}
-                    buttonLabel={"Get Started >"}
+                    buttonLabel={"Get Started "}
                     buttonClassName="w-1/4 text-white bg-red-200 rounded-lg h-10 text-red-800 transition-all duration-300 transform hover:bg-gradient-to-r hover:from-red-300 hover:to-red-300 hover:scale-105 cursor-pointer"
+                    icon={<FontAwesomeIcon icon={faArrowRight} className="text-red-800 text-lg p-4" />}
                 />
             </div>
         </div>

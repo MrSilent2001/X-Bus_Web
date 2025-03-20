@@ -5,10 +5,9 @@ const api = axios.create({
     baseURL: "http://localhost:8080"
 });
 
-const token = localStorage.getItem("accessToken");
-export const getUserById = async (email: string) =>{
+export const getUserByEmail = async (email: string, token: string | null) =>{
     try {
-        const response = await api.get("/user/getUserById", {
+        const response = await api.get("/user/getUserByEmail", {
             params: {
                 email: email
             },

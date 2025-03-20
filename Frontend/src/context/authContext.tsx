@@ -13,9 +13,10 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+    const navigate = useNavigate();
+
     const [user, setUser] = useState<{ email: string } | null>(null);
     const [loading, setLoading] = useState(true);
-    const navigate = useNavigate();
 
     useEffect(() => {
         const token = localStorage.getItem("accessToken");
@@ -44,7 +45,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     const logout = () => {
-        localStorage.removeItem("accessToken");
+        localStorage.clear();
         setUser(null);
         navigate("/");
     };

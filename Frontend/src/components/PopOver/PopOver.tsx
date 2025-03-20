@@ -9,7 +9,7 @@ import CustomButton from "@/components/Button/CustomButton.tsx";
 import {useNavigate} from "react-router-dom";
 import {getDecodedTokenValue} from "@/utils/functions/decodeToken.ts";
 import {useEffect, useState} from "react";
-import {getUserById} from "@/api/userAPI.ts";
+import {getUserByEmail} from "@/api/userAPI.ts";
 
 
 const PopOver = () =>{
@@ -40,7 +40,7 @@ const PopOver = () =>{
         if (email) {
             const fetchUser = async () => {
                 try {
-                    const response = await getUserById(email);
+                    const response = await getUserByEmail(email, token);
                     console.log(response);
                     setName(response.name);
                 } catch (error) {
@@ -59,6 +59,8 @@ const PopOver = () =>{
         localStorage.removeItem("accessToken");
         navigate("/");
     }
+
+    console.log(name)
 
     return (
         <Popover>
