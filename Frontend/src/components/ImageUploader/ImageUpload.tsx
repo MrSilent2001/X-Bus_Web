@@ -5,6 +5,7 @@ interface ImageUploaderProps {
     height?: string;
     width?: string;
     borderRadius?: string;
+    borderColor?: string;
     onImageUpload?: (imageUrl: string) => void;
     reset?: boolean;
 }
@@ -13,6 +14,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
                                                          height = "350px",
                                                          width = "100%",
                                                          borderRadius = "3%",
+                                                         borderColor = "1px solid gray",
                                                          reset = false,
                                                          onImageUpload
 }) => {
@@ -47,7 +49,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
         >
             <label
                 className="relative flex items-center justify-center w-full h-full border-2 border-gray-300 rounded-lg cursor-pointer hover:border-blue-500"
-                style={{ borderRadius }}
+                style={{ borderRadius, borderColor }}
             >
                 {image ? (
                     <img src={image} alt="Uploaded" className="w-full h-full object-cover rounded-lg" />

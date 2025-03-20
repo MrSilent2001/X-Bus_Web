@@ -29,7 +29,7 @@ const PageRoutes = () =>{
                     <Route path="/dashboard" element={<Dashboard/>}/>
                     <Route path="/create-bus-account" element={<CreateBusAccount/>}/>
                     <Route path="/adminProfile" element={<AdminProfile/>}/>
-                    <Route path="/busProfile" element={<BusProfile/>}/>
+                    <Route path="/busProfile/:regNo" element={<BusProfile/>}/>
                     <Route path="/locationTracking" element={<LocationTracking/>}/>
                     <Route path="/feedback" element={<Feedback/>}/>
                     <Route path="/summery" element={<SummeryReport/>}/>

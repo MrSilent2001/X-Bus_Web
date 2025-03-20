@@ -56,9 +56,9 @@ export const getAllBuses = async (): Promise<Bus[]> =>{
     }
 }
 
-export const getBusById = async (): Promise<Bus[]> =>{
+export const getBusById = async (regNo: string): Promise<Bus | null> =>{
     try {
-        const response = await api.get("/bus/getBusById",{
+        const response = await api.get(`/bus/getBusById/${regNo}`,{
             headers:{
                 Authorization: `Bearer ${token}`
             }
@@ -66,15 +66,44 @@ export const getBusById = async (): Promise<Bus[]> =>{
 
         if (response.status === 200) {
             console.log("Data Fetching Successful:");
+            if (Array.isArray(response.data) && response.data.length > 0) {
+                return response.data[0];
+            }
+
             return response.data;
         }
 
-        return [];
+        return null;
 
     } catch (error){
         console.log("Failed to fetch data", error);
-        return [];
+        return null;
 
+    }
+}
+
+export const updateBus = async (formData: Bus) => {
+    try {
+        const response = await api.put(`/bus/editBus`, {
+            regNo: formData.regNo,
+            fleetName: formData.fleetName,
+            routeNo: formData.routeNo,
+            route: formData.route,
+            seatingCapacity: formData.seatingCapacity,
+            busFare: formData.busFare.toString(),
+            //password: formData.password,
+            profilePicture: formData.profilePicture
+        }, {
+            headers:{
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        if (response.status === 200) {
+            console.log("Registration Successful:");
+        }
+    } catch (error) {
+        console.error("Registration failed:", error);
     }
 }
 

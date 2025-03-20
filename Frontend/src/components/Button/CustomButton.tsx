@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, ReactNode } from "react";
+import React, { useState, ReactNode, MouseEventHandler  } from "react";
 import { Button } from "@/components/ui/button";
 
 interface CustomButtonProps {
@@ -11,7 +11,7 @@ interface CustomButtonProps {
     buttonClassName?: string;
     modalContent?: ReactNode;
     modalClassName?: string;
-    onClick?: () => void;
+    onClick?: MouseEventHandler<HTMLButtonElement> | (() => void);
     showIcon?: boolean;
     icon?: ReactNode;
 }
@@ -31,9 +31,9 @@ const CustomButton: React.FC<CustomButtonProps> = ({
                                                    }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const handleButtonClick = () => {
+    const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         if (onClick) {
-            onClick();
+            onClick(e);
         } else {
             setIsModalOpen(true);
         }

@@ -16,6 +16,7 @@ interface InputFieldProps {
     uppercase?: boolean;
     min?: number;
     max?: number;
+    disabled?: boolean;
 }
 
 const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
@@ -36,6 +37,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             uppercase = false,
             min,
             max,
+            disabled = false,
             ...rest
         },
         ref
@@ -81,6 +83,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
                         aria-label={ariaLabel || placeholder}
                         min={type === "number" ? min : undefined}
                         max={type === "number" ? max : undefined}
+                        disabled={disabled}
                         {...rest}
                     />
                     {icon && type !== "file" && (

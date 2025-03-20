@@ -1,6 +1,6 @@
 import './App.css'
 import {BrowserRouter} from "react-router-dom"
-import PageRoutes from "@/Routes/pageRoutes.tsx";
+import PageRoutes from "@/routes/pageRoutes.tsx";
 import {AuthProvider} from "@/context/authContext.tsx";
 
 function App() {

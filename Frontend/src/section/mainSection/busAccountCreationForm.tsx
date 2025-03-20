@@ -5,22 +5,10 @@ import { registerBus } from "@/api/busAPI.ts";
 import { BusRegisterSchema } from "@/schema/busSchema.ts";
 import ImageUploader from "@/components/ImageUploader/ImageUpload.tsx";
 import {parseJwt} from "@/utils/functions/parseJWT.ts";
-
-interface BusRegisterFormValues {
-    ownerId: string;
-    regNo: string;
-    fleetName: string;
-    routeNo: string;
-    route: string;
-    seatingCapacity: number;
-    busFare: number;
-    password: string;
-    confirmPassword: string;
-    profilePicture: string;
-}
+import {Bus} from "@/types/bus.ts";
 
 const BusAccountCreationForm = () => {
-    const [formData, setFormData] = useState<BusRegisterFormValues>({
+    const [formData, setFormData] = useState<Bus>({
         ownerId: '',
         regNo: '',
         fleetName: '',
@@ -55,7 +43,7 @@ const BusAccountCreationForm = () => {
         }
     }, []);
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, value: keyof BusRegisterFormValues) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, value: keyof Bus) => {
         setFormData({
             ...formData,
             [value]: e.target.type === "number" ? Number(e.target.value) : e.target.value,
@@ -81,7 +69,6 @@ const BusAccountCreationForm = () => {
         setLoading(true);
         try {
             await registerBus(formData);
-            console.log("Route: ", formData.route, "Password: ", formData.password);
             setFormData({
                 ownerId: '',
                 regNo: '',
