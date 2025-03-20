@@ -34,7 +34,7 @@ export const busController = {
 
     editBus: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try{
-            const bus = await editBus(req.body);
+            const bus = await editBus(req.body.regNo);
             res.status(OK).json(bus);
         } catch (error) {
             next(error);
@@ -43,7 +43,7 @@ export const busController = {
 
     removeBus: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try{
-            const bus = await removeBus(req.body.regNo);
+            const bus = await removeBus(req.body);
             res.status(OK).json(bus);
         } catch (error) {
             next(error);

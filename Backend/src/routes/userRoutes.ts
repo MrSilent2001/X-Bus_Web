@@ -6,7 +6,7 @@ const userRoutes = Router();
 
 //prefix:user
 userRoutes.get("/getAllUsers", authenticate, userController.getAllUsers);
-userRoutes.get("/getUserById", authenticate, userController.getUserById);
+userRoutes.get("/getUserByEmail", authenticate, userController.getUserByEmail);
 userRoutes.put("/editUser", authenticate, userController.editUser);
 userRoutes.delete("/removeUser", authenticate, userController.removeUser);
 

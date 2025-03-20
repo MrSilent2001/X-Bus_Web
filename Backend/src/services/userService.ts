@@ -13,15 +13,14 @@ export const getAllUsers = async(): Promise<User[]>=> {
     return userData;
 }
 
-export const getUserById = async (email: string): Promise<User | null> => {
+export const getUserByEmail = async (email: string): Promise<User | null> => {
     const user = await userRepository.findOneBy({email});
-    console.log(user);
 
     return user;
 }
 
 export const editUser = async (userData: UserReg): Promise<User | null> => {
-    const user = await getUserById(userData.email);
+    const user = await getUserByEmail(userData.email);
     appAssert(user, NOT_FOUND, "Bus not found");
 
     user!.name = userData.name;
@@ -40,7 +39,7 @@ export const editUser = async (userData: UserReg): Promise<User | null> => {
 };
 
 export const removeUser = async (email: string): Promise<User | null> => {
-    const user = await getUserById(email);
+    const user = await getUserByEmail(email);
     appAssert(user, NOT_FOUND, "Bus not found");
 
     await userRepository.remove(user!);

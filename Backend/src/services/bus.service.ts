@@ -12,7 +12,6 @@ export const registerNewBus = async (busData: BusReg) => {
 
     const hashedPassword = await hashPassword(busData.password, 10);
     const bus = busRepository.create({...busData, password: hashedPassword});
-    console.log(bus);
     await busRepository.save(bus);
 
     return bus;
@@ -26,7 +25,6 @@ export const getAllBuses = async(): Promise<Bus[]>=> {
 
 export const getBusById = async (regNo: string): Promise<Bus | null> => {
     const bus = await busRepository.findOneBy({regNo});
-    console.log(bus)
 
     return bus;
 }
