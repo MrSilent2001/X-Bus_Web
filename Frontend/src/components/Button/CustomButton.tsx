@@ -3,6 +3,7 @@ import React, { useState, ReactNode, MouseEventHandler  } from "react";
 import { Button } from "@/components/ui/button";
 
 interface CustomButtonProps {
+    type?: "button" | "submit" | "reset";
     variant?: "primary" | "outline" | "ghost";
     name?: string;
     value?: string;
@@ -17,6 +18,7 @@ interface CustomButtonProps {
 }
 
 const CustomButton: React.FC<CustomButtonProps> = ({
+                                                       type = "button",
                                                        variant = "primary",
                                                        name = "",
                                                        value = "",
@@ -51,6 +53,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
             <Button
                 className={`flex items-center text-center justify-center gap-0 px-6 py-3 rounded-md text-md font-medium clickEffect
                     ${theme[variant]} ${buttonClassName}`}
+                type={type}
                 name={name}
                 value={value}
                 disabled={disabled}

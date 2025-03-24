@@ -9,5 +9,5 @@ export interface Bus {
     busFare: number;
     password?: string;
     confirmPassword?: string;
-    profilePicture?: string;
+    profilePicture?: string | null | undefined;
 }

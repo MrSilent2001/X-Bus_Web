@@ -1,4 +1,5 @@
 import React, { useState, forwardRef } from "react";
+import { UseFormRegisterReturn } from "react-hook-form";
 
 interface InputFieldProps {
     id: string;
@@ -14,9 +15,10 @@ interface InputFieldProps {
     label?: boolean;
     labelName?: string;
     uppercase?: boolean;
-    min?: number;
-    max?: number;
+    min?: number | string;
+    max?: number | string;
     disabled?: boolean;
+    register?: UseFormRegisterReturn; // React Hook Form support
 }
 
 const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
@@ -38,6 +40,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             min,
             max,
             disabled = false,
+            register,
             ...rest
         },
         ref
@@ -45,18 +48,14 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         const [isFocused, setIsFocused] = useState(false);
 
         const handleFocus = () => setIsFocused(true);
-        const handleBlur = () => setIsFocused(false);
-
-        const hasValue = !!value;
 
         return (
             <div className="relative flex flex-col items-start">
-                {/* Label for text inputs */}
                 {label && labelName && type !== "file" && (
                     <label
                         htmlFor={id}
                         className={`absolute left-3 transition-all duration-200 text-sm font-medium ${
-                            isFocused || hasValue
+                            isFocused || value
                                 ? "-top-3 bg-white px-1 font-medium z-[1] text-carnation-500"
                                 : "top-2 text-gray-400"
                         }`}
@@ -69,16 +68,15 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
                     <input
                         id={id}
                         type={type}
-                        value={type !== "file" ? String(value) : undefined}
-                        onChange={onChange}
+                        defaultValue={value} // Uses defaultValue for React Hook Form
                         placeholder={type !== "file" ? placeholder : undefined}
                         accept={type === "file" ? accept : undefined}
                         onFocus={handleFocus}
-                        onBlur={handleBlur}
-                        ref={ref}
+                        {...(register ? { ...register, onBlur: undefined, onChange: undefined } : {})} // Prevents duplicate props
+                        ref={register ? undefined : ref}
                         className={`block ${width} h-10 py-2 px-3 text-sm text-black border rounded-md border-gray-400 focus:outline-none focus:ring-gray-700 focus:border-carnation-300 ${
                             uppercase ? "uppercase" : ""
-                        } ${className}`}
+                        } ${disabled ? "bg-gray-200 cursor-not-allowed text-gray-500" : ""} ${className}`}
                         style={{ textTransform: uppercase ? "uppercase" : "none" }}
                         aria-label={ariaLabel || placeholder}
                         min={type === "number" ? min : undefined}

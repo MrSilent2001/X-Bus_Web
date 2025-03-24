@@ -43,6 +43,7 @@ const Sidebar = () =>{
                 ))}
             </div>
             <CustomButton
+                type="button"
                 onClick={handleAddBus}
                 buttonLabel={"+ Add New"}
                 buttonClassName="w-[310px] text-white bg-gradient-to-r from-red-200 to-red-200 rounded-lg h-10 text-red-800 transition-all duration-300 transform hover:bg-gradient-to-r hover:from-red-300 hover:to-red-300 cursor-pointer"

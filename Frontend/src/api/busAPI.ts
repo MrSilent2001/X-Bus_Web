@@ -43,7 +43,6 @@ export const getAllBuses = async (): Promise<Bus[]> =>{
         });
 
         if (response.status === 200) {
-            console.log("Data Fetching Successful:");
             return response.data;
         }
 
@@ -58,14 +57,16 @@ export const getAllBuses = async (): Promise<Bus[]> =>{
 
 export const getBusById = async (regNo: string): Promise<Bus | null> =>{
     try {
-        const response = await api.get(`/bus/getBusById/${regNo}`,{
+        const response = await api.get("/bus/getBusById",{
+            params:{
+                regNo: regNo
+            },
             headers:{
                 Authorization: `Bearer ${token}`
             }
         });
 
         if (response.status === 200) {
-            console.log("Data Fetching Successful:");
             if (Array.isArray(response.data) && response.data.length > 0) {
                 return response.data[0];
             }
@@ -100,7 +101,7 @@ export const updateBus = async (formData: Bus) => {
         });
 
         if (response.status === 200) {
-            console.log("Registration Successful:");
+            console.log("Update Successful:");
         }
     } catch (error) {
         console.error("Registration failed:", error);

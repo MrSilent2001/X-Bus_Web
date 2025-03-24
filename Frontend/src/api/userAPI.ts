@@ -18,7 +18,6 @@ export const getUserByEmail = async (email: string, token: string | null) =>{
 
 
         if (response.status === 200) {
-            console.log("Data Fetching Successful:");
             return response.data;
         }
 

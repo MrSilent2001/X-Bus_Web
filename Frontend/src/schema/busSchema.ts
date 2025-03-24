@@ -42,24 +42,4 @@ export const BusUpdateSchema = z.object({
         .number()
         .min(0, "Bus fare must be a positive value")
         .max(10000, "Bus fare cannot exceed Rs. 10,000"),
-    password: z
-        .string()
-        .min(8, "Password must be at least 8 characters long")
-        .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-        .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-        .regex(/[0-9]/, "Password must contain at least one number")
-        .regex(/[@$!%*?&#]/, "Password must contain at least one special character")
-        .optional(), // Password is optional
-    confirmPassword: z
-        .string()
-        .optional() // confirmPassword is optional
-}).refine((data) => {
-    // If password is provided, confirm that password and confirmPassword match
-    if (data.password && data.confirmPassword) {
-        return data.password === data.confirmPassword;
-    }
-    return true; // Skip confirmation check if password is empty
-}, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
 });

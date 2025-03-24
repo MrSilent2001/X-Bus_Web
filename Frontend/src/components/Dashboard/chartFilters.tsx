@@ -8,9 +8,6 @@ const ChartFilters = () =>{
 
     const busOptions = [{ label: "Bus ID", value: "bus_id" }];
 
-    console.log("From Date:", fromDate);
-    console.log("To Date:", toDate);
-
     return(
         <div className="flex space-x-2">
             <DatePicker onDateChange={setFromDate} width="120px"

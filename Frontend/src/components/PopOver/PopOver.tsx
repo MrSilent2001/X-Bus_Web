@@ -41,7 +41,6 @@ const PopOver = () =>{
             const fetchUser = async () => {
                 try {
                     const response = await getUserByEmail(email, token);
-                    console.log(response);
                     setName(response.name);
                 } catch (error) {
                     console.error("Error fetching user data:", error);
@@ -59,8 +58,6 @@ const PopOver = () =>{
         localStorage.removeItem("accessToken");
         navigate("/");
     }
-
-    console.log(name)
 
     return (
         <Popover>
