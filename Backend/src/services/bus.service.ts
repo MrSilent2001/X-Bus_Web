@@ -26,7 +26,9 @@ export const getAllBuses = async(): Promise<Bus[]>=> {
 export const getBusById = async (regNo: string): Promise<Bus | null> => {
     const bus = await busRepository.findOneBy({regNo});
 
-    return bus;
+    if (!bus) return null;
+    const {password, ... busData} = bus;
+    return busData;
 }
 
 export const editBus = async (busData: BusReg): Promise<Bus | null> => {
@@ -39,10 +41,6 @@ export const editBus = async (busData: BusReg): Promise<Bus | null> => {
     bus!.seatingCapacity = busData.seatingCapacity;
     bus!.busFare = busData.busFare;
     bus!.profilePicture = busData.profilePicture;
-
-    if (busData.password) {
-        bus!.password = await hashPassword(busData.password, 10);
-    }
 
     await busRepository.save(bus!);
     console.log("Updated bus:", bus!);
