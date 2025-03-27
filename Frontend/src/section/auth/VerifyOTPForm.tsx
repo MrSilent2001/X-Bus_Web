@@ -105,31 +105,32 @@ const VerifyOTPForm = () => {
                                         </InputOTPGroup>
                                     </InputOTP>
                                 </div>
+                            </div>
                         </div>
+
+                        {/* Login Button */}
+                        <div className="mt-6 flex gap-6">
+                            <CustomButton
+                                type="submit"
+                                onClick={handleCancel}
+                                buttonLabel="Back"
+                                buttonClassName="w-full py-3 text-red-800 bg-red-200 rounded-lg h-10 transition-all duration-300 transform hover:bg-gradient-to-r hover:from-red-300 hover:to-red-300 hover:scale-102 cursor-pointer"
+                            />
+                            <CustomButton
+                                buttonLabel={loading ? "Logging in..." : "Continue"}
+                                buttonClassName="w-full py-3 text-red-800 bg-red-200 rounded-lg h-10 transition-all duration-300 transform hover:bg-gradient-to-r hover:from-red-300 hover:to-red-300 hover:scale-102 cursor-pointer"
+                            />
+                        </div>
+                    </form>
+
+                    {/* Error Message */}
+                    {errors && <p className="text-red-500 text-center mt-4">{errors}</p>}
+
                 </div>
-
-                {/* Login Button */}
-                <div className="mt-6 flex gap-6">
-                    <CustomButton
-                        onClick={handleCancel}
-                        buttonLabel="Back"
-                        buttonClassName="w-full py-3 text-red-800 bg-red-200 rounded-lg h-10 transition-all duration-300 transform hover:bg-gradient-to-r hover:from-red-300 hover:to-red-300 hover:scale-102 cursor-pointer"
-                    />
-                    <CustomButton
-                        buttonLabel={loading ? "Logging in..." : "Continue"}
-                        buttonClassName="w-full py-3 text-red-800 bg-red-200 rounded-lg h-10 transition-all duration-300 transform hover:bg-gradient-to-r hover:from-red-300 hover:to-red-300 hover:scale-102 cursor-pointer"
-                    />
-                </div>
-            </form>
-
-            {/* Error Message */}
-            {errors && <p className="text-red-500 text-center mt-4">{errors}</p>}
-
+            </div>
         </div>
-</div>
-</div>
-)
-    ;
+    )
+        ;
 }
 
 export default VerifyOTPForm;

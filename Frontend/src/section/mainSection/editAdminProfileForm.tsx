@@ -94,14 +94,16 @@ const EditAdminProfileForm = () => {
                         width="300px"
                         borderRadius="50%"
                         borderColor="1px solid gray"
-                        initialImage={profileImage || undefined}
+                        initialImage={profileImage || undefined} // Ensure profileImage is set properly
                         disabled={loading}
                         onImageUpload={(imageUrl) => {
                             console.log("Image uploaded:", imageUrl);
                             setProfileImage(imageUrl);
                             setValue("profilePicture", imageUrl);
+                            console.log(profileImage)
                         }}
                     />
+
                 </div>
                 <div className="w-2/3 p-6 bg-white rounded-lg shadow-md max-w-4xl mx-auto">
                     {errors && (

@@ -37,7 +37,7 @@ export const userLogin = async (formData: {
 
 
 export const userSignUp = async (formData: {
-                                     username: string;
+                                     name: string;
                                      email: string;
                                      nic: string;
                                      password: string;
@@ -46,13 +46,14 @@ export const userSignUp = async (formData: {
 ) => {
     try {
         const response = await api.post("/auth/signup", {
-            name: formData.username,
+            name: formData.name,
             nic: formData.nic,
-            contactNo: "",
+            contactNo: '',
             email: formData.email,
             password: formData.password,
             confirmPassword: formData.confirmPassword,
-            role: 'admin'
+            role: 'admin',
+            profilePicture: 'https://th.bing.com/th/id/OIP.cjgNLtmwsA5WxCI1Jr3dqgHaHa?pid=ImgDet&w=184&h=184&c=7&dpr=1.3'
         });
 
         if (response.status === 200) {

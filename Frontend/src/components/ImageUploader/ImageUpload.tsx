@@ -18,50 +18,44 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
                                                          width = "100%",
                                                          borderRadius = "3%",
                                                          borderColor = "1px solid gray",
-                                                         reset = false,
+                                                         //reset = false,
                                                          initialImage = null,
                                                          onImageUpload,
                                                          disabled = false,
                                                      }) => {
-    const [image, setImage] = useState<string | null>(null);
+    const [image, setImage] = useState<string | null>(initialImage);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-    // Handle file upload
+    useEffect(() => {
+        console.log("Initial image received:", initialImage);
+        if (initialImage) {
+            setImage(initialImage);
+        }
+    }, [initialImage]);
+
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
                 const imageUrl = reader.result as string;
-                setImage(imageUrl); // Set the local image state
+                console.log("File uploaded:", imageUrl);
+                setImage(imageUrl); // Set the local state
                 if (onImageUpload) {
-                    onImageUpload(imageUrl); // Trigger the parent callback with the image URL
+                    onImageUpload(imageUrl); // Notify parent component
                 }
             };
             reader.readAsDataURL(file);
+        } else {
+            console.log("No file selected");
         }
     };
 
-    // Trigger file input click programmatically
     const triggerFileInput = () => {
         if (fileInputRef.current && !disabled) {
             fileInputRef.current.click();
         }
     };
-
-    // Reset the image when `reset` prop is true
-    useEffect(() => {
-        if (reset) {
-            setImage(null);
-        }
-    }, [reset]);
-
-    // Update image when `initialImage` changes
-    useEffect(() => {
-        if (initialImage) {
-            setImage(initialImage);
-        }
-    }, [initialImage]);
 
     return (
         <>
@@ -76,10 +70,10 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
                     style={{ borderRadius, borderColor }}
                 >
                     {image ? (
-                        <img src={image} alt="Uploaded" className="w-full h-full object-cover rounded-lg" />
+                        <img src={image} alt="Uploaded" className="max-w-full max-h-full object-contain rounded-lg"/>
                     ) : (
                         <div className="flex flex-col items-center">
-                            <p className="text-gray-500">{disabled ? "Image Upload Disabled" : "Click or Drag Image Here"}</p>
+                        <p className="text-gray-500">{disabled ? "Image Upload Disabled" : "Click or Drag Image Here"}</p>
                         </div>
                     )}
                 </label>

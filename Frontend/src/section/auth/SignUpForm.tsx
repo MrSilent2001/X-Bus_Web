@@ -1,4 +1,4 @@
-import {FormEvent, useState} from "react";
+import {useState} from "react";
 import InputField from "@/components/InputField/InputField.tsx";
 import CheckBox from "@/components/CheckBox/CheckBox.tsx";
 import CustomButton from "@/components/Button/CustomButton.tsx";
@@ -6,9 +6,10 @@ import {Link, useNavigate} from "react-router-dom";
 import {SignupSchema} from "@/schema/auth/SignupSchema.ts";
 import {userSignUp} from "@/api/authAPI.ts";
 import AuthImg from "../../assets/images/authImage.png";
+import { useForm } from "react-hook-form";
 
 interface SignUpFormValues {
-    username: string;
+    name: string;
     email: string;
     nic: string;
     password: string;
@@ -17,53 +18,47 @@ interface SignUpFormValues {
 
 const SignUpForm = () =>{
     const navigate = useNavigate();
-    const [formData, setFormData] = useState<SignUpFormValues>({
-        username: '',
-        email: '',
-        nic: '',
-        password: '',
-        confirmPassword: ''
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors },
+    } = useForm<SignUpFormValues>({
+        defaultValues: {
+            name: '',
+            email: '',
+            nic: '',
+            password: '',
+            confirmPassword: ''
+        },
     });
 
-    const [errors, setErrors] = useState('');
+    const [serverError, setServerError] = useState('');
     const [loading, setLoading] = useState(false);
     const [isChecked, setIsChecked] = useState(false);
 
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, value: keyof SignUpFormValues) => {
-        setFormData({
-            ...formData,
-            [value]: e.target.value
-        });
-    }
-
-    const handleSignUp = async (e: FormEvent) => {
-        e.preventDefault();
-
-        const validation = SignupSchema.safeParse(formData);
+    const handleSignUp = async (data: SignUpFormValues) => {
+        console.log(data)
+        const validation = SignupSchema.safeParse(data);
+        console.log(validation);
 
         if (!validation.success) {
-            setErrors(validation.error.errors[0]?.message || "Invalid input");
+            setServerError(validation.error.errors[0]?.message || "Invalid input");
             return;
         }
         setLoading(true);
-        try {
-            await userSignUp(formData);
-            console.log("Username: ", formData.username, "Password: ", formData.password);
-            setFormData({
-                username: '',
-                email: '',
-                nic: '',
-                password: '',
-                confirmPassword: ''
-            });
-            setIsChecked(false);
 
+        try {
+            await userSignUp(data);
+            console.log("Username: ", data.name, "Password: ", data.password);
+            reset();
+            setIsChecked(false);
             navigate("/login");
 
         } catch (error: unknown) {
             console.log(error);
-            setErrors("Invalid input");
+            setServerError("Invalid input");
         } finally {
             setLoading(false);
         }
@@ -87,20 +82,22 @@ const SignUpForm = () =>{
                             <h3 className="text-3xl font-bold">SignUp</h3>
                     </div>
 
-                    <form onSubmit={handleSignUp}>
+                    <form onSubmit={handleSubmit(handleSignUp)}>
                         {/* Input Fields */}
                         <div className="my-8">
                             <div className="mb-4 mt-4">
                                 <InputField
-                                    id="username"
+                                    id="name"
                                     type="text"
-                                    placeholder="Username"
-                                    value={formData.username || ''}
-                                    onChange={(e) => handleInputChange(e, 'username')}
+                                    placeholder="Name"
+                                    {...register("name")}
                                     icon={undefined}
                                     label={false}
-                                    labelName="username"
+                                    labelName="name"
                                 />
+                                {errors.name && (
+                                    <p className="text-red-500 text-sm">{errors.name.message}</p>
+                                )}
                             </div>
 
                             <div className="mb-4 mt-4">
@@ -108,12 +105,14 @@ const SignUpForm = () =>{
                                     id="email"
                                     type="email"
                                     placeholder="Email"
-                                    value={formData.email || ''}
-                                    onChange={(e) => handleInputChange(e, 'email')}
+                                    {...register("email")}
                                     icon={undefined}
                                     label={false}
                                     labelName="email"
                                 />
+                                {errors.email && (
+                                    <p className="text-red-500 text-sm">{errors.email.message}</p>
+                                )}
                             </div>
 
                             <div className="mb-4 mt-4">
@@ -121,12 +120,14 @@ const SignUpForm = () =>{
                                     id="nic"
                                     type="text"
                                     placeholder="NIC"
-                                    value={formData.nic || ''}
-                                    onChange={(e) => handleInputChange(e, 'nic')}
+                                    {...register("nic")}
                                     icon={undefined}
                                     label={false}
                                     labelName="nic"
                                 />
+                                {errors.nic && (
+                                    <p className="text-red-500 text-sm">{errors.nic.message}</p>
+                                )}
                             </div>
 
                             <div className="mb-4">
@@ -134,12 +135,14 @@ const SignUpForm = () =>{
                                     id="password"
                                     type="password"
                                     placeholder="Password"
-                                    value={formData.password || ''}
-                                    onChange={(e) => handleInputChange(e, 'password')}
+                                    {...register("password")}
                                     icon={undefined}
                                     label={false}
                                     labelName="password"
                                 />
+                                {errors.password && (
+                                    <p className="text-red-500 text-sm">{errors.password.message}</p>
+                                )}
                             </div>
 
                             <div className="mb-4">
@@ -147,12 +150,14 @@ const SignUpForm = () =>{
                                     id="confirmPassword"
                                     type="password"
                                     placeholder="Confirm Password"
-                                    value={formData.confirmPassword || ''}
-                                    onChange={(e) => handleInputChange(e, 'confirmPassword')}
+                                    {...register("confirmPassword")}
                                     icon={undefined}
                                     label={false}
                                     labelName="confirmPassword"
                                 />
+                                {errors.confirmPassword && (
+                                    <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>
+                                )}
                             </div>
 
                         </div>
@@ -171,6 +176,7 @@ const SignUpForm = () =>{
                         {/* SignUp Button */}
                         <div className="mt-6">
                             <CustomButton
+                                type="submit"
                                 buttonLabel={loading ? "Signing in..." : "SignUp"}
                                 buttonClassName={`w-full h-10 py-3 text-red-800 bg-red-200 rounded-lg transition-all duration-300 transform 
                                                   hover:bg-gradient-to-r hover:from-red-300 hover:to-red-300 hover:scale-102 cursor-pointer 
@@ -181,7 +187,7 @@ const SignUpForm = () =>{
                     </form>
 
                     {/* Error Message */}
-                    {errors && <p className="text-red-500 text-center mt-4">{errors}</p>}
+                    {serverError && <p className="text-red-500 text-center mt-4">{serverError}</p>}
 
                     <div className="flex ml-24 mt-3">
                         <CheckBox

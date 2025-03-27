@@ -1,10 +1,11 @@
-import {FormEvent, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {resetPassword} from "@/api/authAPI.ts";
 import InputField from "@/components/InputField/InputField.tsx";
 import CustomButton from "@/components/Button/CustomButton.tsx";
 import {useNavigate} from "react-router-dom";
 import AuthImg from "../../assets/images/authImage.png";
 import {ResetPasswordSchema} from "@/schema/auth/ResetPasswordSchema.ts";
+import { useForm } from "react-hook-form";
 
 interface ResetPasswordFormValues {
     password: string;
@@ -13,12 +14,19 @@ interface ResetPasswordFormValues {
 
 const ResetPasswordForm = () =>{
     const navigate = useNavigate();
-    const [formData, setFormData] = useState<ResetPasswordFormValues>({
-        password: '',
-        confirmPassword: ''
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors },
+    } = useForm<ResetPasswordFormValues>({
+        defaultValues: {
+            password: "",
+            confirmPassword: "",
+        },
     });
 
-    const [errors, setErrors] = useState('');
+    const [serverErrors, setServerErrors] = useState('');
     const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState('');
 
@@ -27,30 +35,22 @@ const ResetPasswordForm = () =>{
         setEmail(userEmail ? (userEmail) : "");
     },[])
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, value: keyof ResetPasswordFormValues) => {
-        setFormData({
-            ...formData,
-            [value]: e.target.value
-        });
-    }
 
-    const handleLogin = async (e: FormEvent) => {
-        e.preventDefault();
-
-        const validation = ResetPasswordSchema.safeParse(formData);
+    const handleLogin = async (data: ResetPasswordFormValues) => {
+        const validation = ResetPasswordSchema.safeParse(data);
 
         if (!validation.success) {
-            setErrors(validation.error.errors[0]?.message || "Invalid input");
+            setServerErrors(validation.error.errors[0]?.message || "Invalid input");
             return;
         }
         setLoading(true);
         try {
-            await resetPassword(formData, email);
-            setFormData({ password: '', confirmPassword: '' });
+            await resetPassword(data, email);
+            reset();
             navigate("/login");
         } catch (error: unknown) {
             console.log(error);
-            setErrors("Invalid input");
+            setServerErrors("Invalid input");
         } finally {
             setLoading(false);
         }
@@ -74,7 +74,7 @@ const ResetPasswordForm = () =>{
                         <h3 className="text-3xl font-bold">Reset Your Password</h3>
                     </div>
 
-                    <form onSubmit={handleLogin}>
+                    <form onSubmit={handleSubmit(handleLogin)}>
                         {/* Input Fields */}
                         <div className="my-8">
 
@@ -83,12 +83,14 @@ const ResetPasswordForm = () =>{
                                     id="password"
                                     type="password"
                                     placeholder="Password"
-                                    value={formData.password || ''}
-                                    onChange={(e) => handleInputChange(e, 'password')}
+                                    {...register("password")}
                                     icon={undefined}
                                     label={false}
                                     labelName="password"
                                 />
+                                {errors.password && (
+                                    <p className="text-red-500 text-sm">{errors.password.message}</p>
+                                )}
                             </div>
 
                             <div className="mb-4">
@@ -96,33 +98,35 @@ const ResetPasswordForm = () =>{
                                     id="confirmPassword"
                                     type="password"
                                     placeholder="Confirm Password"
-                                    value={formData.confirmPassword || ''}
-                                    onChange={(e) => handleInputChange(e, 'confirmPassword')}
+                                    {...register("confirmPassword")}
                                     icon={undefined}
                                     label={false}
                                     labelName="confirmPassword"
                                 />
+                                {errors.confirmPassword && (
+                                    <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>
+                                )}
                             </div>
-
                         </div>
-
 
                         {/* Login Button */}
                         <div className="mt-6 flex gap-6">
                             <CustomButton
+                                type="reset"
                                 onClick={handleCancel}
                                 buttonLabel="Back"
                                 buttonClassName="w-full py-3 text-red-800 bg-red-200 rounded-lg h-10 transition-all duration-300 transform hover:bg-gradient-to-r hover:from-red-300 hover:to-red-300 hover:scale-102 cursor-pointer"
                             />
                             <CustomButton
+                                type="submit"
                                 buttonLabel={loading ? "Logging in..." : "Continue"}
                                 buttonClassName="w-full py-3 text-red-800 bg-red-200 rounded-lg h-10 transition-all duration-300 transform hover:bg-gradient-to-r hover:from-red-300 hover:to-red-300 hover:scale-102 cursor-pointer"
                             />
                         </div>
                     </form>
 
-                    {/* Error Message */}
-                    {errors && <p className="text-red-500 text-center mt-4">{errors}</p>}
+                    {/* Server Error Message */}
+                    {serverErrors && <p className="text-red-500 text-center mt-4">{serverErrors}</p>}
 
                 </div>
             </div>

@@ -1,10 +1,11 @@
-import {FormEvent, useState} from "react";
+import {useState} from "react";
 import {forgotPassword} from "@/api/authAPI.ts";
 import InputField from "@/components/InputField/InputField.tsx";
 import CustomButton from "@/components/Button/CustomButton.tsx";
 import {useNavigate} from "react-router-dom";
 import AuthImg from "../../assets/images/authImage.png";
 import {ForgotPasswordSchema} from "@/schema/auth/ForgotPasswordSchema.ts";
+import { useForm } from "react-hook-form";
 
 interface ForgotPasswordFormValues {
     email: string;
@@ -12,40 +13,37 @@ interface ForgotPasswordFormValues {
 
 const ForgetPasswordForm = () =>{
     const navigate = useNavigate();
-    const [formData, setFormData] = useState<ForgotPasswordFormValues>({
-        email: ''
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors },
+    } = useForm<ForgotPasswordFormValues>({
+        defaultValues: {
+            email: ""
+        },
     });
 
-    const [errors, setErrors] = useState('');
+    const [serverErrors, setServerErrors] = useState('');
     const [loading, setLoading] = useState(false);
 
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, value: keyof ForgotPasswordFormValues) => {
-        setFormData({
-            ...formData,
-            [value]: e.target.value
-        });
-    }
-
-    const handleLogin = async (e: FormEvent) => {
-        e.preventDefault();
-
-        const validation = ForgotPasswordSchema.safeParse(formData);
+    const handleLogin = async (data: ForgotPasswordFormValues) => {
+        const validation = ForgotPasswordSchema.safeParse(data);
 
         if (!validation.success) {
-            setErrors(validation.error.errors[0]?.message || "Invalid input");
+            setServerErrors(validation.error.errors[0]?.message || "Invalid input");
             return;
         }
         setLoading(true);
         try {
-            await forgotPassword(formData);
-            console.log("Email: ", formData.email);
-            setFormData({ email: '',});
-            localStorage.setItem("userEmail", formData.email);
+            await forgotPassword(data);
+            console.log("Email: ", data.email);
+            reset();
+            localStorage.setItem("userEmail", data.email);
             navigate("/verifyOTP");
         } catch (error: unknown) {
             console.log(error);
-            setErrors("Invalid input");
+            setServerErrors("Invalid input");
         } finally {
             setLoading(false);
         }
@@ -69,7 +67,7 @@ const ForgetPasswordForm = () =>{
                         <h3 className="text-3xl font-bold">Forgot Your Password?</h3>
                     </div>
 
-                    <form onSubmit={handleLogin}>
+                    <form onSubmit={handleSubmit(handleLogin)}>
                         {/* Input Fields */}
                         <div className="my-8">
                             <div className="flex items-center justify-between mb-6 font-semibold">
@@ -84,22 +82,26 @@ const ForgetPasswordForm = () =>{
                                     id="email"
                                     type="email"
                                     placeholder="Email"
-                                    value={formData.email || ''}
-                                    onChange={(e) => handleInputChange(e, 'email')}
+                                    {...register("email")}
                                     icon={undefined}
                                     label={false}
                                     labelName="email"
                                 />
+                                {errors.email && (
+                                    <p className="text-red-500 text-sm">{errors.email.message}</p>
+                                )}
                             </div>
                         </div>
 
                         <div className="mt-6 flex gap-6">
                             <CustomButton
+                                type="reset"
                                 onClick={handleCancel}
                                 buttonLabel="Back"
                                 buttonClassName="w-full py-3 text-red-800 bg-red-200 rounded-lg h-10 transition-all duration-300 transform hover:bg-gradient-to-r hover:from-red-300 hover:to-red-300 hover:scale-102 cursor-pointer"
                             />
                             <CustomButton
+                                type="submit"
                                 buttonLabel={loading ? "Loading..." : "Continue"}
                                 buttonClassName="w-full py-3 text-red-800 bg-red-200 rounded-lg h-10 transition-all duration-300 transform hover:bg-gradient-to-r hover:from-red-300 hover:to-red-300 hover:scale-102 cursor-pointer"
                             />
@@ -107,7 +109,7 @@ const ForgetPasswordForm = () =>{
                     </form>
 
                     {/* Error Message */}
-                    {errors && <p className="text-red-500 text-center mt-4">{errors}</p>}
+                    {serverErrors && <p className="text-red-500 text-center mt-4">{serverErrors}</p>}
 
                 </div>
             </div>
