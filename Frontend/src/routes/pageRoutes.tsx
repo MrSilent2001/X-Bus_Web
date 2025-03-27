@@ -14,6 +14,7 @@ import VerifyOTP from "@/pages/auth/VerifyOTP.tsx";
 import ResetPassword from "@/pages/auth/ResetPassword.tsx";
 import ProtectedRoute from "@/components/ProtectedRoute/ProtectedRoute.tsx";
 import EditBusProfile from "@/pages/EditBusProfile.tsx";
+import EditAdminProfile from "@/pages/EditAdminProfile.tsx";
 
 const PageRoutes = () =>{
     return (
@@ -30,6 +31,7 @@ const PageRoutes = () =>{
                     <Route path="/dashboard" element={<Dashboard/>}/>
                     <Route path="/create-bus-account" element={<CreateBusAccount/>}/>
                     <Route path="/adminProfile" element={<AdminProfile/>}/>
+                    <Route path="/editAdminProfile" element={<EditAdminProfile/>}/>
                     <Route path="/busProfile/:regNo" element={<BusProfile/>}/>
                     <Route path="/editBusProfile/:regNo" element={<EditBusProfile/>}/>
                     <Route path="/locationTracking" element={<LocationTracking/>}/>

@@ -1,78 +1,72 @@
-import {FormEvent, useState} from "react";
-import {LoginSchema} from "@/schema/auth/LoginSchema.ts";
-import {userLogin} from "@/api/authAPI.ts";
+import { useState } from "react";
+import { LoginSchema } from "@/schema/auth/LoginSchema.ts";
+import { userLogin } from "@/api/authAPI.ts";
 import InputField from "@/components/InputField/InputField.tsx";
 import CustomButton from "@/components/Button/CustomButton.tsx";
-import {Link, useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AuthImg from "../../assets/images/authImage.png";
+import { useForm } from "react-hook-form";
 
 interface LoginFormValues {
     email: string;
     password: string;
 }
 
-const LoginForm = () =>{
+const LoginForm = () => {
     const navigate = useNavigate();
-    const [formData, setFormData] = useState<LoginFormValues>({
-        email: '',
-        password: ''
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors },
+    } = useForm<LoginFormValues>({
+        defaultValues: {
+            email: "",
+            password: "",
+        },
     });
 
-    const [errors, setErrors] = useState('');
     const [loading, setLoading] = useState(false);
+    const [serverError, setServerError] = useState("");
 
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, value: keyof LoginFormValues) => {
-        setFormData({
-            ...formData,
-            [value]: e.target.value
-        });
-    }
-
-    const handleLogin = async (e: FormEvent) => {
-        e.preventDefault();
-
-        const validation = LoginSchema.safeParse(formData);
+    const handleLogin = async (data: LoginFormValues) => {
+        const validation = LoginSchema.safeParse(data);
 
         if (!validation.success) {
-            setErrors(validation.error.errors[0]?.message || "Invalid input");
+            setServerError(validation.error.errors[0]?.message || "Invalid input");
             return;
         }
+
         setLoading(true);
+
         try {
-            await userLogin(formData);
-            console.log("Email: ", formData.email, "Password: ", formData.password);
-            setFormData({ email: '', password: '' });
+            await userLogin(data);
+            reset();
             navigate("/dashboard");
-        } catch (error: unknown) {
-            console.log(error);
-            setErrors("Invalid input");
+        } catch (error) {
+            console.error(error);
+            setServerError("Invalid email or password.");
         } finally {
             setLoading(false);
         }
+    };
 
-
-    }
     return (
         <div className="flex min-h-screen bg-gradient-to-r from-red-100 via-red-100 to-[#FAFAFA] from-0% via-50% to-100%">
             {/* Left Section */}
             <div className="w-1/2 flex flex-col items-center justify-center">
-                <img className="h-screen w-auto" src={AuthImg} alt="Auth Image"/>
+                <img className="h-screen w-auto" src={AuthImg} alt="Auth" />
             </div>
 
             {/* Right Section (Login Form) */}
             <div className="w-1/2 flex flex-col items-center justify-center">
-                <div>
-                    <h3 className="text-4xl text-red font-bold mb-6">
-                        Welcome to X-Bus!
-                    </h3>
-                </div>
+                <h3 className="text-4xl text-red font-bold mb-6">Welcome to X-Bus!</h3>
                 <div className="bg-white p-10 rounded-lg shadow-lg w-3/4">
                     <div className="flex items-center justify-center mb-6">
-                            <h3 className="text-3xl font-bold">Login</h3>
+                        <h3 className="text-3xl font-bold">Login</h3>
                     </div>
 
-                    <form onSubmit={handleLogin}>
+                    <form onSubmit={handleSubmit(handleLogin)}>
                         {/* Input Fields */}
                         <div className="my-8">
                             <div className="mb-4 mt-4">
@@ -80,32 +74,35 @@ const LoginForm = () =>{
                                     id="email"
                                     type="email"
                                     placeholder="Email"
-                                    value={formData.email || ''}
-                                    onChange={(e) => handleInputChange(e, 'email')}
+                                    {...register("email")}
                                     icon={undefined}
                                     label={false}
-                                    labelName="email"
+                                    labelName="Email"
                                 />
+                                {errors.email && (
+                                    <p className="text-red-500 text-sm">{errors.email.message}</p>
+                                )}
                             </div>
                             <div className="mb-4">
                                 <InputField
                                     id="password"
                                     type="password"
                                     placeholder="Password"
-                                    value={formData.password || ''}
-                                    onChange={(e) => handleInputChange(e, 'password')}
+                                    {...register("password")}
                                     icon={undefined}
                                     label={false}
-                                    labelName="password"
+                                    labelName="Password"
                                 />
+                                {errors.password && (
+                                    <p className="text-red-500 text-sm">{errors.password.message}</p>
+                                )}
                             </div>
-
                         </div>
 
                         {/* Register Link */}
                         <div className="text-left mt-6">
-                            <p className="text-grey-200 ">
-                                Don't You Have an Account?
+                            <p className="text-grey-200">
+                                Don't have an account?{" "}
                                 <Link className="text-grey-500 font-semibold" to="/signup">
                                     Register
                                 </Link>
@@ -122,17 +119,16 @@ const LoginForm = () =>{
                         </div>
                     </form>
 
-                    {/* Error Message */}
-                    {errors && <p className="text-red-500 text-center mt-4">{errors}</p>}
+                    {/* Server Error Message */}
+                    {serverError && <p className="text-red-500 text-center mt-4">{serverError}</p>}
 
                     <Link to="/forgot-password">
                         <p className="text-center text-grey-200 mt-3 cursor-pointer">Forgot Password?</p>
                     </Link>
-
                 </div>
             </div>
         </div>
     );
-}
+};
 
 export default LoginForm;

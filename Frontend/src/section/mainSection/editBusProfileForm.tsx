@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import { useForm } from "react-hook-form";
 import {getBusById, updateBus} from "@/api/busAPI.ts";
 import { BusUpdateSchema } from "@/schema/busSchema.ts";
@@ -10,6 +10,8 @@ import { Bus } from "@/types/bus.ts";
 
 const EditBusProfileForm = () => {
     const { regNo } = useParams();
+    const navigate = useNavigate();
+
     const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm<Bus & { profilePicture?: string }>({
         defaultValues: {
             regNo: '',
@@ -49,10 +51,11 @@ const EditBusProfileForm = () => {
         fetchBusDetails();
     }, [regNo, setValue]);
 
-    const onSubmit = async (data: Bus ) => {
-        console.log("Updated Data:", data);
+    const handleUpdate = async (data: Bus ) => {
 
-        const validation = BusUpdateSchema.safeParse(data);
+        const {id, ownerId, password, confirmPassword, ...busData} = data;
+        console.log("Updated Data:", busData);
+        const validation = BusUpdateSchema.safeParse(busData);
         console.log(validation);
 
         if (!validation.success) {
@@ -65,6 +68,7 @@ const EditBusProfileForm = () => {
             await updateBus(data);
             reset();
             setProfileImage(data.profilePicture || null);
+            navigate(`/BusProfile/${regNo}`)
         } catch (error: unknown) {
             console.log(error);
             setFormErrors("Error occurred while updating the bus details");
@@ -74,7 +78,7 @@ const EditBusProfileForm = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(handleUpdate)}>
             <div className="w-full mt-32 mb-16 flex">
                 <div className="w-1/3 rounded-lg bg-white border-r border-gray-300 flex flex-col items-center justify-center">
                     <ImageUploader
@@ -155,7 +159,7 @@ const EditBusProfileForm = () => {
                                 id="seatingCapacity"
                                 type="number"
                                 placeholder="Seating Capacity"
-                                {...register("seatingCapacity")}
+                                {...register("seatingCapacity", { valueAsNumber: true })}
                                 disabled={loading}
                             />
                         </div>
@@ -167,7 +171,31 @@ const EditBusProfileForm = () => {
                                 id="busFare"
                                 type="number"
                                 placeholder="Bus Fare"
-                                {...register("busFare")}
+                                {...register("busFare", { valueAsNumber: true })}
+                                disabled={loading}
+                            />
+                        </div>
+                        <div>
+                            {/*<label htmlFor="password" className="block text-sm font-medium text-carnation-400">*/}
+                            {/*    Password*/}
+                            {/*</label>*/}
+                            <InputField
+                                id="password"
+                                type="hidden"
+                                placeholder="Password"
+                                {...register("password")}
+                                disabled={loading}
+                            />
+                        </div>
+                        <div>
+                            {/*<label htmlFor="confirmPassword" className="block text-sm font-medium text-carnation-400">*/}
+                            {/*    Confirm Password*/}
+                            {/*</label>*/}
+                            <InputField
+                                id="confirmPassword"
+                                type="hidden"
+                                placeholder="Confirm Password"
+                                {...register("confirmPassword")}
                                 disabled={loading}
                             />
                         </div>

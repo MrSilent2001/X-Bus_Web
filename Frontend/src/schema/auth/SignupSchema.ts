@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const SignupSchema = z.object({
-    username: z.string().nonempty("Username is required"),
+    name: z.string().nonempty("Username is required"),
     email: z.string().email("Invalid email address").nonempty("Email is required"),
     nic: z
         .string()
