@@ -34,7 +34,7 @@ export const busController = {
 
     editBus: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try{
-            const bus = await editBus(req.body.regNo);
+            const bus = await editBus(req.body);
             res.status(OK).json(bus);
         } catch (error) {
             next(error);

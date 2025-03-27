@@ -31,16 +31,17 @@ export const getBusById = async (regNo: string): Promise<Bus | null> => {
     return busData;
 }
 
-export const editBus = async (busData: BusReg): Promise<Bus | null> => {
+export const editBus = async (busData: any): Promise<Bus | null> => {
+    console.log(busData)
     const bus = await getBusById(busData.regNo);
     appAssert(bus, NOT_FOUND, "Bus not found");
 
-    bus!.fleetName = busData.fleetName;
-    bus!.routeNo = busData.routeNo;
-    bus!.route = busData.route;
-    bus!.seatingCapacity = busData.seatingCapacity;
-    bus!.busFare = busData.busFare;
-    bus!.profilePicture = busData.profilePicture;
+    bus!.fleetName = busData.fleetName ?? bus!.fleetName;
+    bus!.routeNo = busData.routeNo ?? bus!.routeNo;
+    bus!.route = busData.route ?? bus!.route;
+    bus!.seatingCapacity = busData.seatingCapacity ?? bus!.seatingCapacity;
+    bus!.busFare = busData.busFare ?? bus!.busFare;
+    bus!.profilePicture = busData.profilePicture ?? bus!.profilePicture;
 
     await busRepository.save(bus!);
     console.log("Updated bus:", bus!);
