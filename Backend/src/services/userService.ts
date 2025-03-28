@@ -23,13 +23,13 @@ export const editUser = async (userData: any): Promise<User | null> => {
     const user = await getUserByEmail(userData.email);
     appAssert(user, NOT_FOUND, "Bus not found");
 
-    user!.name = userData.name;
-    user!.nic = userData.nic;
-    user!.contactNo = userData.contactNo;
-    user!.email = userData.email;
-    user!.profilePicture = userData.profilePicture;
+    user!.name = userData.name ?? user!.name;
+    user!.nic = userData.nic ?? user!.nic;
+    user!.contactNo = userData.contactNo ?? user!.contactNo;
+    user!.email = userData.email ?? user!.email;
+    user!.profilePicture = userData.profilePicture ?? user!.profilePicture;
 
-    if (userData.password) {
+    if (userData.password && userData.password !== user!.password) {
         user!.password = await hashPassword(userData.password, 10);
     }
 
