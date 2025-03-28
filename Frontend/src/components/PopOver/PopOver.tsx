@@ -17,6 +17,7 @@ const PopOver = () =>{
 
     const [email, setEmail] = useState<string>("");
     const [name, setName] = useState<string>("");
+    const [profilePic, setProfilePic] = useState<string>("");
 
     const token = localStorage.getItem("accessToken");
 
@@ -40,8 +41,9 @@ const PopOver = () =>{
         if (email) {
             const fetchUser = async () => {
                 try {
-                    const response = await getUserByEmail(email, token);
+                    const response = await getUserByEmail(email);
                     setName(response.name);
+                    setProfilePic(response.profilePicture);
                 } catch (error) {
                     console.error("Error fetching user data:", error);
                 }
@@ -63,13 +65,13 @@ const PopOver = () =>{
         <Popover>
             <PopoverTrigger asChild>
                 <Button>
-                    <ProfileAvatar size="w-11 h-11" className="border-2 border-gray-300 cursor-pointer" />
+                    <ProfileAvatar profilePic={profilePic} size="w-11 h-11" className="border-2 border-gray-300 cursor-pointer" />
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-60 bg-white rounded-lg">
                 <div className="grid gap-4">
                     <div className="space-y-2 flex justify-center">
-                        <ProfileAvatar size="w-20 h-20"/>
+                        <ProfileAvatar profilePic={profilePic} size="w-20 h-20"/>
                     </div>
                     <h4 className="font-medium leading-none text-center">Hi {name}</h4>
                     <div className="grid gap-2">

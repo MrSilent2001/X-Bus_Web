@@ -61,7 +61,6 @@ const AdminProfileForm = () => {
                     <ImageUploader
                         height="300px"
                         width="300px"
-                        borderRadius="50%"
                         borderColor="1px solid gray"
                         initialImage={profileImage || undefined}
                         disabled={true}

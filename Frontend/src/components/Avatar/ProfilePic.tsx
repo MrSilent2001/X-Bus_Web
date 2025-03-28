@@ -3,12 +3,21 @@ import {
     AvatarFallback,
     AvatarImage,
 } from "@/components/ui/avatar";
-import ProfilePic from "../../assets/images/profilePic.jpeg";
 
-const ProfileAvatar = ({ size = "w-10 h-10", className = "" }) => {
+interface ProfileAvatarProps {
+    size?: string;
+    className?: string;
+    profilePic?: string;
+}
+
+
+const ProfileAvatar = ({ size = "w-10 h-10", className = "", profilePic }: ProfileAvatarProps) => {
     return (
         <Avatar className={`${size} ${className}`}>
-            <AvatarImage src={ProfilePic} alt="User Profile" />
+            <AvatarImage
+                src={profilePic || ""}
+                alt="User Profile"
+            />
             <AvatarFallback>CN</AvatarFallback>
         </Avatar>
     );

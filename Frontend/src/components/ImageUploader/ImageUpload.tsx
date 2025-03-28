@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import CustomButton from "@/components/Button/CustomButton.tsx";
-import InputField from "@/components/InputField/InputField.tsx";
+// import InputField from "@/components/InputField/InputField.tsx";
 
 interface ImageUploaderProps {
     height?: string;
@@ -27,7 +27,6 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
-        console.log("Initial image received:", initialImage);
         if (initialImage) {
             setImage(initialImage);
         }
@@ -35,11 +34,11 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
 
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
+        console.log(file)
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
                 const imageUrl = reader.result as string;
-                console.log("File uploaded:", imageUrl);
                 setImage(imageUrl); // Set the local state
                 if (onImageUpload) {
                     onImageUpload(imageUrl); // Notify parent component
@@ -70,7 +69,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
                     style={{ borderRadius, borderColor }}
                 >
                     {image ? (
-                        <img src={image} alt="Uploaded" className="max-w-full max-h-full object-contain rounded-lg"/>
+                        <img src={image} alt="Uploaded" className="w-full h-full object-cover rounded-lg"/>
                     ) : (
                         <div className="flex flex-col items-center">
                         <p className="text-gray-500">{disabled ? "Image Upload Disabled" : "Click or Drag Image Here"}</p>
@@ -88,7 +87,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
                     disabled={disabled}
                 />
 
-                <InputField
+                <input
                     ref={fileInputRef}
                     id="imageUpload"
                     type="file"

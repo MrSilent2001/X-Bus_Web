@@ -21,7 +21,7 @@ const EditAdminProfileForm = () => {
             contactNo: '',
             password: '',
             confirmPassword: '',
-            profilePicture: undefined
+            profilePicture: ''
         }
     });
 
@@ -31,7 +31,7 @@ const EditAdminProfileForm = () => {
     const [defaultPassword, setDefaultPassword] = useState<string>('');
 
     useEffect(() => {
-        const fetUserDetails = async () =>{
+        const fetchUserDetails = async () =>{
             try {
                 if (email) {
                     const response = await getUserByEmail(email);
@@ -51,7 +51,7 @@ const EditAdminProfileForm = () => {
                 setErrors("Failed to load user details. Please try again.");
             }
         };
-        fetUserDetails();
+        fetchUserDetails();
     }, [email, setValue]);
 
 
@@ -92,15 +92,12 @@ const EditAdminProfileForm = () => {
                     <ImageUploader
                         height="300px"
                         width="300px"
-                        borderRadius="50%"
                         borderColor="1px solid gray"
-                        initialImage={profileImage || undefined} // Ensure profileImage is set properly
+                        initialImage={profileImage || undefined}
                         disabled={loading}
                         onImageUpload={(imageUrl) => {
-                            console.log("Image uploaded:", imageUrl);
                             setProfileImage(imageUrl);
                             setValue("profilePicture", imageUrl);
-                            console.log(profileImage)
                         }}
                     />
 
@@ -225,7 +222,7 @@ const EditAdminProfileForm = () => {
                             disabled={loading}
                         />
                         <CustomButton
-                            type="button"
+                            type="reset"
                             buttonLabel="Cancel"
                             buttonClassName="w-1/2 text-white bg-red-200 rounded-lg h-10 text-red-800 hover:bg-red-300 cursor-pointer"
                             disabled={loading}
