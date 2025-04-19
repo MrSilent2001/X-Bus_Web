@@ -8,11 +8,12 @@ import {Feedback} from "../models/feedback";
 
 const AppDataSource = new DataSource({
     type: "postgres",
-    host: DB_HOST,
-    port: parseInt(DB_PORT, 10),
-    username: DB_USERNAME,
-    password: DB_PASSWORD,
-    database: DB_NAME,
+    // host: DB_HOST,
+    // port: parseInt(DB_PORT, 10),
+    // username: DB_USERNAME,
+    // password: DB_PASSWORD,
+    // database: DB_NAME,
+    url: process.env.DATABASE_URL,
     entities: [User, UserVerification, Bus, Feedback],
     synchronize: true,
     logging: false
