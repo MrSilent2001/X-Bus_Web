@@ -10,6 +10,7 @@ import authRoutes from "./routes/auth.routes";
 import busRoutes from "./routes/bus.routes";
 import userRoutes from "./routes/userRoutes";
 import feedbackRoutes from "./routes/feedback.routes";
+import scheduleRoutes from "./routes/schedule.routes";
 
 dotenv.config();
 
@@ -32,6 +33,7 @@ app.use("/auth", authRoutes);
 app.use("/bus", busRoutes);
 app.use("/user", userRoutes);
 app.use("/feedback", feedbackRoutes);
+app.use("/schedule", scheduleRoutes);
 
 app.get("/", (req: Request, res: Response, next: NextFunction) => {
         res.status(OK).json({
