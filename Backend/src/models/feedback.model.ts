@@ -13,8 +13,8 @@ export class Feedback {
     @Column({nullable:false})
     message!: string;
 
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', nullable: false })
-    date!: Date;
+    @Column({ type: 'date', default: () => 'CURRENT_DATE', nullable: false })
+    createdAt!: Date;
 
     @Column({ type: 'time', nullable: false })
     time?: string;

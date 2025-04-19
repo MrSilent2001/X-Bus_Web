@@ -16,7 +16,10 @@ export const feedbackController = {
 
     getAllFeedbacks: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try{
-            const feedbacks = await getAllFeedbacks();
+            const filter = req.query.filter as "Today" | "Yesterday" | "This Week" | "Last Week" | "This Month" | "Last Month" | "All" | undefined;
+            const busRegNo = req.query.busRegNo as string;
+
+            const feedbacks = await getAllFeedbacks(filter ?? "All", busRegNo);
             res.status(OK).json(feedbacks);
         } catch (error){
             next(error);
