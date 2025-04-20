@@ -4,6 +4,7 @@ import {User} from "../models/user.model";
 import {UserVerification} from "../models/userVerification.model";
 import {Bus} from "../models/bus.model";
 import {Feedback} from "../models/feedback.model";
+import {BusSchedule} from "../models/schedule.model";
 
 
 const AppDataSource = new DataSource({
@@ -14,7 +15,7 @@ const AppDataSource = new DataSource({
     // password: DB_PASSWORD,
     // database: DB_NAME,
     url: process.env.DATABASE_URL,
-    entities: [User, UserVerification, Bus, Feedback],
+    entities: [User, UserVerification, Bus, Feedback, BusSchedule],
     synchronize: true,
     logging: false
 });
