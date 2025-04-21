@@ -11,6 +11,7 @@ import busRoutes from "./routes/bus.routes";
 import userRoutes from "./routes/userRoutes";
 import feedbackRoutes from "./routes/feedback.routes";
 import scheduleRoutes from "./routes/schedule.routes";
+import lostnfoundRoutes from "./routes/lostnfound.routes";
 
 dotenv.config();
 
@@ -34,6 +35,7 @@ app.use("/bus", busRoutes);
 app.use("/user", userRoutes);
 app.use("/feedback", feedbackRoutes);
 app.use("/schedule", scheduleRoutes);
+app.use("/lostnfound", lostnfoundRoutes);
 
 app.get("/", (req: Request, res: Response, next: NextFunction) => {
         res.status(OK).json({
