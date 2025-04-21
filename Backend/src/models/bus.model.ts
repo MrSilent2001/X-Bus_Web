@@ -1,5 +1,7 @@
+
 import {Entity, PrimaryGeneratedColumn, Column, OneToMany} from 'typeorm';
 import {BusSchedule} from "./schedule.model";
+
 @Entity()
 export class Bus {
     @PrimaryGeneratedColumn()

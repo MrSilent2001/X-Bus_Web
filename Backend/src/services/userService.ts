@@ -21,7 +21,7 @@ export const getUserByEmail = async (email: string): Promise<User | null> => {
 
 export const editUser = async (userData: any): Promise<User | null> => {
     const user = await getUserByEmail(userData.email);
-    appAssert(user, NOT_FOUND, "Bus not found");
+    appAssert(!user, NOT_FOUND, "User not found");
 
     user!.name = userData.name ?? user!.name;
     user!.nic = userData.nic ?? user!.nic;
