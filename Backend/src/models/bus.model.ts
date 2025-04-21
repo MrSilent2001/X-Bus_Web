@@ -1,6 +1,6 @@
-
-import {Entity, PrimaryGeneratedColumn, Column, OneToMany} from 'typeorm';
+import {Entity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne} from 'typeorm';
 import {BusSchedule} from "./schedule.model";
+import { Location } from './location.model';
 
 @Entity()
 export class Bus {
@@ -36,5 +36,8 @@ export class Bus {
 
     @OneToMany(() => BusSchedule, schedule => schedule.bus)
     schedules!: BusSchedule[];
+
+    @OneToOne(() => Location, location => location.bus)
+    location!: Location;
 
 }
