@@ -1,4 +1,6 @@
-import {Entity, PrimaryGeneratedColumn, Column} from 'typeorm';
+import {Entity, PrimaryGeneratedColumn, Column, OneToMany} from 'typeorm';
+import {Reservation} from "./reservation.model";
+
 @Entity()
 export class User {
     @PrimaryGeneratedColumn()
@@ -10,15 +12,21 @@ export class User {
     @Column()
     nic!: string;
 
-    @Column()
-    contactNo!: string;
+    @Column({ type: 'varchar', nullable: true })
+    contactNo!: "" | string | undefined;
 
-    @Column({unique:true,nullable:false})
+    @Column({unique:true})
     email!: string;
 
     @Column({nullable:false})
     password!: string;
 
+    @Column({nullable:true})
+    profilePicture?: string;
+
     @Column({nullable:false})
     role!:string;
+
+    @OneToMany(() => Reservation, reservation => reservation.user)
+    reservations!: Reservation[];
 }

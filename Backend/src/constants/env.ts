@@ -18,3 +18,5 @@ export const DB_PASSWORD = getEnv('DB_PASSWORD', process.env.DB_PASSWORD);
 export const DB_NAME = getEnv('DB_NAME', process.env.DB_NAME);
 export const APP_ORIGIN = getEnv('APP_ORIGIN', process.env.APP_ORIGIN);
 export const JWT_SECRET = getEnv('JWT_SECRET', process.env.JWT_SECRET);
+export  const EMAIL_PASSWORD = getEnv('EMAIL_PASSWORD', process.env.EMAIL_PASSWORD);
+export const SENDER_EMAIL = getEnv('SENDER_EMAIL', process.env.SENDER_EMAIL);

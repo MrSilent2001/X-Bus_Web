@@ -1,0 +1,123 @@
+{
+  "footerData": {
+    "email": "xbus@gmail.com",
+    "contact": "0112-854296",
+    "address": "No: 23/A, Galle Road, Colombo 03",
+    "copyright": "Copyright © 2024. X-Bus Initiative."
+  },
+
+  "busData": [
+    { "id": 1, "number": "NB 2345", "route": "EX01", "description": "Galle - Makumbura" },
+    { "id": 2, "number": "NB 5678", "route": "EX02", "description": "Colombo - Kandy" },
+    { "id": 3, "number": "NB 9101", "route": "EX01", "description": "Galle - Kaduwela" },
+    { "id": 4, "number": "NB 1121", "route": "EX02", "description": "Matara - Kadawatha" },
+    { "id": 5, "number": "NB 3141", "route": "EX01", "description": "Jaffna - Colombo" },
+    { "id": 6, "number": "NB 3423", "route": "EX01", "description": "Piliyandala - Matara" }
+  ],
+
+  "revenue": {
+    "labels": [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ],
+    "datasets": [
+      {
+        "label": "Revenue (Rs)",
+        "data": [12000, 19000, 3000, 5000, 20000, 15000, 23000, 34000, 89000, 156000, 23000, 78000],
+        "backgroundColor": "rgb(154,68,68)",
+        "borderColor": "rgb(255,255,255)",
+        "borderWidth": 1
+      }
+    ]
+  },
+
+  "expenses": {
+    "labels": [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ],
+    "datasets": [
+      {
+        "label": "Expenses (Rs)",
+        "data": [12000, 19000, 3000, 5000, 20000, 15000, 23000, 34000, 89000, 156000, 23000, 78000],
+        "backgroundColor": "rgb(236,112,112)",
+        "borderColor": "rgb(255,255,255)",
+        "borderWidth": 1
+      }
+    ]
+  },
+
+  "feedbackData": [
+    {
+      "customerName": "A.B.C. Perera",
+      "busRegNo": "NB 3231",
+      "date": "2025-02-13",
+      "time": "12:01 PM",
+      "message": "The service was excellent!"
+    },
+    {
+      "customerName": "D.E.F. Silva",
+      "busRegNo": "KL 4502",
+      "date": "2025-02-14",
+      "time": "10:30 AM",
+      "message": "Very comfortable ride and friendly staff."
+    },
+    {
+      "customerName": "G.H.I. Fernando",
+      "busRegNo": "CP 9876",
+      "date": "2025-02-15",
+      "time": "05:45 PM",
+      "message": "The bus was clean, but it arrived late."
+    },
+    {
+      "customerName": "J.K.L. Rajapaksha",
+      "busRegNo": "WP 1123",
+      "date": "2025-02-16",
+      "time": "07:15 AM",
+      "message": "Great punctuality and smooth driving!"
+    },
+    {
+      "customerName": "M.N.O. Jayasinghe",
+      "busRegNo": "NB 5678",
+      "date": "2025-02-17",
+      "time": "02:00 PM",
+      "message": "The air conditioning was not working."
+    },
+    {
+      "customerName": "P.Q.R. Wijesekara",
+      "busRegNo": "KL 9901",
+      "date": "2025-02-18",
+      "time": "09:45 AM",
+      "message": "Friendly conductor and a pleasant ride."
+    },
+    {
+      "customerName": "S.T.U. Karunaratne",
+      "busRegNo": "CP 3210",
+      "date": "2025-02-19",
+      "time": "08:30 PM",
+      "message": "The seats were uncomfortable for a long journey."
+    },
+    {
+      "customerName": "V.W.X. de Silva",
+      "busRegNo": "WP 7654",
+      "date": "2025-02-20",
+      "time": "06:10 AM",
+      "message": "Very safe driving. Will travel again!"
+    },
+    {
+      "customerName": "Y.Z.A. Bandara",
+      "busRegNo": "NB 4321",
+      "date": "2025-02-21",
+      "time": "11:20 AM",
+      "message": "Decent service, but could improve cleanliness."
+    },
+    {
+      "customerName": "B.C.D. Alwis",
+      "busRegNo": "KL 5555",
+      "date": "2025-02-22",
+      "time": "04:55 PM",
+      "message": "Bus was on time and driver was very professional."
+    }
+  ]
+}
+

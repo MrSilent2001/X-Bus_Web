@@ -1,15 +1,16 @@
-import { Button } from "@/components/ui/button"
 import './App.css'
+import {BrowserRouter} from "react-router-dom"
+import PageRoutes from "@/routes/pageRoutes.tsx";
+import {AuthProvider} from "@/context/authContext.tsx";
 
 function App() {
 
   return (
-      <>
-          <h1 className="text-3xl font-bold underline text-red-700">
-              Hello world!
-          </h1>
-          <Button>Click me</Button>
-      </>
+      <BrowserRouter>
+          <AuthProvider>
+              <PageRoutes/>
+          </AuthProvider>
+      </BrowserRouter>
   )
 }
 

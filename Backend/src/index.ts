@@ -5,17 +5,22 @@ import {PORT, APP_ORIGIN} from "./constants/env";
 import AppDataSource from "./config/connectDB";
 import cookieParser from "cookie-parser";
 import errorHandler from "./middleware/errorHandler";
-import catchErrors from "./utils/catchErrors";
 import {OK} from "./constants/http";
 import authRoutes from "./routes/auth.routes";
+import busRoutes from "./routes/bus.routes";
+import userRoutes from "./routes/userRoutes";
+import feedbackRoutes from "./routes/feedback.routes";
+import scheduleRoutes from "./routes/schedule.routes";
+import reservationRoutes from "./routes/reservation.routes";
 
 dotenv.config();
 
 const app:Application = express();
 
 //Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '20mb' }));
+app.use(express.urlencoded({ limit: '20mb', extended: true }));
+
 app.use(
     cors({
         origin: APP_ORIGIN,
@@ -26,6 +31,12 @@ app.use(cookieParser());
 
 //Routes
 app.use("/auth", authRoutes);
+app.use("/bus", busRoutes);
+app.use("/user", userRoutes);
+app.use("/feedback", feedbackRoutes);
+app.use("/schedule", scheduleRoutes);
+app.use("/reservation", reservationRoutes);
+
 app.get("/", (req: Request, res: Response, next: NextFunction) => {
         res.status(OK).json({
             status: "success",
