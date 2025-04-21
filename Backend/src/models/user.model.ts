@@ -1,4 +1,6 @@
-import {Entity, PrimaryGeneratedColumn, Column} from 'typeorm';
+import {Entity, PrimaryGeneratedColumn, Column, OneToMany} from 'typeorm';
+import {Reservation} from "./reservation.model";
+
 @Entity()
 export class User {
     @PrimaryGeneratedColumn()
@@ -24,4 +26,7 @@ export class User {
 
     @Column({nullable:false})
     role!:string;
+
+    @OneToMany(() => Reservation, reservation => reservation.user)
+    reservations!: Reservation[];
 }

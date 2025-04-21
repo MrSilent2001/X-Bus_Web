@@ -1,4 +1,6 @@
-import {Entity, PrimaryGeneratedColumn, Column} from 'typeorm';
+
+import {Entity, PrimaryGeneratedColumn, Column, OneToMany} from 'typeorm';
+import {BusSchedule} from "./schedule.model";
 
 @Entity()
 export class Bus {
@@ -31,5 +33,8 @@ export class Bus {
 
     @Column()
     profilePicture?: string;
+
+    @OneToMany(() => BusSchedule, schedule => schedule.bus)
+    schedules!: BusSchedule[];
 
 }

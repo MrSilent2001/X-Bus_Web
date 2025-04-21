@@ -1,6 +1,9 @@
-import {Entity, PrimaryGeneratedColumn, Column} from 'typeorm';
+import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, Unique} from 'typeorm';
+import {BusSchedule} from "./schedule.model";
+import {User} from "./user.model";
 
 @Entity()
+@Unique(['user', 'schedule']) // ensures a user can only reserve once per schedule
 export class Reservation {
     @PrimaryGeneratedColumn()
     id!: number;
@@ -8,12 +11,15 @@ export class Reservation {
     @Column()
     date!: Date;
 
-    @Column({type: 'text', nullable:false})
-    time!: string;
-
     @Column({nullable:false})
     busFare!: number
 
     @Column({nullable:false})
     seatNo!: string;
+
+    @ManyToOne(() => User, user => user.reservations, { nullable: false })
+    user!: User;
+
+    @ManyToOne(() => BusSchedule, schedule => schedule.reservations, { nullable: false })
+    schedule!: BusSchedule;
 }
