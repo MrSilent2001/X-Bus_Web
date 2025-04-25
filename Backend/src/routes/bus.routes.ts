@@ -1,11 +1,12 @@
 import {Router} from "express";
 import {busController} from "../controllers/bus.controller";
 import {authenticate} from "../middleware/auth";
+import {authorize} from "../middleware/authorize";
 
 const busRoutes = Router();
 
 //prefix:bus
-busRoutes.post("/register", authenticate, busController.registerNewBus);
+busRoutes.post("/register", authenticate, authorize(["admin"]), busController.registerNewBus);
 busRoutes.get("/getAllBuses", authenticate, busController.getAllBuses);
 busRoutes.get("/getBusById", authenticate, busController.getBusById);
 busRoutes.put("/editBus", authenticate, busController.editBus);
