@@ -13,6 +13,7 @@ import feedbackRoutes from "./routes/feedback.routes";
 import scheduleRoutes from "./routes/schedule.routes";
 import lostnfoundRoutes from "./routes/lostnfound.routes";
 import reservationRoutes from "./routes/reservation.routes";
+import paymentRoutes from "./routes/payment.routes";
 
 dotenv.config();
 
@@ -38,6 +39,7 @@ app.use("/feedback", feedbackRoutes);
 app.use("/schedule", scheduleRoutes);
 app.use("/lostnfound", lostnfoundRoutes);
 app.use("/reservation", reservationRoutes);
+app.use("/payment", paymentRoutes);
 
 app.get("/", (req: Request, res: Response, next: NextFunction) => {
         res.status(OK).json({
