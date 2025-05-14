@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 import {OK} from "../constants/http";
-import {editUser, getAllUsers, getUserByEmail, removeUser} from "../services/userService";
+import {editUser, getAllUsers, getUserByEmail, getUserById, removeUser} from "../services/userService";
 
 export const userController = {
 
@@ -16,6 +16,15 @@ export const userController = {
     getUserByEmail: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const user = await getUserByEmail(req.query.email as string);
+            res.status(OK).json(user);
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    getUserById: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const user = await getUserById(req.query.id as string);
             res.status(OK).json(user);
         } catch (error) {
             next(error);

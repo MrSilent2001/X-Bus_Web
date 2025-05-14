@@ -3,10 +3,17 @@ import { Payment } from "../models/payment.model";
 import { PaymentSchema } from "../schema/paymentSchema";
 import { User } from "../models/user.model";
 import { BusSchedule } from "../models/schedule.model";
+import {Expense} from "../models/expense.model";
+import {expenseType} from "../schema/expenseSchema";
+import {Bus} from "../models/bus.model";
+import appAssert from "../utils/appAssert";
+import {NOT_FOUND} from "../constants/http";
 
 const paymentRepository = AppDataSource.getRepository(Payment);
 const userRepository = AppDataSource.getRepository(User);
 const busScheduleRepository = AppDataSource.getRepository(BusSchedule);
+const expenseRepository = AppDataSource.getRepository(Expense);
+const busRepository = AppDataSource.getRepository(Bus);
 
 export const createNewPayment = async (data: PaymentSchema) => {
     // Fetch the user and schedule entities
@@ -29,3 +36,25 @@ export const createNewPayment = async (data: PaymentSchema) => {
 
     return payment;
 };
+
+
+
+
+//======================================================Expenses=============================================================
+export const addNewExpense = async (data: expenseType) => {
+    const bus = await busRepository.findOne({ where: { id: data.busId } });
+    appAssert(bus, NOT_FOUND, "Bus not found");
+
+    const expense = expenseRepository.create({
+        date: data.date,
+        description: data.description,
+        proof: data.proof,
+        bus: {
+            id: data.busId
+        }
+    });
+
+    await expenseRepository.save(expense);
+
+    return expense;
+}

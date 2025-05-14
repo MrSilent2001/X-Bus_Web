@@ -10,6 +10,7 @@ import {Reservation} from "../models/reservation.model";
 import {Payment} from "../models/payment.model";
 import {Location} from "../models/location.model";
 import {Refund} from "../models/refund.model";
+import {Expense} from "../models/expense.model";
 
 
 const AppDataSource = new DataSource({
@@ -20,7 +21,9 @@ const AppDataSource = new DataSource({
     // password: DB_PASSWORD,
     // database: DB_NAME,
     url: process.env.DATABASE_URL,
-    entities: [User, UserVerification, Bus, BusSchedule, Feedback, LostnFound, Reservation, Payment, Location, Refund],
+    entities: [
+        User, UserVerification, Bus, BusSchedule, Feedback, LostnFound, Reservation, Payment, Location, Refund, Expense
+    ],
     synchronize: true,
     logging: false
 });

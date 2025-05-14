@@ -19,6 +19,12 @@ export const getUserByEmail = async (email: string): Promise<User | null> => {
     return user;
 }
 
+export const getUserById = async (id: string): Promise<User | null> => {
+    const user = await userRepository.findOneBy({ id: Number(id) });
+
+    return user;
+}
+
 export const editUser = async (userData: any): Promise<User | null> => {
     const user = await getUserByEmail(userData.email);
     appAssert(!user, NOT_FOUND, "User not found");

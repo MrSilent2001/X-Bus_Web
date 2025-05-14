@@ -26,8 +26,9 @@ export const addNewReservation = async (data: Reserve) => {
             where: { id: scheduleId },
             lock: { mode: "pessimistic_write" },
         });
-        appAssert(!schedule, CONFLICT, "Schedule not found");
-        appAssert(schedule!.seatingCapacity <= 0, CONFLICT, "No available seats for this schedule");
+
+        appAssert(schedule, CONFLICT, "Schedule not found");
+        appAssert(schedule!.seatingCapacity > 0, CONFLICT, "No available seats for this schedule");
 
         // Check for successful payment
         const payment = await manager.findOne(Payment, {
@@ -38,7 +39,7 @@ export const addNewReservation = async (data: Reserve) => {
                 date,
             },
         });
-        appAssert(!payment, CONFLICT, "No successful payment found for this schedule on the selected date");
+        appAssert(payment, CONFLICT, "No successful payment found for this schedule on the selected date");
 
         // Optional: Seat already taken
         const existingSeat = await manager.findOne(Reservation, {
