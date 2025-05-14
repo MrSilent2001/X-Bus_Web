@@ -9,6 +9,7 @@ const busRoutes = Router();
 busRoutes.post("/register", authenticate, authorize(["admin"]), busController.registerNewBus);
 busRoutes.get("/getAllBuses", authenticate, busController.getAllBuses);
 busRoutes.get("/getBusById", authenticate, busController.getBusById);
+busRoutes.get("/getBusRoutes", authenticate, busController.getBusRoutes);
 busRoutes.put("/editBus", authenticate, busController.editBus);
 busRoutes.delete("/removeBus", authenticate, busController.removeBus);
 

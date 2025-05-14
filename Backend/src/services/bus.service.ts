@@ -57,3 +57,12 @@ export const removeBus = async (regNo: string): Promise<Bus | null> => {
 
     return bus;
 };
+
+export const getBusRoutes = async() => {
+    const routes = await busRepository
+        .createQueryBuilder('bus')
+        .select('DISTINCT bus.route')
+        .getRawMany();
+
+    return routes.map(route => route.route);
+}

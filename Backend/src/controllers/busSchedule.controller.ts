@@ -1,7 +1,12 @@
 import {NextFunction, Request, Response} from "express";
 import {CREATED, OK} from "../constants/http";
 import {busScheduleSchema} from "../schema/busScheduleSchema";
-import {addNewSchedule, deleteScheduleById, getAllSchedules, getSchedulesByBusId} from "../services/schedule.service";
+import {
+    addNewSchedule,
+    deleteScheduleById,
+    getAllBusSchedules,
+    getSchedulesByBusId
+} from "../services/schedule.service";
 
 export const busScheduleController = {
     addNewSchedule:async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -16,7 +21,7 @@ export const busScheduleController = {
 
     getAllSchedules: async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const data  = await getAllSchedules();
+            const data  = await getAllBusSchedules(req.query.date as string, req.query.route as string);
             res.status(OK).json(data);
         }catch (error){
             next(error);

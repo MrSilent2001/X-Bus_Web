@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 import {CREATED, OK} from "../constants/http";
-import {editBus, getAllBuses, getBusById, registerNewBus, removeBus} from "../services/bus.service";
+import {editBus, getAllBuses, getBusById, getBusRoutes, registerNewBus, removeBus} from "../services/bus.service";
 import {busSchema} from "../schema/busSchema";
 
 export const busController = {
@@ -46,6 +46,15 @@ export const busController = {
             const bus = await removeBus(req.body);
             res.status(OK).json(bus);
         } catch (error) {
+            next(error);
+        }
+    },
+
+    getBusRoutes: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try{
+            const routes = await getBusRoutes();
+            res.status(OK).json(routes);
+        }catch(error){
             next(error);
         }
     }
