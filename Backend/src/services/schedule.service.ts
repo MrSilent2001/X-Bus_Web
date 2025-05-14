@@ -25,13 +25,39 @@ export const addNewSchedule = async (scheduleData:Schedule) => {
     return newSchedule;
 }
 
-export const getAllSchedules = async(): Promise<BusSchedule[]> => {
-    const schedules = await busScheduleRepository.find({
-        relations: ['bus'],
-    });
+export const getAllBusSchedules = async (
+    date?: string,
+    route?: string
+): Promise<any[] | null> => {
+    const query = busScheduleRepository
+        .createQueryBuilder("schedule")
+        .leftJoinAndSelect("schedule.bus", "bus");
 
-    return schedules;
-}
+    if (date && date.trim() !== "") {
+        query.andWhere("DATE(schedule.date) = :date", { date });
+    }
+
+    if (route && route.trim() !== "") {
+        query.andWhere("LOWER(bus.route) = LOWER(:route)", { route });
+    }
+
+    const schedules = await query.getMany();
+
+    if (schedules.length === 0) return null;
+
+    const result = schedules.map(schedule => ({
+        id: schedule.id,
+        date: schedule.date,
+        scheduledTime: schedule.scheduledTime,
+        regNo: schedule.bus.regNo,
+        seatingCapacity: schedule.seatingCapacity,
+        route: schedule.bus.route,
+        routeNo: schedule.bus.routeNo
+    }));
+
+    return result;
+};
+
 
 export const getSchedulesByBusId = async (id: string): Promise<BusSchedule[]> => {
     const busId = Number(id);
