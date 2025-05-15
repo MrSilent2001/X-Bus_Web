@@ -25,7 +25,7 @@ export const busController = {
 
     getBusById: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const bus = await getBusById(req.query.regNo as string);
+            const bus = await getBusById(req.query.userId as string);
             res.status(OK).json(bus);
         } catch (error) {
             next(error);

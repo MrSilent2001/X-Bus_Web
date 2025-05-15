@@ -59,18 +59,25 @@ export const getAllBusSchedules = async (
 };
 
 
-export const getSchedulesByBusId = async (id: string): Promise<BusSchedule[]> => {
+export const getSchedulesByBusId = async (id: string): Promise<any[]> => {
     const busId = Number(id);
-
     const schedules = await busScheduleRepository.find({
         where: {
             bus: { id: busId }
         },
         relations: ['bus'],
     });
+    const filteredSchedules = schedules.map(schedule => ({
+        id: schedule.id,
+        date: schedule.date,
+        scheduledTime: schedule.scheduledTime,
+        seatingCapacity: schedule.seatingCapacity,
+        regNo: schedule.bus.regNo,
+        routeNo: schedule.bus.routeNo,
+        route: schedule.bus.route,
+    }));
 
-
-    return schedules;
+    return filteredSchedules;
 }
 
 export const deleteScheduleById = async (id: string): Promise <BusSchedule> => {
