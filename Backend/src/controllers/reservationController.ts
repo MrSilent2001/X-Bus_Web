@@ -1,7 +1,12 @@
 import {NextFunction, Request, Response} from "express";
 import {reservationSchema} from "../schema/reservationSchema";
 import {CREATED, OK} from "../constants/http";
-import {addNewReservation, getAllReservations, getReservationsByUser} from "../services/reservation.service";
+import {
+    addNewReservation,
+    getAllReservations,
+    getReservationsByUser,
+    getReservedSeats
+} from "../services/reservation.service";
 
 
 export const ReservationController = {
@@ -28,6 +33,18 @@ export const ReservationController = {
         try{
             const reservations = await getReservationsByUser(req.query.userId as string);
             res.status(OK).json(reservations);
+        }catch(error){
+            next(error)
+        }
+    },
+
+    reservedSeatsPerSchedule: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const date = req.query.date as string;
+            const scheduleId = req.query.scheduleId as string;
+
+            const reservedSeats = await getReservedSeats(date, scheduleId);
+            res.status(OK).json(reservedSeats);
         }catch(error){
             next(error)
         }

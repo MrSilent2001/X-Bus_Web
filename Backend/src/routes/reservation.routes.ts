@@ -10,6 +10,7 @@ const reservationRoutes = Router();
 reservationRoutes.post("/newReservation", authenticate, authorize(["passenger"]), ReservationController.newReservation);
 reservationRoutes.get("/getAllReservations", authenticate, ReservationController.allReservations);
 reservationRoutes.get("/getReservationsByUserId", authenticate, ReservationController.reservationsByUserId);
+reservationRoutes.get("/getReservedSeats", authenticate, ReservationController.reservedSeatsPerSchedule);
 // reservationRoutes.delete("/removeScheduleById", authenticate, ReservationController.deleteScheduleById);
 // reservationRoutes.delete("/removeBus", authenticate, ReservationController.removeBus);
 

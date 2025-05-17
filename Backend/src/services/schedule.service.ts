@@ -80,6 +80,32 @@ export const getSchedulesByBusId = async (id: string): Promise<any[]> => {
     return filteredSchedules;
 }
 
+export const getBusScheduleByDateAndRoute = async (
+    dateString: string,
+    route: string
+): Promise<any> => {
+
+    const startOfDay = new Date(dateString);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date(dateString);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const dailyRouteSchedules = await busScheduleRepository
+        .createQueryBuilder('schedule')
+        .leftJoinAndSelect('schedule.bus', 'bus')
+        .where('schedule.date BETWEEN :start AND :end', { start: startOfDay, end: endOfDay })
+        .andWhere('bus.route = :route', { route })
+        .select([
+            'schedule.id',
+            'schedule.scheduledTime',
+            'schedule.seatingCapacity'
+        ])
+        .getMany();
+
+    return dailyRouteSchedules;
+}
+
 export const deleteScheduleById = async (id: string): Promise <BusSchedule> => {
     const scheduleId = Number(id);
 

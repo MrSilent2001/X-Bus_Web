@@ -3,7 +3,7 @@ import {BusSchedule} from "./schedule.model";
 import {User} from "./user.model";
 
 @Entity()
-@Unique(['user', 'schedule']) // ensures a user can only reserve once per schedule
+@Unique(['user', 'schedule', 'date']) // ensures a user can only reserve once per schedule
 export class Reservation {
     @PrimaryGeneratedColumn()
     id!: number;

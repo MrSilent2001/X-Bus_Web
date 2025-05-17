@@ -4,7 +4,7 @@ import {busScheduleSchema} from "../schema/busScheduleSchema";
 import {
     addNewSchedule,
     deleteScheduleById,
-    getAllBusSchedules,
+    getAllBusSchedules, getBusScheduleByDateAndRoute,
     getSchedulesByBusId
 } from "../services/schedule.service";
 
@@ -32,6 +32,18 @@ export const busScheduleController = {
         try {
             const data  = await getSchedulesByBusId(req.query.id as string);
             res.status(OK).json(data);
+        }catch (error){
+            next(error);
+        }
+    },
+
+    getDailyRouteSchedule: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const date = req.query.date as string;
+            const route = req.query.route as string;
+
+            const dailyRouteSchedule = await getBusScheduleByDateAndRoute(date, route);
+            res.status(OK).json(dailyRouteSchedule);
         }catch (error){
             next(error);
         }

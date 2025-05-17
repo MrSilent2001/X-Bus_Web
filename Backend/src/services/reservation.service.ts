@@ -17,9 +17,10 @@ export const addNewReservation = async (data: Reserve) => {
             where: {
                 user: { id: userId },
                 schedule: { id: scheduleId },
+                date,
             },
         });
-        appAssert(!isReservationExist, CONFLICT, "A reservation already exists for this user and schedule");
+        appAssert(!isReservationExist, CONFLICT, "A reservation already exists for this user and schedule on this date");
 
         // Get schedule with pessimistic lock
         const schedule = await manager.findOne(BusSchedule, {
@@ -94,6 +95,31 @@ export const getAllReservations = async (): Promise<any[]> => {
     }));
 };
 
+export const getReservedSeats = async (
+    dateString: string,
+    scheduleId: string
+) => {
+
+    const date = new Date(dateString);
+    const reservedSeats = await reservationRepository.find({
+        where: {
+            date: date,
+            schedule: {
+                id: Number(scheduleId),
+            },
+        },
+        select: ["seatNo","busFare"],
+        relations: ["schedule", "schedule.bus"],
+    });
+
+    return reservedSeats.map(res => ({
+        seatNo: Number(res.seatNo),
+        busFare: Number(res.busFare),
+    }));
+
+};
+
+
 export const getReservationsByUser = async (userId: string): Promise<any[]> => {
     const id =  Number(userId);
 
@@ -101,15 +127,22 @@ export const getReservationsByUser = async (userId: string): Promise<any[]> => {
         where: {
             user: { id: id },
         },
-        relations: ['schedule'],
+        relations: ['schedule', 'schedule.bus'],
     });
 
-    return reservations.map(res => ({
-        id: res.id,
-        date: res.date,
-        busFare: res.busFare,
-        seatNo: res.seatNo,
-        scheduleId: res.schedule?.id,
+    const formattedReservations = reservations.map(reservation => ({
+        id: reservation.id,
+        reservationDate: reservation.date.toISOString().slice(0, 10),
+        scheduleId: reservation.schedule.id,
+        scheduledTime: reservation.schedule.scheduledTime,
+        bus: {
+            id: reservation.schedule.bus.id,
+            regNo: reservation.schedule.bus.regNo,
+            fleetName: reservation.schedule.bus.fleetName,
+            route: reservation.schedule.bus.route,
+        },
     }));
+
+    return formattedReservations;
 };
 
