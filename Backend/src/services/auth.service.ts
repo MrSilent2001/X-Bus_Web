@@ -9,8 +9,10 @@ import appAssert from "../utils/appAssert";
 import {CONFLICT} from "../constants/http";
 import nodemailer from 'nodemailer';
 import {EMAIL_PASSWORD, SENDER_EMAIL} from "../constants/env";
+import {Bus} from "../models/bus.model";
 
 const userRepository = AppDataSource.getRepository(User);
+const busRepository = AppDataSource.getRepository(Bus);
 const userVerificationRepository = AppDataSource.getRepository(UserVerification);
 export const registerUser = async(userData: UserReg) =>{
 
@@ -25,37 +27,81 @@ export const registerUser = async(userData: UserReg) =>{
     return user;
 }
 
-export const loginUser = async (email: string, password: string) => {
+// export const loginUser = async (email: string, password: string) => {
+//
+//     const existingUser = await userRepository.findOneBy({ email: email });
+//     if (!existingUser) {
+//         throw new Error("Invalid Credentials");
+//     }
+//
+//     const isPasswordMatch = await comparePassword(password, existingUser.password);
+//
+//     if (!isPasswordMatch) {
+//         throw new Error("Invalid Password");
+//     }
+//
+//     const accessToken = generateAccessToken({
+//         id: existingUser.id,
+//         email: existingUser.email,
+//         role: existingUser.role
+//     });
+//
+//     const refreshToken = generateRefreshToken({
+//         id: existingUser.id,
+//         email: existingUser.email,
+//         role: existingUser.role
+//     });
+//
+//     return {
+//         userId: existingUser.id,
+//         accessToken: accessToken,
+//         refreshToken: refreshToken
+//     };
+// };
 
-    const existingUser = await userRepository.findOneBy({ email: email });
-    if (!existingUser) {
+export const loginUser = async (identifier: string, password: string) => {
+    let userOrBus: any = null;
+    let role: string;
+
+    if (identifier.includes("@")) {
+        // Email — Check User DB
+        userOrBus = await userRepository.findOneBy({ email: identifier });
+        role = userOrBus ? userOrBus.role : null;
+    } else {
+        // regNo — Check Bus DB
+        userOrBus = await busRepository.findOneBy({ regNo: identifier });
+        role = userOrBus ? "operator" : '';
+    }
+
+    if (!userOrBus) {
         throw new Error("Invalid Credentials");
     }
 
-    const isPasswordMatch = await comparePassword(password, existingUser.password);
-
+    const isPasswordMatch = await comparePassword(password, userOrBus.password);
     if (!isPasswordMatch) {
         throw new Error("Invalid Password");
     }
 
     const accessToken = generateAccessToken({
-        id: existingUser.id,
-        email: existingUser.email,
-        role: existingUser.role
+        id: userOrBus.id,
+        identifier: identifier,
+        role: role
     });
 
     const refreshToken = generateRefreshToken({
-        id: existingUser.id,
-        email: existingUser.email,
-        role: existingUser.role
+        id: userOrBus.id,
+        identifier: identifier,
+        role: role
     });
 
     return {
-        userId: existingUser.id,
+        userId: userOrBus.id,
         accessToken: accessToken,
-        refreshToken: refreshToken
+        refreshToken: refreshToken,
+        role: role
     };
 };
+
 
 
 export const generateVerification = async(email: string) =>{

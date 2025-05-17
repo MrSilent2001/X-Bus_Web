@@ -23,13 +23,16 @@ export const getAllBuses = async(): Promise<Bus[]>=> {
     return busData;
 }
 
-export const getBusById = async (regNo: string): Promise<Bus | null> => {
-    const bus = await busRepository.findOneBy({regNo});
+export const getBusById = async (identifier: string): Promise<Bus | null> => {
+    let bus = await busRepository.findOneBy({ id: Number(identifier) });
 
-    if (!bus) return null;
-    const {password, ... busData} = bus;
-    return busData;
-}
+    if (!bus) {
+        bus = await busRepository.findOneBy({ regNo: identifier });
+    }
+
+    return bus;
+};
+
 
 export const editBus = async (busData: any): Promise<Bus | null> => {
     console.log(busData)
@@ -42,6 +45,10 @@ export const editBus = async (busData: any): Promise<Bus | null> => {
     bus!.seatingCapacity = busData.seatingCapacity ?? bus!.seatingCapacity;
     bus!.busFare = busData.busFare ?? bus!.busFare;
     bus!.profilePicture = busData.profilePicture ?? bus!.profilePicture;
+
+    if (busData.password) {
+        bus!.password = await hashPassword(busData.password, 10);
+    }
 
     await busRepository.save(bus!);
     console.log("Updated bus:", bus!);
