@@ -35,3 +35,4 @@ export const getAllFeedbacks = async(
 
     return feedbackData;
 }
+

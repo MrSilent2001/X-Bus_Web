@@ -72,4 +72,14 @@ export const getBusRoutes = async() => {
         .getRawMany();
 
     return routes.map(route => route.route);
-}
+};
+
+export const getBusRegNo = async () => {
+    const buses = await busRepository
+        .createQueryBuilder('bus')
+        .select('bus.regNo', 'regNo')
+        .getRawMany();
+
+    return buses.map(bus => bus.regNo);
+};
+
