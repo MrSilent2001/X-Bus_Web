@@ -8,12 +8,17 @@ import {expenseType} from "../schema/expenseSchema";
 import {Bus} from "../models/bus.model";
 import appAssert from "../utils/appAssert";
 import {NOT_FOUND} from "../constants/http";
+import {Stripe} from "stripe";
 
 const paymentRepository = AppDataSource.getRepository(Payment);
 const userRepository = AppDataSource.getRepository(User);
 const busScheduleRepository = AppDataSource.getRepository(BusSchedule);
 const expenseRepository = AppDataSource.getRepository(Expense);
 const busRepository = AppDataSource.getRepository(Bus);
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+    apiVersion: '2025-05-28.basil',
+});
 
 export const createNewPayment = async (data: PaymentSchema) => {
     // Fetch the user and schedule entities
@@ -57,4 +62,19 @@ export const addNewExpense = async (data: expenseType) => {
     await expenseRepository.save(expense);
 
     return expense;
+}
+
+export const createPayment = async (data: any) => {
+    const paymentIntent = await stripe.paymentIntents.create({
+        amount: data.amount * 100,
+        currency: 'lkr',
+        automatic_payment_methods: {
+            enabled: true,
+        },
+    });
+
+    return {
+        paymentIntent: paymentIntent.client_secret,
+        publishableKey: process.env.PUBLIC_STRIPE_PUBLISHABLE_KEY
+    };
 }
