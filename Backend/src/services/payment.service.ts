@@ -22,24 +22,24 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 
 export const createNewPayment = async (data: PaymentSchema) => {
     // Fetch the user and schedule entities
-    const user = await userRepository.findOne({ where: { id: data.user } });
-    const schedule = await busScheduleRepository.findOne({ where: { id: data.schedule } });
-
-    if (!user || !schedule) {
-        throw new Error("User or Schedule not found");
-    }
-
-    // Create the payment entity and assign full entities
-    const payment = paymentRepository.create({
-        ...data,
-        user,
-        schedule,
-    });
-
-    // Save the payment entity to the database
-    await paymentRepository.save(payment);
-
-    return payment;
+    // const user = await userRepository.findOne({ where: { id: data.user } });
+    // const schedule = await busScheduleRepository.findOne({ where: { id: data.schedule } });
+    //
+    // if (!user || !schedule) {
+    //     throw new Error("User or Schedule not found");
+    // }
+    //
+    // // Create the payment entity and assign full entities
+    // const payment = paymentRepository.create({
+    //     ...data,
+    //     user,
+    //     schedule,
+    // });
+    //
+    // // Save the payment entity to the database
+    // await paymentRepository.save(payment);
+    //
+    // return payment;
 };
 
 
@@ -66,15 +66,51 @@ export const addNewExpense = async (data: expenseType) => {
 
 export const createPayment = async (data: any) => {
     const paymentIntent = await stripe.paymentIntents.create({
+        metadata: {
+            userId: data.user || "guest",
+            scheduleId: data.scheduleId,
+            date: data.date
+        },
         amount: data.amount * 100,
-        currency: 'lkr',
+        currency: 'LKR',
         automatic_payment_methods: {
             enabled: true,
         },
     });
 
+    console.log(paymentIntent);
+
     return {
         paymentIntent: paymentIntent.client_secret,
         publishableKey: process.env.PUBLIC_STRIPE_PUBLISHABLE_KEY
     };
+}
+
+
+export const savePaymentDetails = async (data: string) => {
+    const paymentIntentId = data.split('_secret')[0];
+    const stripePaymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+
+    // Fetch the user and schedule entities
+    const user = await userRepository.findOne({ where: { id: Number(stripePaymentIntent.metadata.userId) } });
+    const schedule = await busScheduleRepository.findOne({ where: { id: Number(stripePaymentIntent.metadata.scheduleId) } });
+
+    if (!user || !schedule) {
+        throw new Error("User or Schedule not found");
+    }
+
+    // Create the payment entity and assign full entities
+    const payment = paymentRepository.create({
+        date: stripePaymentIntent.metadata.date,
+        amount: Number(stripePaymentIntent.amount)/100,
+        user,
+        schedule,
+        status: stripePaymentIntent.status
+    });
+
+    // Save the payment entity to the database
+    await paymentRepository.save(payment);
+    console.log(payment);
+
+    return payment;
 }
