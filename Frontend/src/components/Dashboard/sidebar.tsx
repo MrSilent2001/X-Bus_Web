@@ -32,7 +32,7 @@ const Sidebar = () =>{
                 {busData.map((busData) => (
                     <Link key={busData.regNo} to={`/busProfile/${busData.regNo}`}>
                         <div key={busData.id} className="flex items-center p-3 mb-3 bg-red-100 rounded-lg hover:bg-red-300 hover:font-semibold">
-                            <img src={busData.profilePicture} alt="Bus" className="w-16 h-16 rounded"/>
+                            <img src={busData.profilePicture || ""} alt="Bus" className="w-16 h-16 rounded"/>
                             <div className="ml-3">
                                 <p className="font-bold">{busData.regNo}</p>
                                 <p className="text-sm">{busData.routeNo}</p>

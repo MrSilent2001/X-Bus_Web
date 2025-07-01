@@ -55,9 +55,9 @@ export const getAllBuses = async (): Promise<Bus[]> =>{
     }
 }
 
-export const getBusById = async (regNo: string): Promise<Bus | null> =>{
+export const getBusByRegNo = async (regNo: string): Promise<Bus | null> =>{
     try {
-        const response = await api.get("/bus/getBusById",{
+        const response = await api.get("/bus/getBusByRegNo",{
             params:{
                 regNo: regNo
             },

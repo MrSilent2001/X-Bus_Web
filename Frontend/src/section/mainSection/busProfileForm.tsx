@@ -1,7 +1,7 @@
 import CustomButton from "@/components/Button/CustomButton.tsx";
 import InputField from "@/components/InputField/InputField.tsx";
 import {useEffect, useState} from "react";
-import {getBusById} from "@/api/busAPI.ts";
+import {getBusByRegNo} from "@/api/busAPI.ts";
 import ImageUploader from "@/components/ImageUploader/ImageUpload.tsx";
 import {Bus} from "@/types/bus.ts";
 import {useParams, useNavigate} from "react-router-dom";
@@ -34,7 +34,7 @@ const BusProfileForm = () => {
         const fetchBusDetails = async () => {
             try {
                 if (regNo) {
-                    const response = await getBusById(regNo);
+                    const response = await getBusByRegNo(regNo);
                     if (response) {
                         Object.entries(response).forEach(([key, value]) => {
                             if (key in response) {

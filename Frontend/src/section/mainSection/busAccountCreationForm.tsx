@@ -6,6 +6,7 @@ import { BusRegisterSchema } from "@/schema/busSchema.ts";
 import ImageUploader from "@/components/ImageUploader/ImageUpload.tsx";
 import {parseJwt} from "@/utils/functions/parseJWT.ts";
 import {Bus} from "@/types/bus.ts";
+import {uploadToCloudinary} from "@/utils/functions/fileUpload.ts";
 
 const BusAccountCreationForm = () => {
     const [formData, setFormData] = useState<Bus>({
@@ -24,6 +25,7 @@ const BusAccountCreationForm = () => {
     const [errors, setErrors] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [resetImage, setResetImage] = useState(false);
+    const [previewImage, setPreviewImage] = useState<string | null>(null);
 
     useEffect(() => {
         const token = localStorage.getItem("accessToken");
@@ -50,12 +52,21 @@ const BusAccountCreationForm = () => {
         });
     };
 
-    const handleImageUpload = (imageUrl: string) => {
-        setFormData((prevData) => ({
-            ...prevData,
-            profilePicture: imageUrl
-        }));
+    const handleImageUpload = async (file: File) => {
+        const localUrl = URL.createObjectURL(file);
+        setPreviewImage(localUrl);  // <-- update local preview image
+
+        try {
+            const imageUrl = await uploadToCloudinary(file);
+            setFormData((prevData) => ({
+                ...prevData,
+                profilePicture: imageUrl,
+            }));
+        } catch (error) {
+            setErrors("Image upload failed. Please try again.");
+        }
     };
+
 
     const handleCreateBusAccount = async (e: FormEvent) => {
         e.preventDefault();
@@ -98,7 +109,12 @@ const BusAccountCreationForm = () => {
             <div className="w-full mt-32 mb-16 flex">
                 <div
                     className="w-1/3 rounded-lg bg-white border-r border-gray-300 flex flex-col items-center justify-center">
-                    <ImageUploader height="300px" width="350px" onImageUpload={handleImageUpload} reset={resetImage}/>
+                    <ImageUploader
+                        height="300px"
+                        width="350px"
+                        onImageUpload={handleImageUpload}
+                        initialImage={previewImage}
+                        reset={resetImage}/>
                 </div>
 
                 <div className="w-2/3 p-6 bg-white rounded-lg shadow-md max-w-4xl mx-auto">

@@ -1,4 +1,3 @@
-"use client";
 import { createContext, useContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
@@ -23,8 +22,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
         if (token) {
             try {
-                const decoded: { email: string } = jwtDecode(token);
-                setUser({ email: decoded.email });
+                const decoded: { identifier: string } = jwtDecode(token);
+                setUser({ email: decoded.identifier });
             } catch (error) {
                 console.error("Invalid token:", error);
                 logout();
@@ -36,8 +35,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const login = (token: string) => {
         localStorage.setItem("accessToken", token);
-        const decoded: { email: string } = jwtDecode(token);
-        setUser({ email: decoded.email });
+        const decoded: { identifier: string } = jwtDecode(token);
+        setUser({ email: decoded.identifier });
 
         setTimeout(() => {
             navigate("/dashboard");

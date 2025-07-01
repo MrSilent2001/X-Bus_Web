@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import { useForm } from "react-hook-form";
-import {getBusById, updateBus} from "@/api/busAPI.ts";
+import {getBusByRegNo, updateBus} from "@/api/busAPI.ts";
 import { BusUpdateSchema } from "@/schema/busSchema.ts";
 import InputField from "@/components/InputField/InputField.tsx";
 import CustomButton from "@/components/Button/CustomButton.tsx";
 import ImageUploader from "@/components/ImageUploader/ImageUpload.tsx";
 import { Bus } from "@/types/bus.ts";
+import {uploadToCloudinary} from "@/utils/functions/fileUpload.ts";
 
 const EditBusProfileForm = () => {
     const { regNo } = useParams();
@@ -34,7 +35,7 @@ const EditBusProfileForm = () => {
         const fetchBusDetails = async () => {
             try {
                 if (regNo) {
-                    const response = await getBusById(regNo);
+                    const response = await getBusByRegNo(regNo);
                     if (response) {
                         Object.entries(response).forEach(([key, value]) => {
                             if (key in response) {
@@ -88,12 +89,18 @@ const EditBusProfileForm = () => {
                         borderColor="1px solid gray"
                         initialImage={profileImage || undefined}
                         disabled={loading}
-                        onImageUpload={(imageUrl) => {
-                            console.log("Image uploaded:", imageUrl);
-                            setProfileImage(imageUrl);
-                            setValue("profilePicture", imageUrl);
+                        onImageUpload={async (file) => {
+                            try {
+                                const imageUrl = await uploadToCloudinary(file);
+                                console.log("Image uploaded:", imageUrl);
+                                setProfileImage(imageUrl);
+                                setValue("profilePicture", imageUrl);
+                            } catch (error) {
+                                console.error("Image upload failed", error);
+                            }
                         }}
                     />
+
                 </div>
                 <div className="w-2/3 p-6 bg-white rounded-lg shadow-md max-w-4xl mx-auto">
                     {errors && (
