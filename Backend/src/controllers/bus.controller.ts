@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from "express";
 import {CREATED, OK} from "../constants/http";
 import {
-    editBus,
+    editBus, findBusByRegNo,
     getAllBuses,
     getBusById,
     getBusRegNo,
@@ -34,6 +34,15 @@ export const busController = {
     getBusById: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const bus = await getBusById(req.query.userId as string);
+            res.status(OK).json(bus);
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    getBusByRegNo: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const bus = await findBusByRegNo(req.query.regNo as string);
             res.status(OK).json(bus);
         } catch (error) {
             next(error);

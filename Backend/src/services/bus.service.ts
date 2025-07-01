@@ -33,10 +33,20 @@ export const getBusById = async (identifier: string): Promise<Bus | null> => {
     return bus;
 };
 
+export const findBusByRegNo = async (regNo   : string): Promise<Bus | null> => {
+    let bus = await busRepository.findOneBy({ regNo: regNo });
+
+    if (!bus) {
+        bus = await busRepository.findOneBy({ regNo: regNo });
+    }
+
+    return bus;
+};
+
 
 export const editBus = async (busData: any): Promise<Bus | null> => {
     console.log(busData)
-    const bus = await getBusById(busData.regNo);
+    const bus = await findBusByRegNo(busData.regNo);
     appAssert(bus, NOT_FOUND, "Bus not found");
 
     bus!.fleetName = busData.fleetName ?? bus!.fleetName;
