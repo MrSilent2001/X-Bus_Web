@@ -2,7 +2,7 @@ import jwt, {JwtPayload} from 'jsonwebtoken';
 import {JWT_SECRET} from "../constants/env";
 
 export const generateAccessToken = (payload:object): string =>{
-    return jwt.sign(payload, JWT_SECRET,{expiresIn: '10m'});
+    return jwt.sign(payload, JWT_SECRET,{expiresIn: '1d'});
 }
 
 export const generateRefreshToken = (payload:object): string =>{

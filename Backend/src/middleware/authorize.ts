@@ -7,6 +7,7 @@ export const authorize = (allowedRoles: string[]) => {
         try {
             const user = (req as any).user;
             appAssert(user, UNAUTHORIZED, "Authorization token missing");
+            console.log(user);
 
 
             const authorisedUser = allowedRoles.includes(user.role)

@@ -6,6 +6,7 @@ const expenseSchema = z.object({
         invalid_type_error: "Invalid date format",
     }),
     description: z.string().min(1, "Description is required"),
+    amount: z.number().positive("Amount must be positive"),
     proof: z.string().min(1, "Proof is required"),
     busId: z.number({
         required_error: "busId is required",

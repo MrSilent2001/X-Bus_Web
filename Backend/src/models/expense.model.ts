@@ -1,5 +1,5 @@
-import {Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import {Bus} from "./bus.model";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Bus } from "./bus.model";
 
 @Entity()
 export class Expense {
@@ -14,6 +14,9 @@ export class Expense {
 
     @Column({ nullable: false })
     proof!: string;
+
+    @Column({ nullable: false })
+    amount!: number;
 
     @ManyToOne(() => Bus, bus => bus.expenses)
     bus!: Bus;

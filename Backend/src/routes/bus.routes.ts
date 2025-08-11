@@ -6,7 +6,8 @@ import {authorize} from "../middleware/authorize";
 const busRoutes = Router();
 
 //prefix:bus
-busRoutes.post("/register", authenticate, authorize(["admin"]), busController.registerNewBus);
+// busRoutes.post("/register", authenticate, authorize(["admin"]), busController.registerNewBus);
+busRoutes.post("/register", authenticate, busController.registerNewBus);
 busRoutes.get("/getAllBuses", authenticate, busController.getAllBuses);
 busRoutes.get("/getBusById", authenticate, busController.getBusById);
 busRoutes.get("/getBusByRegNo", authenticate, busController.getBusByRegNo);

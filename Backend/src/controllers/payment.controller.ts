@@ -1,19 +1,20 @@
 import express from "express";
 import {paymentSchema} from "../schema/paymentSchema";
-import {addNewExpense, createNewPayment, createPayment, savePaymentDetails} from "../services/payment.service";
-import {CREATED} from "../constants/http";
+import {addNewExpense, createPayment, getExpenses, getIncome, savePaymentDetails} from "../services/payment.service";
+import {CREATED, OK} from "../constants/http";
 import {expenseSchema} from "../schema/expenseSchema";
+import {getAllBuses} from "../services/bus.service";
 
 export const paymentController = {
-    newPayment: async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        try{
-            const request = paymentSchema.parse(req.body);
-            const newPayment = await createNewPayment(request);
-            res.status(CREATED).json(newPayment);
-        }catch(error){
-            next(error)
-        }
-    },
+    // newPayment: async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    //     try{
+    //         const request = paymentSchema.parse(req.body);
+    //         const newPayment = await createNewPayment(request);
+    //         res.status(CREATED).json(newPayment);
+    //     }catch(error){
+    //         next(error)
+    //     }
+    // },
 
     newExpense: async (req: express.Request, res: express.Response, next: express.NextFunction) => {
         try{
@@ -43,6 +44,24 @@ export const paymentController = {
             const payment = await savePaymentDetails(request);
             res.status(CREATED).json(payment);
         }catch (error){
+            next(error);
+        }
+    },
+
+    totalIncome: async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        try{
+            const income = await getIncome();
+            res.status(OK).json(income);
+        } catch (error){
+            next(error);
+        }
+    },
+
+    totalExpense: async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        try{
+            const expenses = await getExpenses();
+            res.status(OK).json(expenses);
+        } catch (error){
             next(error);
         }
     }
