@@ -1,4 +1,4 @@
-import React, {useState, forwardRef, useCallback} from "react";
+import React, { useState, forwardRef, useCallback } from "react";
 import { UseFormRegisterReturn } from "react-hook-form";
 
 interface InputFieldProps {
@@ -49,14 +49,17 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
 
         const handleFocus = () => setIsFocused(true);
 
+        // Exclude onChange and onBlur from register to avoid TS warning
+        const { onChange: _, onBlur: __, ref: registerRef, ...registerRest } = register || {};
+
         // Combine register.ref and forwarded ref
         const setRefs = useCallback(
             (el: HTMLInputElement) => {
-                if (register?.ref) register.ref(el);
+                if (registerRef) registerRef(el);
                 if (typeof ref === "function") ref(el);
                 else if (ref) (ref as React.MutableRefObject<HTMLInputElement | null>).current = el;
             },
-            [ref, register]
+            [ref, registerRef]
         );
 
         return (
@@ -78,11 +81,12 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
                     <input
                         id={id}
                         type={type}
-                        defaultValue={value} // Uses defaultValue for React Hook Form
+                        value={value}
+                        onChange={onChange}
                         placeholder={type !== "file" ? placeholder : undefined}
                         accept={type === "file" ? accept : undefined}
                         onFocus={handleFocus}
-                        {...(register ? { ...register, onBlur: undefined, onChange: undefined } : {})} // Prevents duplicate props
+                        {...registerRest}
                         ref={setRefs}
                         className={`block ${width} h-10 py-2 px-3 text-sm text-black border rounded-md border-gray-400 focus:outline-none focus:ring-gray-700 focus:border-carnation-300 ${
                             uppercase ? "uppercase" : ""

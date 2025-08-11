@@ -32,10 +32,9 @@ const BusAccountCreationForm = () => {
         if (token) {
             try {
                 const decodedToken = parseJwt(token);
-                console.log(decodedToken);
                 setFormData((prev) => ({
                     ...prev,
-                    ownerId: decodedToken.id.toString() || "",
+                    ownerId: decodedToken.id.toString(),
                 }));
             } catch (error) {
                 console.error("Error decoding token", error);
@@ -52,9 +51,10 @@ const BusAccountCreationForm = () => {
         });
     };
 
+
     const handleImageUpload = async (file: File) => {
         const localUrl = URL.createObjectURL(file);
-        setPreviewImage(localUrl);  // <-- update local preview image
+        setPreviewImage(localUrl);
 
         try {
             const imageUrl = await uploadToCloudinary(file);
@@ -71,7 +71,9 @@ const BusAccountCreationForm = () => {
     const handleCreateBusAccount = async (e: FormEvent) => {
         e.preventDefault();
 
+        console.log(formData)
         const validation = BusRegisterSchema.safeParse(formData);
+        console.log(validation)
 
         if (!validation.success) {
             setErrors(validation.error.errors[0]?.message || "Invalid input");
