@@ -50,13 +50,14 @@ const FeedbackCard = () => {
                             <h3 className="text-red-700 font-bold">{item.busRegNo}</h3>
                         </div>
 
-                        <span className="text-xs text-gray-500">{formatDate(item.date)}</span>
+                        <span className="text-xs text-gray-500">{formatDate(item.createdAt)}</span>
                         {item.time && <span className="text-gray-700 text-xs">{formatTime(item.time)}</span>}
 
                         <p className="text-md">{item.message}</p>
                     </div>
                 </div>
             ))}
+
 
             {/* Pagination Component */}
             <Pagination

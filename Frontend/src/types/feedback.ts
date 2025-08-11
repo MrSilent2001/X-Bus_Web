@@ -3,6 +3,6 @@ export interface Feedback {
     passengerName: string;
     busRegNo: string;
     message: string;
-    date: string;
+    createdAt: string;
     time: string;
 }
