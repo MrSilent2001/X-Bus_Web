@@ -12,15 +12,17 @@ import {Location} from "../models/location.model";
 import {Refund} from "../models/refund.model";
 import {Expense} from "../models/expense.model";
 
-
 const AppDataSource = new DataSource({
     type: "postgres",
-    // host: DB_HOST,
-    // port: parseInt(DB_PORT, 10),
-    // username: DB_USERNAME,
-    // password: DB_PASSWORD,
-    // database: DB_NAME,
-    url: process.env.DATABASE_URL,
+    host: DB_HOST,
+    port: parseInt(DB_PORT, 10),
+    username: DB_USERNAME,
+    password: DB_PASSWORD,
+    database: DB_NAME,
+    //url: process.env.DATABASE_URL,
+    // ssl: {
+    //     rejectUnauthorized: false,
+    // },
     entities: [
         User, UserVerification, Bus, BusSchedule, Feedback, LostnFound, Reservation, Payment, Location, Refund, Expense
     ],

@@ -23,12 +23,24 @@ const app:Application = express();
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ limit: '20mb', extended: true }));
 
+const allowedOrigins = [
+    "http://localhost:5173",
+    "http://192.168.1.100:8081",
+];
+
 app.use(
     cors({
-        origin: APP_ORIGIN,
+        origin: (origin, callback) => {
+            if (!origin || allowedOrigins.includes(origin)) {
+                callback(null, true);
+            } else {
+                callback(new Error("Not allowed by CORS"));
+            }
+        },
         credentials: true,
     })
 );
+
 app.use(cookieParser());
 
 //Routes
