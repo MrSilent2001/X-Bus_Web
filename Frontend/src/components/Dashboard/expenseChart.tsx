@@ -44,7 +44,8 @@ const options: ChartOptions<"bar"> = {
 
 const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-const ExpenseChart = () => {
+const ExpenseChart = ({ selectedBus }: { selectedBus: string }) => {
+    console.log(selectedBus)
     const [chartData, setChartData] = useState({
         labels: monthNames,
         datasets: [
@@ -61,7 +62,9 @@ const ExpenseChart = () => {
     useEffect(() => {
         const fetchExpenseData = async () => {
             setLoading(true);
-            const data = await getTotalExpenses();
+            const busId = selectedBus === "all" ? undefined : Number(selectedBus);
+            console.log(busId)
+            const data = await getTotalExpenses(busId);
 
             if (data && data.annualExpenses) {
                 const currentYear = new Date().getFullYear().toString();
@@ -85,7 +88,7 @@ const ExpenseChart = () => {
         };
 
         fetchExpenseData();
-    }, []);
+    }, [selectedBus]);
 
     if (loading) return <div>Loading chart data...</div>;
 

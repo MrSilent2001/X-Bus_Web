@@ -4,7 +4,8 @@ import { userLogin } from "@/api/authAPI.ts";
 import InputField from "@/components/InputField/InputField.tsx";
 import CustomButton from "@/components/Button/CustomButton.tsx";
 import { Link, useNavigate } from "react-router-dom";
-import AuthImg from "../../assets/images/authImage.png";
+import AuthImg from "../../assets/images/authImg.png";
+import BusLogo from "../../assets/images/BusLogo.png";
 import { useForm } from "react-hook-form";
 
 interface LoginFormValues {
@@ -55,7 +56,8 @@ const LoginForm = () => {
         <div className="flex min-h-screen bg-gradient-to-r from-red-100 via-red-100 to-[#FAFAFA] from-0% via-50% to-100%">
             {/* Left Section */}
             <div className="w-1/2 flex flex-col items-center justify-center">
-                <img className="h-screen w-auto" src={AuthImg} alt="Auth" />
+                <img className="h-40 w-auto" src={BusLogo} alt="BusLogo"/>
+                <img className="h-125 w-auto" src={AuthImg} alt="Auth"/>
             </div>
 
             {/* Right Section (Login Form) */}

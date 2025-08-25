@@ -1,6 +1,7 @@
 import { RiFacebookCircleFill, RiInstagramFill } from "react-icons/ri";
 import { FaTwitter, FaYoutube } from "react-icons/fa";
 import footerData from "../../data/data.json";
+import Logo from "@/assets/images/BusLogo.png";
 
 const Footer = () => {
     return (
@@ -22,9 +23,13 @@ const Footer = () => {
                     </div>
 
                     {/* Middle - Contact Info */}
-                    <div className="text-center md:text-left">
-                        <p className="mb-4 md:mb-0 font-medium">{footerData.footerData.copyright}</p>
+                    <div className="text-center">
+                        <img className="h-20 w-auto mx-auto cursor-pointer" src={Logo} alt="Logo"/>
+                        <p className="mb-4 md:mb-0 font-medium">
+                            {footerData.footerData.copyright}
+                        </p>
                     </div>
+
 
                     {/* Right Side - Social Links & Copyright */}
                     <div className="text-center md:text-right">

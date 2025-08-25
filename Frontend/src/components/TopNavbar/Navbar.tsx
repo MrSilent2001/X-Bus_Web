@@ -1,5 +1,5 @@
 import {Link, useNavigate} from "react-router-dom";
-import Logo from "../../assets/images/logo.png";
+import Logo from "../../assets/images/BusLogo.png";
 import PopOver from "@/components/PopOver/PopOver.tsx";
 
 const Navbar = () => {
@@ -16,7 +16,7 @@ const Navbar = () => {
 
                 {/* Logo Section */}
                 <div className="flex items-center space-x-2">
-                        <img className="h-12 w-auto cursor-pointer" src={Logo} alt="Logo" onClick={handleRedirect}/>
+                        <img className="h-14 w-auto cursor-pointer" src={Logo} alt="Logo" onClick={handleRedirect}/>
 
                 </div>
 
@@ -25,7 +25,7 @@ const Navbar = () => {
                     <Link to="/dashboard" className="hover:text-red-600">Home</Link>
                     <Link to="/locationTracking" className="hover:text-red-600">Location</Link>
                     <Link to="/feedback" className="hover:text-red-600">Feedback</Link>
-                    <Link to="/summery" className="hover:text-red-600">Summery</Link>
+                    {/*<Link to="/summery" className="hover:text-red-600">Summery</Link>*/}
                 </div>
 
                 <PopOver/>

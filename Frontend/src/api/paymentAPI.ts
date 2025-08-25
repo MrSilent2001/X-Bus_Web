@@ -7,12 +7,13 @@ const api = axios.create({
 
 const token = localStorage.getItem("accessToken");
 
-export const getTotalIncome = async () =>{
+export const getTotalIncome = async (busId?: number) =>{
     try {
-        const response = await api.get("/payment/total-income",{
-            headers:{
-                Authorization: `Bearer ${token}`
-            }
+        const url = busId ? `/payment/total-income/${busId}` : "/payment/total-income";
+        const response = await api.get(url, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
         });
 
         if (response.status === 200) {
@@ -27,9 +28,11 @@ export const getTotalIncome = async () =>{
 
     }
 }
-export const getTotalExpenses = async () =>{
+export const getTotalExpenses = async (busId: undefined | number) =>{
     try {
-        const response = await api.get("/payment/total-expense",{
+        console.log(busId)
+        const url = busId ? `/payment/total-expense/${busId}` : "/payment/total-expense";
+        const response = await api.get(url,{
             headers:{
                 Authorization: `Bearer ${token}`
             }
