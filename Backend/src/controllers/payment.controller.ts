@@ -1,9 +1,14 @@
 import express from "express";
-import {paymentSchema} from "../schema/paymentSchema";
-import {addNewExpense, createPayment, getExpenses, getIncome, savePaymentDetails} from "../services/payment.service";
+import {
+    addNewExpense,
+    createPayment,
+    getExpenses,
+    getIncome,
+    getUserPaymentHistory,
+    savePaymentDetails
+} from "../services/payment.service";
 import {CREATED, OK} from "../constants/http";
 import {expenseSchema} from "../schema/expenseSchema";
-import {getAllBuses} from "../services/bus.service";
 
 export const paymentController = {
     // newPayment: async (req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -48,21 +53,36 @@ export const paymentController = {
         }
     },
 
+    paymentsByUser: async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        try {
+            const filter = req.query.filter as "Today" | "Yesterday" | "This Week" | "Last Week" | "This Month" | "Last Month" | "All" | undefined;
+            const userId = req.params.userId;
+
+            const payments = await getUserPaymentHistory(filter ?? "All",Number(userId));
+            res.status(OK).json(payments);
+        } catch (error) {
+            next(error);
+        }
+    },
+
+
     totalIncome: async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        try{
-            const income = await getIncome();
+        try {
+            const busId = req.params.busId;
+            const income = await getIncome(Number(busId));
             res.status(OK).json(income);
-        } catch (error){
+        } catch (error) {
             next(error);
         }
     },
 
     totalExpense: async (req: express.Request, res: express.Response, next: express.NextFunction) => {
         try{
-            const expenses = await getExpenses();
+            const busId = req.params.busId;
+            const expenses = await getExpenses(Number(busId));
             res.status(OK).json(expenses);
         } catch (error){
             next(error);
         }
-    }
+    },
 }

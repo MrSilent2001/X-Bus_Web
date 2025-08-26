@@ -34,6 +34,7 @@ export const userController = {
     editUser: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try{
             const user = await editUser(req.body);
+            console.log("user", user)
             res.status(OK).json(user);
         } catch (error) {
             next(error);

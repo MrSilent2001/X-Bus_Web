@@ -9,6 +9,8 @@ import {Bus} from "../models/bus.model";
 import appAssert from "../utils/appAssert";
 import {NOT_FOUND} from "../constants/http";
 import {Stripe} from "stripe";
+import {dateFilter} from "../utils/dateFilter";
+import {Between} from "typeorm";
 
 const paymentRepository = AppDataSource.getRepository(Payment);
 const userRepository = AppDataSource.getRepository(User);
@@ -118,30 +120,68 @@ export const savePaymentDetails = async (data: string) => {
     return payment;
 }
 
+export const getUserPaymentHistory = async (
+    filter: "Today" | "Yesterday" | "This Week" | "Last Week" | "This Month" | "Last Month" | "All" = "All",
+    userId: number
+) => {
+    const { startDate, endDate } = dateFilter(filter);
+
+    const where: any = {
+        user: { id: userId },
+    };
+
+    if (filter !== "All" && startDate && endDate) {
+        where.date = Between(startDate, endDate);
+    }
+
+    const payments = await paymentRepository.find({
+        where,
+        order: { date: "DESC" },
+        relations: ["user", "schedule", "schedule.bus"],
+    });
+
+    return payments;
+};
+
+
+
 //=================================================Income =================================================================
 
-export const getIncome = async () => {
-    // Total Income
-    const totalResult = await paymentRepository
+export const getIncome = async (busId?: number) => {
+    // ================= Total Income =================
+    let totalQuery = paymentRepository
         .createQueryBuilder("payment")
         .select("SUM(payment.amount)", "total")
-        .getRawOne();
+        .innerJoin("payment.schedule", "schedule")
+        .innerJoin("schedule.bus", "bus");
 
-    const totalIncome = Number(totalResult.total) || 0;
+    if (busId) {
+        totalQuery = totalQuery.where("bus.id = :busId", { busId });
+    }
 
-    // Monthly income grouped by year and month
-    const monthlyResults = await paymentRepository
+    const totalResult = await totalQuery.getRawOne();
+    const totalIncome = Number(totalResult?.total) || 0;
+
+    // ================= Monthly Breakdown =================
+    let monthlyQuery = paymentRepository
         .createQueryBuilder("payment")
         .select("EXTRACT(YEAR FROM payment.date)", "year")
         .addSelect("EXTRACT(MONTH FROM payment.date)", "month")
         .addSelect("SUM(payment.amount)", "total")
+        .innerJoin("payment.schedule", "schedule")
+        .innerJoin("schedule.bus", "bus")
         .groupBy("year")
         .addGroupBy("month")
         .orderBy("year", "ASC")
-        .addOrderBy("month", "ASC")
-        .getRawMany();
+        .addOrderBy("month", "ASC");
 
-    // Organize data by year, each year with all months initialized to 0
+    if (busId) {
+        monthlyQuery = monthlyQuery.where("bus.id = :busId", { busId });
+    }
+
+    const monthlyResults = await monthlyQuery.getRawMany();
+
+    // ================= Organize Annual Data =================
     const annualIncome: Record<string, Record<string, number>> = {};
 
     for (const row of monthlyResults) {
@@ -151,45 +191,58 @@ export const getIncome = async () => {
         const amount = Number(row.total);
 
         if (!annualIncome[year]) {
-            // Initialize all months to 0 for this year
             annualIncome[year] = {};
             monthNames.forEach((m) => (annualIncome[year][m] = 0));
         }
 
         annualIncome[year][monthName] = amount;
     }
+
     return {
+        busId: busId ?? "all",
         totalIncome,
         annualIncome,
     };
 };
 
+
 //====================================================Expenses=============================================================
-export const getExpenses = async () => {
-    // Total Expenses
-    const totalExpenseResult = await expenseRepository
+export const getExpenses = async (busId?: number) => {
+    // ================= Total Expenses =================
+    let totalQuery = expenseRepository
         .createQueryBuilder("expense")
         .select("SUM(expense.amount)", "total")
-        .getRawOne();
+        .innerJoin("expense.bus", "bus");
 
-    const totalExpenses = Number(totalExpenseResult.total) || 0;
+    if (busId) {
+        totalQuery = totalQuery.where("bus.id = :busId", { busId });
+    }
 
-    // Monthly expenses grouped by year and month
-    const monthlyExpenseResults = await expenseRepository
+    const totalResult = await totalQuery.getRawOne();
+    const totalExpenses = Number(totalResult?.total) || 0;
+
+    // ================= Monthly Breakdown =================
+    let monthlyQuery = expenseRepository
         .createQueryBuilder("expense")
         .select("EXTRACT(YEAR FROM expense.date)", "year")
         .addSelect("EXTRACT(MONTH FROM expense.date)", "month")
         .addSelect("SUM(expense.amount)", "total")
+        .innerJoin("expense.bus", "bus")
         .groupBy("year")
         .addGroupBy("month")
         .orderBy("year", "ASC")
-        .addOrderBy("month", "ASC")
-        .getRawMany();
+        .addOrderBy("month", "ASC");
 
-    // Organize expense data by year, initialize months with 0
+    if (busId) {
+        monthlyQuery = monthlyQuery.where("bus.id = :busId", { busId });
+    }
+
+    const monthlyResults = await monthlyQuery.getRawMany();
+
+    // ================= Organize Annual Data =================
     const annualExpenses: Record<string, Record<string, number>> = {};
 
-    for (const row of monthlyExpenseResults) {
+    for (const row of monthlyResults) {
         const year = row.year;
         const monthIndex = parseInt(row.month, 10) - 1;
         const monthName = monthNames[monthIndex];
@@ -204,8 +257,10 @@ export const getExpenses = async () => {
     }
 
     return {
+        busId: busId ?? "all",
         totalExpenses,
         annualExpenses,
     };
 };
+
 

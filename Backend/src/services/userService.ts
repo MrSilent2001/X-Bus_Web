@@ -26,8 +26,10 @@ export const getUserById = async (id: string): Promise<User | null> => {
 }
 
 export const editUser = async (userData: any): Promise<User | null> => {
-    const user = await getUserByEmail(userData.email);
-    appAssert(!user, NOT_FOUND, "User not found");
+
+    const user = await getUserById(userData.id);
+    console.log("Found user:", user);
+    appAssert(user, NOT_FOUND, "User not found");
 
     user!.name = userData.name ?? user!.name;
     user!.nic = userData.nic ?? user!.nic;
