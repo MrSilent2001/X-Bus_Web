@@ -5,7 +5,7 @@ import {
     getAllBuses,
     getBusById,
     getBusRegNo,
-    getBusRoutes,
+    getBusRoutes, getBusScheduleById,
     registerNewBus,
     removeBus
 } from "../services/bus.service";
@@ -34,6 +34,15 @@ export const busController = {
     getBusById: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const bus = await getBusById(req.query.userId as string);
+            res.status(OK).json(bus);
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    getBusByScheduleId: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const bus = await getBusScheduleById(req.query.scheduleId as string);
             res.status(OK).json(bus);
         } catch (error) {
             next(error);

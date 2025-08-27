@@ -10,6 +10,7 @@ const busRoutes = Router();
 busRoutes.post("/register", authenticate, busController.registerNewBus);
 busRoutes.get("/getAllBuses", authenticate, busController.getAllBuses);
 busRoutes.get("/getBusById", authenticate, busController.getBusById);
+busRoutes.get("/getBusScheduleById", authenticate, busController.getBusByScheduleId);
 busRoutes.get("/getBusByRegNo", authenticate, busController.getBusByRegNo);
 busRoutes.get("/getBusRoutes", authenticate, busController.getBusRoutes);
 busRoutes.get("/getBusRegNo", authenticate, busController.getBusRegNo);

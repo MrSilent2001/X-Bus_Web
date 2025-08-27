@@ -4,8 +4,11 @@ import appAssert from "../utils/appAssert";
 import {CONFLICT, NOT_FOUND} from "../constants/http";
 import {hashPassword} from "../utils/bcrypt";
 import AppDataSource from "../config/connectDB";
+import {BusSchedule} from "../models/schedule.model";
 
 const busRepository = AppDataSource.getRepository(Bus);
+const busScheduleRepository = AppDataSource.getRepository(BusSchedule);
+
 export const registerNewBus = async (busData: BusReg) => {
     const existingBus = await busRepository.findOneBy({regNo: busData.regNo});
     appAssert(!existingBus, CONFLICT,"Bus already exists");
@@ -31,6 +34,15 @@ export const getBusById = async (identifier: string): Promise<Bus | null> => {
     }
 
     return bus;
+};
+
+export const getBusScheduleById = async (scheduleId: string): Promise<Bus | null> => {
+    const schedule = await busScheduleRepository.findOne({
+        where: { id: Number(scheduleId) },
+        relations: ["bus"],
+    });
+
+    return schedule ? schedule.bus : null;
 };
 
 export const findBusByRegNo = async (regNo   : string): Promise<Bus | null> => {

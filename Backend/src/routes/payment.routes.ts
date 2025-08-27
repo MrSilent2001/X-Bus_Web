@@ -11,6 +11,7 @@ paymentRoutes.post("/payment-sheet", authenticate, paymentController.createPayme
 paymentRoutes.post("/save-payment", authenticate, paymentController.savePayment);
 paymentRoutes.get("/total-income/:busId?", authenticate, paymentController.totalIncome);
 paymentRoutes.get("/user-payments/:userId", authenticate, paymentController.paymentsByUser);
+paymentRoutes.get("/bus-payments/:userId", authenticate, paymentController.paymentsByBus);
 
 // paymentRoutes.post("/newExpense", authenticate, authorize(["operator"]), paymentController.newExpense);
 paymentRoutes.post("/newExpense", authenticate, paymentController.newExpense);

@@ -1,7 +1,7 @@
 import express from "express";
 import {
     addNewExpense,
-    createPayment,
+    createPayment, getBusPaymentHistory,
     getExpenses,
     getIncome,
     getUserPaymentHistory,
@@ -65,6 +65,17 @@ export const paymentController = {
         }
     },
 
+    paymentsByBus: async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        try {
+            const filter = req.query.filter as "Today" | "Yesterday" | "This Week" | "Last Week" | "This Month" | "Last Month" | "All" | undefined;
+            const userId = req.params.userId;
+
+            const payments = await getBusPaymentHistory(filter ?? "All",Number(userId));
+            res.status(OK).json(payments);
+        } catch (error) {
+            next(error);
+        }
+    },
 
     totalIncome: async (req: express.Request, res: express.Response, next: express.NextFunction) => {
         try {

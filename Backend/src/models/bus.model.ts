@@ -2,6 +2,7 @@ import {Entity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne} from 'typeo
 import {BusSchedule} from "./schedule.model";
 import { Location } from './location.model';
 import {Expense} from "./expense.model";
+import {Payment} from "./payment.model";
 
 @Entity()
 export class Bus {
@@ -43,4 +44,8 @@ export class Bus {
 
     @OneToMany(() => Expense, expense => expense.bus)
     expenses!: Expense[];
+
+    // 👇 New relation
+    @OneToMany(() => Payment, payment => payment.bus)
+    payments!: Payment[];
 }

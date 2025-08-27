@@ -74,7 +74,8 @@ export const createPayment = async (data: any) => {
         metadata: {
             userId: data.user || "guest",
             scheduleId: data.scheduleId,
-            date: data.date
+            date: data.date,
+            busId: data.busId,
         },
         amount: data.amount * 100,
         currency: 'LKR',
@@ -91,17 +92,18 @@ export const createPayment = async (data: any) => {
     };
 }
 
-
 export const savePaymentDetails = async (data: string) => {
     const paymentIntentId = data.split('_secret')[0];
     const stripePaymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+    console.log(stripePaymentIntent);
 
     // Fetch the user and schedule entities
     const user = await userRepository.findOne({ where: { id: Number(stripePaymentIntent.metadata.userId) } });
     const schedule = await busScheduleRepository.findOne({ where: { id: Number(stripePaymentIntent.metadata.scheduleId) } });
+    const bus = await busRepository.findOne({ where: { id: Number(stripePaymentIntent.metadata.busId) } });
 
-    if (!user || !schedule) {
-        throw new Error("User or Schedule not found");
+    if (!user || !schedule || !bus) {
+        throw new Error("User, Bus or Schedule not found");
     }
 
     // Create the payment entity and assign full entities
@@ -110,7 +112,8 @@ export const savePaymentDetails = async (data: string) => {
         amount: Number(stripePaymentIntent.amount)/100,
         user,
         schedule,
-        status: stripePaymentIntent.status
+        status: stripePaymentIntent.status,
+        bus
     });
 
     // Save the payment entity to the database
@@ -143,6 +146,28 @@ export const getUserPaymentHistory = async (
     return payments;
 };
 
+export const getBusPaymentHistory = async (
+    filter: "Today" | "Yesterday" | "This Week" | "Last Week" | "This Month" | "Last Month" | "All" = "All",
+    userId: number
+) => {
+    const { startDate, endDate } = dateFilter(filter);
+
+    const where: any = {
+        bus: { id: userId },
+    };
+
+    if (filter !== "All" && startDate && endDate) {
+        where.date = Between(startDate, endDate);
+    }
+
+    const payments = await paymentRepository.find({
+        where,
+        order: { date: "DESC" },
+        relations: ["user", "schedule", "bus"],
+    });
+
+    return payments;
+};
 
 
 //=================================================Income =================================================================
