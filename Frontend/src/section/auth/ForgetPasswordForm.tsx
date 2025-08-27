@@ -1,116 +1,156 @@
-import {useState} from "react";
-import {forgotPassword} from "@/api/authAPI.ts";
-import InputField from "@/components/InputField/InputField.tsx";
-import CustomButton from "@/components/Button/CustomButton.tsx";
-import {useNavigate} from "react-router-dom";
-import AuthImg from "../../assets/images/authImage.png";
-import {ForgotPasswordSchema} from "@/schema/auth/ForgotPasswordSchema.ts";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { ForgotPasswordSchema } from "@/schema/auth/ForgotPasswordSchema";
+import InputField from "@/components/InputField/InputField";
+import CustomButton from "@/components/Button/CustomButton";
+import AuthImg from "@/assets/images/authImage.png";
 
-interface ForgotPasswordFormValues {
+interface ForgotPasswordFormData {
     email: string;
 }
 
-const ForgetPasswordForm = () =>{
+const ForgetPasswordForm = () => {
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
+    const [serverErrors, setServerErrors] = useState<string>("");
+
     const {
         register,
         handleSubmit,
-        reset,
         formState: { errors },
-    } = useForm<ForgotPasswordFormValues>({
+    } = useForm<ForgotPasswordFormData>({
         defaultValues: {
-            email: ""
+            email: "",
         },
     });
 
-    const [serverErrors, setServerErrors] = useState('');
-    const [loading, setLoading] = useState(false);
-
-    const handleLogin = async (data: ForgotPasswordFormValues) => {
+    const handleLogin = async (data: ForgotPasswordFormData) => {
         const validation = ForgotPasswordSchema.safeParse(data);
 
         if (!validation.success) {
             setServerErrors(validation.error.errors[0]?.message || "Invalid input");
             return;
         }
+
         setLoading(true);
+        setServerErrors("");
+
         try {
-            await forgotPassword(data);
-            console.log("Email: ", data.email);
-            reset();
-            localStorage.setItem("userEmail", data.email);
-            navigate("/verifyOTP");
-        } catch (error: unknown) {
-            console.log(error);
-            setServerErrors("Invalid input");
+            // Simulate API call
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+            
+            // Navigate to OTP verification page
+            navigate("/verifyOTP", { state: { email: data.email } });
+        } catch (error) {
+            setServerErrors("Failed to send reset link. Please try again.");
         } finally {
             setLoading(false);
         }
-    }
+    };
 
-    const handleCancel = () =>{
+    const handleCancel = () => {
         navigate("/login");
-    }
+    };
+
     return (
-        <div className="flex min-h-screen bg-gradient-to-r from-red-100 via-red-100 to-[#FAFAFA] from-0% via-50% to-100%">
-            {/* Left Section */}
-            <div className="w-1/2 flex flex-col items-center justify-center">
+        <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-100 flex">
+            {/* Left Section - Simple Image */}
+            <div className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center">
                 <img className="h-screen w-auto" src={AuthImg} alt="Auth Image"/>
             </div>
 
-            {/* Right Section (Login Form) */}
-            <div className="w-1/2 flex flex-col items-center justify-center">
-
-                <div className="bg-white p-10 rounded-lg shadow-lg w-3/4">
-                    <div className="flex items-center justify-center mb-6">
-                        <h3 className="text-3xl font-bold">Forgot Your Password?</h3>
+            {/* Right Section - Forgot Password Form */}
+            <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
+                <div className="w-full max-w-md space-y-8">
+                    {/* Header */}
+                    <div className="text-center space-y-2">
+                        <h2 className="text-3xl font-bold text-gray-900">Forgot Password?</h2>
+                        <p className="text-gray-600">We'll send you a reset link</p>
                     </div>
 
-                    <form onSubmit={handleSubmit(handleLogin)}>
-                        {/* Input Fields */}
-                        <div className="my-8">
-                            <div className="flex items-center justify-between mb-6 font-semibold">
-                                <p className="text-grey-300 text-center mt-6 mb-4">
-                                    Enter your email address associated with your account and
-                                    we will send you an OTP to reset your password.
-                                </p>
-                            </div>
+                    {/* Form */}
+                    <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+                        <div className="text-center mb-6">
+                            <p className="text-gray-600 leading-relaxed">
+                                Enter your email address associated with your account and 
+                                we will send you an OTP to reset your password.
+                            </p>
+                        </div>
 
-                            <div className="mb-4 mt-4">
+                        <form onSubmit={handleSubmit(handleLogin)} className="space-y-6">
+                            {/* Email Field */}
+                            <div className="space-y-2">
+                                <label htmlFor="email" className="text-sm font-medium text-gray-700">
+                                    Email Address
+                                </label>
                                 <InputField
                                     id="email"
                                     type="email"
-                                    placeholder="Email"
+                                    placeholder="Enter your email address"
                                     {...register("email")}
                                     icon={undefined}
                                     label={false}
                                     labelName="email"
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200"
                                 />
                                 {errors.email && (
-                                    <p className="text-red-500 text-sm">{errors.email.message}</p>
+                                    <p className="text-red-600 text-sm flex items-center">
+                                        <span className="mr-1">⚠</span>
+                                        {errors.email.message}
+                                    </p>
                                 )}
                             </div>
+
+                            {/* Buttons */}
+                            <div className="flex gap-4">
+                                <CustomButton
+                                    type="button"
+                                    variant="secondary"
+                                    size="lg"
+                                    buttonLabel="Back to Login"
+                                    onClick={handleCancel}
+                                    fullWidth={true}
+                                />
+                                <CustomButton
+                                    type="submit"
+                                    variant="primary"
+                                    size="lg"
+                                    buttonLabel={loading ? "Sending..." : "Send Reset Link"}
+                                    disabled={loading}
+                                    loading={loading}
+                                    fullWidth={true}
+                                />
+                            </div>
+
+                            {/* Server Error */}
+                            {serverErrors && (
+                                <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+                                    <p className="text-red-700 text-sm text-center">{serverErrors}</p>
+                                </div>
+                            )}
+                        </form>
+
+                        {/* Help Text */}
+                        <div className="mt-6 text-center">
+                            <p className="text-sm text-gray-500">
+                                Remember your password?{" "}
+                                <CustomButton
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    buttonLabel="Sign in here"
+                                    onClick={handleCancel}
+                                    buttonClassName="text-red-700 hover:text-red-800 font-medium p-0 h-auto"
+                                />
+                            </p>
                         </div>
+                    </div>
 
-                        <div className="mt-6 flex gap-6">
-                            <CustomButton
-                                type="reset"
-                                onClick={handleCancel}
-                                buttonLabel="Back"
-                                buttonClassName="w-full py-3 text-red-800 bg-red-200 rounded-lg h-10 transition-all duration-300 transform hover:bg-gradient-to-r hover:from-red-300 hover:to-red-300 hover:scale-102 cursor-pointer"
-                            />
-                            <CustomButton
-                                type="submit"
-                                buttonLabel={loading ? "Loading..." : "Continue"}
-                                buttonClassName="w-full py-3 text-red-800 bg-red-200 rounded-lg h-10 transition-all duration-300 transform hover:bg-gradient-to-r hover:from-red-300 hover:to-red-300 hover:scale-102 cursor-pointer"
-                            />
-                        </div>
-                    </form>
-
-                    {/* Error Message */}
-                    {serverErrors && <p className="text-red-500 text-center mt-4">{serverErrors}</p>}
-
+                    {/* Footer Text */}
+                    <div className="text-center text-sm text-gray-500">
+                        <p>Need help? Contact our support team at support@xbus.com</p>
+                    </div>
                 </div>
             </div>
         </div>

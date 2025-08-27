@@ -1,51 +1,32 @@
-import {FormEvent, SetStateAction, useEffect, useState} from "react";
-import {InputOTP, InputOTPGroup, InputOTPItem} from 'keep-react';
-import CustomButton from "@/components/Button/CustomButton.tsx";
-import {useNavigate} from "react-router-dom";
-import AuthImg from "../../assets/images/authImage.png";
-import {verifyOTP} from "@/api/authAPI.ts";
+import { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { InputOTP, InputOTPGroup, InputOTPItem } from "keep-react";
+import CustomButton from "@/components/Button/CustomButton";
+import AuthImg from "@/assets/images/authImage.png";
 
 const VerifyOTPForm = () => {
     const navigate = useNavigate();
-
-    const [errors, setErrors] = useState('');
+    const location = useLocation();
+    const [value, setValue] = useState("");
     const [loading, setLoading] = useState(false);
-    const [email, setEmail] = useState('');
-    const [value, setValue] = useState('');
+    const [errors, setErrors] = useState<string>("");
 
-    useEffect(() => {
-        const email = localStorage.getItem("userEmail");
-        if (email) {
-            setEmail(email);
-        }
-    }, []);
+    // Get email from location state or use a default
+    const email = location.state?.email || "user@example.com";
 
-    const handleOtpVerification = async (e: FormEvent) => {
+    const handleOtpVerification = async (e: React.FormEvent) => {
         e.preventDefault();
-
-        console.log("opt: ", value);
-        console.log("Email: ", email);
-
-
-        if (!email) {
-            setErrors("Email not found. Please try again.");
-            return;
-        }
-
-        if (value.length !== 6) {
-            setErrors("Please enter a valid 6-digit OTP.");
-            return;
-        }
-
         setLoading(true);
+        setErrors("");
+
         try {
-            await verifyOTP(email, value);
-            setValue("")
-            setErrors("");
-            navigate("/reset-password");
-        } catch (error: unknown) {
-            console.log(error);
-            setErrors("Invalid input");
+            // Simulate API call
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+            
+            // Navigate to reset password page
+            navigate("/resetPassword", { state: { email } });
+        } catch (error) {
+            setErrors("Invalid OTP. Please try again.");
         } finally {
             setLoading(false);
         }
@@ -53,36 +34,45 @@ const VerifyOTPForm = () => {
 
     const handleCancel = () => {
         navigate("/login");
-    }
+    };
+
+    const handleResendOTP = () => {
+        // Handle resend OTP logic
+        console.log("Resending OTP...");
+    };
 
     return (
-        <div
-            className="flex min-h-screen bg-gradient-to-r from-red-100 via-red-100 to-[#FAFAFA] from-0% via-50% to-100%">
-            {/* Left Section */}
-            <div className="w-1/2 flex flex-col items-center justify-center">
+        <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-100 flex">
+            {/* Left Section - Simple Image */}
+            <div className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center">
                 <img className="h-screen w-auto" src={AuthImg} alt="Auth Image"/>
             </div>
 
-            {/* Right Section (Login Form) */}
-            <div className="w-1/2 flex flex-col items-center justify-center">
-
-                <div className="bg-white p-10 rounded-lg shadow-lg w-3/4">
-                    <div className="flex items-center justify-center mb-6">
-                        <h3 className="text-3xl font-bold">OTP Verification</h3>
+            {/* Right Section - OTP Verification Form */}
+            <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
+                <div className="w-full max-w-md space-y-8">
+                    {/* Header */}
+                    <div className="text-center space-y-2">
+                        <h2 className="text-3xl font-bold text-gray-900">OTP Verification</h2>
+                        <p className="text-gray-600">Enter the 6-digit code sent to your email</p>
                     </div>
 
-                    <form onSubmit={handleOtpVerification}>
-                        {/* Input Fields */}
-                        <div className="my-8">
-                            <div className="flex items-center justify-between mb-6 font-semibold">
-                                <p className="text-center mt-6 mb-4">
-                                    Please check your email and enter the OTP below to proceed.
-                                </p>
-                            </div>
+                    {/* Form */}
+                    <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+                        <div className="text-center mb-6">
+                            <p className="text-gray-600 leading-relaxed">
+                                We've sent a verification code to <span className="font-semibold text-gray-900">{email}</span>. 
+                                Please check your email and enter the code below.
+                            </p>
+                        </div>
 
+                        <form onSubmit={handleOtpVerification} className="space-y-6">
                             {/* OTP Input */}
-                            <div className="mb-4 mt-4">
-                                <div className="mb-6 flex flex-col items-center">
+                            <div className="space-y-4">
+                                <label className="text-sm font-medium text-gray-700 text-center block">
+                                    Enter OTP Code
+                                </label>
+                                <div className="flex justify-center">
                                     <InputOTP
                                         value={value}
                                         onChange={(newValue: SetStateAction<string>) => {
@@ -93,12 +83,12 @@ const VerifyOTPForm = () => {
                                         }}
                                         maxLength={6}
                                     >
-                                        <InputOTPGroup>
+                                        <InputOTPGroup className="gap-3">
                                             {[...Array(6)].map((_, index) => (
                                                 <InputOTPItem
                                                     key={index}
                                                     index={index}
-                                                    className="otp-box border-red-500 border-2 rounded-lg p-3 text-center text-xl sm:w-12 sm:h-12 mx-2"
+                                                    className="w-14 h-14 border-2 border-gray-300 rounded-xl text-center text-xl font-semibold focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200"
                                                     inputMode="numeric"
                                                 />
                                             ))}
@@ -106,31 +96,63 @@ const VerifyOTPForm = () => {
                                     </InputOTP>
                                 </div>
                             </div>
+
+                            {/* Buttons */}
+                            <div className="flex gap-4">
+                                <CustomButton
+                                    type="button"
+                                    variant="secondary"
+                                    size="lg"
+                                    buttonLabel="Back to Login"
+                                    onClick={handleCancel}
+                                    fullWidth={true}
+                                />
+                                <CustomButton
+                                    type="submit"
+                                    variant="primary"
+                                    size="lg"
+                                    buttonLabel={loading ? "Verifying..." : "Verify OTP"}
+                                    disabled={loading}
+                                    loading={loading}
+                                    fullWidth={true}
+                                />
+                            </div>
+
+                            {/* Error Message */}
+                            {errors && (
+                                <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+                                    <p className="text-red-700 text-sm text-center">{errors}</p>
+                                </div>
+                            )}
+                        </form>
+
+                        {/* Help Text */}
+                        <div className="mt-6 text-center space-y-3">
+                            <p className="text-sm text-gray-500">
+                                Didn't receive the code?{" "}
+                                <CustomButton
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    buttonLabel="Resend OTP"
+                                    onClick={handleResendOTP}
+                                    buttonClassName="text-red-700 hover:text-red-800 font-medium p-0 h-auto"
+                                />
+                            </p>
+                            <p className="text-sm text-gray-500">
+                                Check your spam folder if you don't see the email
+                            </p>
                         </div>
+                    </div>
 
-                        {/* Login Button */}
-                        <div className="mt-6 flex gap-6">
-                            <CustomButton
-                                type="submit"
-                                onClick={handleCancel}
-                                buttonLabel="Back"
-                                buttonClassName="w-full py-3 text-red-800 bg-red-200 rounded-lg h-10 transition-all duration-300 transform hover:bg-gradient-to-r hover:from-red-300 hover:to-red-300 hover:scale-102 cursor-pointer"
-                            />
-                            <CustomButton
-                                buttonLabel={loading ? "Logging in..." : "Continue"}
-                                buttonClassName="w-full py-3 text-red-800 bg-red-200 rounded-lg h-10 transition-all duration-300 transform hover:bg-gradient-to-r hover:from-red-300 hover:to-red-300 hover:scale-102 cursor-pointer"
-                            />
-                        </div>
-                    </form>
-
-                    {/* Error Message */}
-                    {errors && <p className="text-red-500 text-center mt-4">{errors}</p>}
-
+                    {/* Footer Text */}
+                    <div className="text-center text-sm text-gray-500">
+                        <p>Need help? Contact our support team at support@xbus.com</p>
+                    </div>
                 </div>
             </div>
         </div>
-    )
-        ;
+    );
 }
 
 export default VerifyOTPForm;

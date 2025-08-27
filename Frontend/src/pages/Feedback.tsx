@@ -4,14 +4,15 @@ import FeedbackCard from "@/components/Card/FeedbackCard.tsx";
 
 const Feedback = () => {
     return (
-        <div className="min-h-screen bg-gray-100">
+        <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-100">
             <Navbar/>
-
-            <FeedbackCard/>
+            
+            <div className="pt-20 pb-8">
+                <FeedbackCard/>
+            </div>
 
             <Footer/>
         </div>
-
     );
 }
 
