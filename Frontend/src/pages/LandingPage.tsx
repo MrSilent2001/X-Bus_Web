@@ -1,8 +1,6 @@
-import Logo from "@/assets/images/logo.png";
 import Bus from "@/assets/images/Bus.png";
 import BusLogo from "@/assets/images/BusLogo.png";
 import CustomButton from "@/components/Button/CustomButton.tsx";
-import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer/Footer";
 import { useNavigate } from "react-router-dom";
 import { faArrowRight, faBus, faMapMarkerAlt, faCreditCard, faHeadset } from "@fortawesome/free-solid-svg-icons";
@@ -14,6 +12,9 @@ const LandingPage = () => {
     const handleGetStartedClick = () => {
         navigate("/login");
     };
+    const handleSignUp = () => {
+        navigate("/signup");
+    }
 
     const features = [
         {
@@ -47,6 +48,21 @@ const LandingPage = () => {
                         <img src={BusLogo} alt="X-Bus Logo" className="h-16 w-auto" />
                         <span className="text-3xl font-bold text-gray-900">X-Bus</span>
                     </div>
+                    <div className="flex gap-2">
+                        <CustomButton
+                            onClick={handleSignUp}
+                            buttonLabel="Sign Up"
+                            variant="outline"
+                            buttonClassName="h-12 w-40 px-8 py-3 text-lg font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 cursor-pointer"
+                        />
+                        <CustomButton
+                            onClick={handleSignUp}
+                            buttonLabel="Bus Registration"
+                            variant="primary"
+                            buttonClassName="h-12 w-40 px-8 py-3 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 cursor-pointer"
+                        />
+                    </div>
+
                 </div>
             </nav>
 
@@ -107,26 +123,26 @@ const LandingPage = () => {
 
             {/* Middle Get Started Button Section */}
             <section className="py-16 px-6 bg-white">
-                <div className="max-w-4xl mx-auto text-center">
+                <div className="max-w-4xl mx-auto flex flex-col items-center justify-center text-center">
                     <h2 className="text-4xl font-bold text-gray-900 mb-6">
                         Ready to Get Started?
                     </h2>
                     <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
                         Join thousands of commuters who have already discovered the convenience of smart public transportation
                     </p>
-                    <Button 
+                    <CustomButton
                         onClick={handleGetStartedClick}
-                        size="lg"
-                        className="bg-red-700 hover:bg-red-800 text-white px-10 py-6 text-xl font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-                    >
-                        Get Started Now
-                        <FontAwesomeIcon icon={faArrowRight} className="ml-3" />
-                    </Button>
+                        buttonLabel="Get Started Now"
+                        buttonClassName="bg-red-700 hover:bg-red-800 text-white px-10 py-6 text-xl font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                        showIcon
+                        icon={<FontAwesomeIcon icon={faArrowRight} className="ml-2" />}
+                        iconPosition="right"
+                    />
                 </div>
             </section>
 
             {/* Features Section */}
-            <section className="py-20 px-6 bg-gray-50">
+            <section className="py-10 px-6 bg-gray-50">
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center mb-16">
                         <h2 className="text-4xl font-bold text-gray-900 mb-4">
