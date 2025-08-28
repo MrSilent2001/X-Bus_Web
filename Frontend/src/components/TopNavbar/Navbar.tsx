@@ -17,7 +17,6 @@ const Navbar = () => {
                 {/* Logo Section */}
                 <div className="flex items-center space-x-2">
                         <img className="h-14 w-auto cursor-pointer" src={Logo} alt="Logo" onClick={handleRedirect}/>
-
                 </div>
 
                 {/* Navigation Links */}

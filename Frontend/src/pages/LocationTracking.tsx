@@ -3,7 +3,7 @@ import { GoogleMap, LoadScript, Marker, InfoWindow } from "@react-google-maps/ap
 import Navbar from "@/components/TopNavbar/Navbar";
 import Footer from "@/components/Footer/Footer";
 import CustomButton from "@/components/Button/CustomButton";
-import { FaSearch, FaMapMarkerAlt, FaBus, FaLocationArrow, FaFilter, FaEye, FaEyeSlash, FaRefresh, FaInfoCircle } from "react-icons/fa";
+import { FaSearch, FaMapMarkerAlt, FaBus, FaLocationArrow, FaFilter, FaEye, FaEyeSlash, FaSync  } from "react-icons/fa";
 
 const LocationTracking = () => {
     const allMarkers = [
@@ -182,7 +182,7 @@ const LocationTracking = () => {
                                     size="sm"
                                     buttonLabel="Refresh"
                                     showIcon={true}
-                                    icon={<FaRefresh className="text-sm" />}
+                                    icon={<FaSync  className="text-sm" />}
                                     onClick={refreshData}
                                 />
                                 <CustomButton
@@ -221,12 +221,10 @@ const LocationTracking = () => {
                                                 type="button"
                                                 variant="ghost"
                                                 size="sm"
-                                                buttonLabel=""
+                                                buttonLabel="✕"
                                                 onClick={() => setSearch("")}
                                                 buttonClassName="text-gray-400 hover:text-red-600 p-1"
-                                            >
-                                                ✕
-                                            </CustomButton>
+                                            />
                                         )}
                                     </div>
                                     

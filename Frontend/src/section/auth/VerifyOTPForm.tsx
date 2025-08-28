@@ -75,9 +75,8 @@ const VerifyOTPForm = () => {
                                 <div className="flex justify-center">
                                     <InputOTP
                                         value={value}
-                                        onChange={(newValue: SetStateAction<string>) => {
-                                            // Only set the value if it's numeric
-                                            if (/^\d*$/.test(newValue as string)) {
+                                        onChange={(newValue: string) => {
+                                            if (/^\d*$/.test(newValue)) {
                                                 setValue(newValue);
                                             }
                                         }}
@@ -94,6 +93,7 @@ const VerifyOTPForm = () => {
                                             ))}
                                         </InputOTPGroup>
                                     </InputOTP>
+
                                 </div>
                             </div>
 

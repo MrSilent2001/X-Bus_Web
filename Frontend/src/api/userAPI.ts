@@ -19,17 +19,20 @@ export const getUserByEmail = async (email: string) =>{
             }
         });
 
+        console.log("API Response:", response);
 
         if (response.status === 200) {
-            return response.data;
+            // Check if the response has a data property or if the data is directly in response
+            const userData = response.data?.data || response.data;
+            console.log("User Data:", userData);
+            return { data: userData };
         }
 
-        return [];
+        return { data: null };
 
     } catch (error){
-        console.log("Failed to fetch data", error);
-        return [];
-
+        console.error("Failed to fetch user data:", error);
+        throw error;
     }
 }
 

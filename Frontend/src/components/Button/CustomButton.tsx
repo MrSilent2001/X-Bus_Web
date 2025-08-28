@@ -95,7 +95,6 @@ const CustomButton: React.FC<CustomButtonProps> = ({
             {isModalOpen && modalContent && (
                 <div className={modalClassName}>
                     {React.cloneElement(modalContent as React.ReactElement, {
-                        onClose: () => setIsModalOpen(false),
                     })}
                 </div>
             )}

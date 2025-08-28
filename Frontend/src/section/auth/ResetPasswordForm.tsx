@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ResetPasswordSchema } from "@/schema/auth/ResetPasswordSchema";
 import InputField from "@/components/InputField/InputField";
 import CustomButton from "@/components/Button/CustomButton";
@@ -13,12 +13,10 @@ interface ResetPasswordFormData {
 
 const ResetPasswordForm = () => {
     const navigate = useNavigate();
-    const location = useLocation();
     const [loading, setLoading] = useState(false);
     const [serverErrors, setServerErrors] = useState<string>("");
 
-    // Get email from location state or use a default
-    const email = location.state?.email || "user@example.com";
+
 
     const {
         register,

@@ -33,14 +33,23 @@ const AdminProfileForm = () => {
             try {
                 if (email) {
                     const response = await getUserByEmail(email);
-                    if (response) {
-                        Object.entries(response).forEach(([key, value]) => {
-                            if (key in response) {
-                                setValue(key as keyof User, value as never);
-                            }
-                        });
+                    console.log("AdminProfile API Response:", response);
+                    
+                    if (response && response.data) {
+                        const userData = response.data;
+                        console.log("AdminProfile User Data:", userData);
+                        
+                        // Map backend response to form fields
+                        setValue("name", userData.username || userData.name || '');
+                        setValue("email", userData.email || '');
+                        setValue("nic", userData.nic || '');
+                        setValue("contactNo", userData.contactNo || '');
+                        setValue("profilePicture", userData.profilePicture || '');
 
-                        setProfileImage(response.profilePicture || null);
+                        setProfileImage(userData.profilePicture || null);
+                    } else {
+                        console.log("No user data found in AdminProfile response");
+                        setErrors("No user data found. Please try again.");
                     }
                 }
             } catch (error) {
