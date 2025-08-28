@@ -14,7 +14,7 @@ const EditBusProfileForm = () => {
     const { regNo } = useParams();
     const navigate = useNavigate();
 
-    const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm<Bus & { profilePicture?: string }>({
+    const { register, handleSubmit, setValue, reset } = useForm<Bus & { profilePicture?: string }>({
         defaultValues: {
             regNo: '',
             fleetName: '',

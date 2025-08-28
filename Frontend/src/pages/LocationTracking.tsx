@@ -66,7 +66,7 @@ const LocationTracking = () => {
 
     const containerStyle = {
         width: "100%",
-        height: "calc(100vh - 140px)",
+        height: "calc(120vh - 100px)",
     };
 
     const center = useMemo(() => ({ lat: 7.8731, lng: 80.7718 }), []);
@@ -398,7 +398,6 @@ const LocationTracking = () => {
                     </LoadScript>
                 </div>
             </div>
-
             <Footer />
         </div>
     );

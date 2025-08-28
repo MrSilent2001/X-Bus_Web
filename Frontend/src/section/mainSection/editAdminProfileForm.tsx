@@ -8,13 +8,15 @@ import { getUserByEmail, updateUser } from "@/api/userAPI.ts";
 import { UpdateUserSchema } from "@/schema/auth/UpdateUserSchema.ts";
 import { User } from "@/types/user.ts";
 import { FaUser, FaEnvelope, FaIdCard, FaPhone, FaLock, FaEye, FaTimes, FaSave } from "react-icons/fa";
+import {useAuth} from "@/context/authContext.tsx";
+import {uploadToCloudinary} from "@/utils/functions/fileUpload.ts";
 
 const EditAdminProfileForm = () => {
-    const email = localStorage.getItem("userEmail");
+    const {user} = useAuth();
     const navigate = useNavigate();
 
     // Initialize react-hook form
-    const { register, setValue, handleSubmit, reset, formState: { errors: formErrors } } = useForm<User>({
+    const { register, setValue, handleSubmit, formState: { errors: formErrors } } = useForm<User>({
         defaultValues: {
             name: '',
             email: '',
@@ -37,8 +39,8 @@ const EditAdminProfileForm = () => {
         const fetchUserDetails = async () => {
             try {
                 setDataLoading(true);
-                if (email) {
-                    const response = await getUserByEmail(email);
+                if (user) {
+                    const response = await getUserByEmail(user?.email);
                     console.log("Form received response:", response);
                     
                     if (response && response.data) {
@@ -67,7 +69,7 @@ const EditAdminProfileForm = () => {
             }
         };
         fetchUserDetails();
-    }, [email, setValue]);
+    }, [user, setValue]);
 
     const handleUpdate = async (data: User) => {
         // Only set default password if no new password is provided
@@ -176,9 +178,16 @@ const EditAdminProfileForm = () => {
                                     borderColor="2px dashed #d1d5db"
                                     initialImage={profileImage || undefined}
                                     disabled={loading}
-                                    onImageUpload={(imageUrl) => {
-                                        setProfileImage(imageUrl);
-                                        setValue("profilePicture", imageUrl);
+                                    onImageUpload={async (file) => {
+                                        try {
+                                            const imageUrl = await uploadToCloudinary(file);
+                                            console.log("Image uploaded:", imageUrl);
+                                            setProfileImage(imageUrl);
+                                            setValue("profilePicture", imageUrl);
+                                        } catch (error) {
+                                            console.error("Image upload failed", error);
+                                            setErrors("Failed to upload image. Please try again.");
+                                        }
                                     }}
                                 />
                                 <p className="text-sm text-gray-500 mt-3">

@@ -88,7 +88,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
                     type="button"
                     buttonLabel={"Upload Image"}
                     onClick={triggerFileInput}
-                    buttonClassName={`mt-4 py-2 px-4 text-white bg-gray-400 bg-gradient-to-r from-red-200 to-red-200 rounded-lg h-10 text-red-800 hover:bg-red-300 cursor-pointer ${
+                    buttonClassName={`mt-4 py-2 px-4 ml-20 text-white bg-gray-400 bg-gradient-to-r from-red-200 to-red-200 rounded-lg h-10 text-red-800 hover:bg-red-300 cursor-pointer ${
                         disabled ? "opacity-50 cursor-not-allowed" : ""
                     }`}
                     disabled={disabled}

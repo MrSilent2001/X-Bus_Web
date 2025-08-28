@@ -7,9 +7,10 @@ import {getUserByEmail} from "@/api/userAPI.ts";
 import {useNavigate} from "react-router-dom";
 import {User} from "@/types/user.ts";
 import { FaUser, FaEnvelope, FaIdCard, FaPhone, FaEdit, FaArrowLeft } from "react-icons/fa";
+import {useAuth} from "@/context/authContext.tsx";
 
 const AdminProfileForm = () => {
-    const email = localStorage.getItem("userEmail");
+    const {user} = useAuth();
     const navigate = useNavigate();
 
     //Initialize react-hook form
@@ -31,19 +32,17 @@ const AdminProfileForm = () => {
         const fetchUserDetails = async () => {
             setLoading(true);
             try {
-                if (email) {
-                    const response = await getUserByEmail(email);
-                    console.log("AdminProfile API Response:", response);
+                if (user) {
+                    const response = await getUserByEmail(user?.email || '');
                     
                     if (response && response.data) {
                         const userData = response.data;
-                        console.log("AdminProfile User Data:", userData);
                         
                         // Map backend response to form fields
                         setValue("name", userData.username || userData.name || '');
                         setValue("email", userData.email || '');
                         setValue("nic", userData.nic || '');
-                        setValue("contactNo", userData.contactNo || '');
+                        setValue("contactNo", userData.contactNo || '-');
                         setValue("profilePicture", userData.profilePicture || '');
 
                         setProfileImage(userData.profilePicture || null);
@@ -60,7 +59,7 @@ const AdminProfileForm = () => {
             }
         };
         fetchUserDetails();
-    }, [email, setValue]);
+    }, [user, setValue]);
 
     const handleSubmit = () => {
         navigate(`/editAdminProfile`)
@@ -132,7 +131,7 @@ const AdminProfileForm = () => {
                                     <FaEnvelope className="text-red-600 text-xl" />
                                     <div>
                                         <p className="text-sm text-gray-500">Email</p>
-                                        <p className="text-lg font-semibold text-gray-900">{email}</p>
+                                        <p className="text-lg font-semibold text-gray-900">{user?.email}</p>
                                     </div>
                                 </div>
                             </div>

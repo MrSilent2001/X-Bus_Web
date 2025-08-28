@@ -13,7 +13,7 @@ const BusProfileForm = () => {
     const navigate = useNavigate();
 
     // Initialize React Hook Form
-    const {register, setValue} = useForm<Bus & { profilePicture?: string }>({
+    const {register, setValue, watch} = useForm<Bus & { profilePicture?: string }>({
         defaultValues: {
             regNo: '',
             fleetName: '',
@@ -26,6 +26,8 @@ const BusProfileForm = () => {
             profilePicture: undefined
         }
     });
+    const seatingCapacity = watch("seatingCapacity");
+    const busFare = watch("busFare");
 
     const [errors, setErrors] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
@@ -37,6 +39,7 @@ const BusProfileForm = () => {
             try {
                 if (regNo) {
                     const response = await getBusByRegNo(regNo);
+                    console.log(response);
                     if (response) {
                         Object.entries(response).forEach(([key, value]) => {
                             if (key in response) {
@@ -77,7 +80,7 @@ const BusProfileForm = () => {
     }
 
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-20">
             {/* Header Section */}
             <div className="mb-8">
                 <div className="flex items-center space-x-4 mb-6">
@@ -127,7 +130,7 @@ const BusProfileForm = () => {
                                     <FaUsers className="text-red-600 text-xl" />
                                     <div>
                                         <p className="text-sm text-gray-500">Seating Capacity</p>
-                                        <p className="text-lg font-semibold text-gray-900">40 seats</p>
+                                        <p className="text-lg font-semibold text-gray-900">{seatingCapacity} Seats</p>
                                     </div>
                                 </div>
                             </div>
@@ -136,7 +139,7 @@ const BusProfileForm = () => {
                                     <FaMoneyBillWave className="text-red-600 text-xl" />
                                     <div>
                                         <p className="text-sm text-gray-500">Fare</p>
-                                        <p className="text-lg font-semibold text-gray-900">LKR 150</p>
+                                        <p className="text-lg font-semibold text-gray-900">Rs. {busFare}</p>
                                     </div>
                                 </div>
                             </div>
