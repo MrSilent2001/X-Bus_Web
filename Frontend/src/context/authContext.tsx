@@ -2,8 +2,9 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 
+interface AuthUser { email: string; role?: string; }
 interface AuthContextType {
-    user: { email: string } | null;
+    user: AuthUser | null;
     loading: boolean;
     login: (token: string) => void;
     logout: () => void;
@@ -14,7 +15,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const navigate = useNavigate();
 
-    const [user, setUser] = useState<{ email: string } | null>(null);
+    const [user, setUser] = useState<AuthUser | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -22,8 +23,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
         if (token) {
             try {
-                const decoded: { identifier: string } = jwtDecode(token);
-                setUser({ email: decoded.identifier });
+                const decoded: { identifier: string; role?: string } = jwtDecode(token);
+                setUser({ email: decoded.identifier, role: decoded.role });
             } catch (error) {
                 console.error("Invalid token:", error);
                 logout();
@@ -35,11 +36,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const login = (token: string) => {
         localStorage.setItem("accessToken", token);
-        const decoded: { identifier: string } = jwtDecode(token);
-        setUser({ email: decoded.identifier });
+        const decoded: { identifier: string; role?: string } = jwtDecode(token);
+        const nextUser: AuthUser = { email: decoded.identifier, role: decoded.role };
+        setUser(nextUser);
 
         setTimeout(() => {
-            navigate("/dashboard");
+            if (nextUser.role === "super_admin") {
+                navigate("/admin/registration-requests");
+            } else {
+                navigate("/dashboard");
+            }
         }, 100);
     };
 

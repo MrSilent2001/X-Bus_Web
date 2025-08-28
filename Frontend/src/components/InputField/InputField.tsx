@@ -48,6 +48,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         const [isFocused, setIsFocused] = useState(false);
 
         const handleFocus = () => setIsFocused(true);
+        const handleBlur = () => setIsFocused(false);
 
         // Exclude onChange and onBlur from register to avoid TS warning
         const { onChange: _, onBlur: __, ref: registerRef, ...registerRest } = register || {};
@@ -83,16 +84,17 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
                         type={type}
                         value={value}
                         onChange={onChange}
-                        placeholder={type !== "file" ? placeholder : undefined}
+                        placeholder={type !== "file" ? (label ? "" : placeholder) : undefined}
                         accept={type === "file" ? accept : undefined}
                         onFocus={handleFocus}
+                        onBlur={handleBlur}
                         {...registerRest}
                         ref={setRefs}
                         className={`block ${width} h-10 py-2 px-3 text-sm text-black border rounded-md border-gray-400 focus:outline-none focus:ring-gray-700 focus:border-carnation-300 ${
                             uppercase ? "uppercase" : ""
                         } ${disabled ? "bg-gray-200 cursor-not-allowed text-gray-500" : ""} ${className}`}
                         style={{ textTransform: uppercase ? "uppercase" : "none" }}
-                        aria-label={ariaLabel || placeholder}
+                        aria-label={ariaLabel || (!label ? placeholder : labelName)}
                         min={type === "number" ? min : undefined}
                         max={type === "number" ? max : undefined}
                         disabled={disabled}

@@ -56,7 +56,7 @@ const LandingPage = () => {
                             buttonClassName="h-12 w-40 px-8 py-3 text-lg font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 cursor-pointer"
                         />
                         <CustomButton
-                            onClick={handleSignUp}
+                            onClick={() => navigate("/bus-registration-requests")}
                             buttonLabel="Bus Registration"
                             variant="primary"
                             buttonClassName="h-12 w-40 px-8 py-3 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 cursor-pointer"
@@ -78,11 +78,11 @@ const LandingPage = () => {
                                     <span className="block text-red-700">Public Transport</span>
                                 </h1>
                                 <p className="text-xl text-gray-600 leading-relaxed max-w-lg">
-                                    Experience the future of bus transportation with real-time tracking, 
+                                    Experience the future of bus transportation with real-time tracking,
                                     smart routing, and seamless payments. Join thousands of satisfied commuters.
                                 </p>
                             </div>
-                            
+
                             <div className="flex flex-col sm:flex-row gap-4">
                                 <CustomButton
                                     onClick={handleGetStartedClick}
@@ -111,9 +111,9 @@ const LandingPage = () => {
 
                         {/* Right Image */}
                         <div className="relative">
-                            <img 
-                                src={Bus} 
-                                alt="Modern Bus" 
+                            <img
+                                src={Bus}
+                                alt="Modern Bus"
                                 className="w-full h-auto"
                             />
                         </div>
@@ -155,14 +155,14 @@ const LandingPage = () => {
 
                     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                         {features.map((feature, index) => (
-                            <div 
+                            <div
                                 key={index}
                                 className="bg-white p-8 text-center hover:shadow-lg transition-all duration-300 transform hover:-translate-y-2"
                             >
                                 <div className="w-16 h-16 bg-red-700 rounded-full flex items-center justify-center mx-auto mb-6">
-                                    <FontAwesomeIcon 
-                                        icon={feature.icon} 
-                                        className="text-white text-2xl" 
+                                    <FontAwesomeIcon
+                                        icon={feature.icon}
+                                        className="text-white text-2xl"
                                     />
                                 </div>
                                 <h3 className="text-xl font-semibold text-gray-900 mb-3">
