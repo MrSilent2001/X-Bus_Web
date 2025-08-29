@@ -1,12 +1,21 @@
 import {Link, useNavigate} from "react-router-dom";
 import Logo from "../../assets/images/BusLogo.png";
 import PopOver from "@/components/PopOver/PopOver.tsx";
+import { useAuth } from "@/context/authContext.tsx";
 
 const Navbar = () => {
     const navigate = useNavigate();
+    const { user } = useAuth();
+    const role = (user?.role || "").replace(/-/g, "_");
 
     const handleRedirect = () =>{
-        navigate("/dashboard");
+        if (role === "superadmin" || role === "super_admin") {
+            navigate("/");
+        } else if (user) {
+            navigate("/dashboard");
+        } else {
+            navigate("/");
+        }
     }
 
 
@@ -21,10 +30,16 @@ const Navbar = () => {
 
                 {/* Navigation Links */}
                 <div className="hidden md:flex gap-x-12 font-light text-lg text-red-900">
-                    <Link to="/dashboard" className="hover:text-red-600">Home</Link>
-                    <Link to="/locationTracking" className="hover:text-red-600">Location</Link>
-                    <Link to="/feedback" className="hover:text-red-600">Feedback</Link>
-                    {/*<Link to="/summery" className="hover:text-red-600">Summery</Link>*/}
+                    {role === "superadmin" || role === "super_admin" ? (
+                        <Link to="/bus-registration-requests" className="hover:text-red-600">Home</Link>
+                    ) : (
+                        <>
+                            <Link to="/dashboard" className="hover:text-red-600">Home</Link>
+                            <Link to="/locationTracking" className="hover:text-red-600">Location</Link>
+                            <Link to="/feedback" className="hover:text-red-600">Feedback</Link>
+                            {/*<Link to="/summery" className="hover:text-red-600">Summery</Link>*/}
+                        </>
+                    )}
                 </div>
 
                 <PopOver/>

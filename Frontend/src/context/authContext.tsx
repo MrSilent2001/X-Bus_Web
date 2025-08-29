@@ -41,8 +41,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(nextUser);
 
         setTimeout(() => {
-            if (nextUser.role === "super_admin") {
-                navigate("/admin/registration-requests");
+            if (nextUser.role === "super_admin" || nextUser.role === "superadmin") {
+                navigate("/bus-registration-requests");
             } else {
                 navigate("/dashboard");
             }

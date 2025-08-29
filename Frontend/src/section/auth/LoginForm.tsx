@@ -3,10 +3,11 @@ import { LoginSchema } from "@/schema/auth/LoginSchema.ts";
 import { userLogin } from "@/api/authAPI.ts";
 import InputField from "@/components/InputField/InputField.tsx";
 import CustomButton from "@/components/Button/CustomButton.tsx";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import AuthImg from "../../assets/images/authImg.png";
 import BusLogo from "../../assets/images/BusLogo.png";
 import { useForm, Controller } from "react-hook-form";
+import { useAuth } from "@/context/authContext.tsx";
 
 interface LoginFormValues {
     email: string;
@@ -14,13 +15,14 @@ interface LoginFormValues {
 }
 
 const LoginForm = () => {
-    const navigate = useNavigate();
     const { control, handleSubmit, reset, formState: { errors } } = useForm<LoginFormValues>({
         defaultValues: {
             email: "",
             password: "",
         },
     });
+
+    const { login } = useAuth();
 
     const [loading, setLoading] = useState(false);
     const [serverError, setServerError] = useState("");
@@ -39,12 +41,16 @@ const LoginForm = () => {
 
         try {
             const result = await userLogin(data);
+            console.log(result);
+
             if (!result || !result.token) {
                 setServerError("Invalid email or password.");
                 return;
             }
+
             reset();
-            navigate("/dashboard");
+            login(result.token);
+            return;
         } catch (error) {
             console.error(error);
             setServerError("Invalid email or password.");
@@ -52,6 +58,7 @@ const LoginForm = () => {
             setLoading(false);
         }
     };
+
 
     return (
         <div className="flex min-h-screen bg-gradient-to-r from-red-100 via-red-100 to-[#FAFAFA]">

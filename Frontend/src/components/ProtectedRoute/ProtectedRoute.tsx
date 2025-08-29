@@ -16,7 +16,9 @@ const ProtectedRoute = ({ roles }: Props) => {
     }
 
     if (roles && roles.length > 0) {
-        const hasRole = roles.includes(user.role || "");
+        const normalizedUserRole = (user.role || "").replace(/-/g, "_");
+        const normalizedRoles = roles.map(r => r.replace(/-/g, "_"));
+        const hasRole = normalizedRoles.includes(normalizedUserRole);
         if (!hasRole) {
             return <Navigate to="/dashboard" replace />;
         }

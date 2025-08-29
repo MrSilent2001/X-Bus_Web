@@ -47,7 +47,7 @@ const RegistrationRequests: React.FC = () => {
                     {loading ? (
                         <p>Loading...</p>
                     ) : (
-                        <div className="overflow-x-auto">
+                        <div className="overflow-x-auto min-h-[200px]">
                             <table className="min-w-full text-left text-sm">
                                 <thead className="border-b bg-gray-50">
                                     <tr>

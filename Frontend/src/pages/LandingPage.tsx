@@ -56,7 +56,7 @@ const LandingPage = () => {
                             buttonClassName="h-12 w-40 px-8 py-3 text-lg font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 cursor-pointer"
                         />
                         <CustomButton
-                            onClick={() => navigate("/bus-registration-requests")}
+                            onClick={() => navigate("/bus-registration-requests-form") }
                             buttonLabel="Bus Registration"
                             variant="primary"
                             buttonClassName="h-12 w-40 px-8 py-3 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 cursor-pointer"

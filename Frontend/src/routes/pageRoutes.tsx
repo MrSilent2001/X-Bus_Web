@@ -22,7 +22,7 @@ const PageRoutes = () =>{
     return (
         <Routes>
             <Route path="/" element={<LandingPage/>}/>
-            <Route path="/bus-registration-requests" element={<BusRegistrationRequests/>}/>
+            <Route path="/bus-registration-requests-form" element={<BusRegistrationRequests/>}/>
 
             <Route path="/signup" element={<SignUp/>}/>
             <Route path="/login" element={<Login/>}/>
@@ -42,8 +42,8 @@ const PageRoutes = () =>{
                     <Route path="/summery" element={<SummeryReport/>}/>
             </Route>
 
-            <Route element={<ProtectedRoute roles={["super_admin"]}/> }>
-                <Route path="/admin/registration-requests" element={<RegistrationRequests/>} />
+            <Route element={<ProtectedRoute roles={["superadmin"]}/> }>
+                <Route path="/bus-registration-requests" element={<RegistrationRequests/>} />
             </Route>
         </Routes>
     );
