@@ -26,6 +26,8 @@ app.use(express.urlencoded({ limit: '20mb', extended: true }));
 const allowedOrigins = [
     "http://localhost:5173",
     "http://192.168.1.100:8081",
+    "exp://127.0.0.1:19000",
+    "exp://localhost:19000"
 ];
 
 app.use(

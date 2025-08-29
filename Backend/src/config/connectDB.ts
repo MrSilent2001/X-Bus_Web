@@ -11,6 +11,7 @@ import {Payment} from "../models/payment.model";
 import {Location} from "../models/location.model";
 import {Refund} from "../models/refund.model";
 import {Expense} from "../models/expense.model";
+import {RegistrationRequest} from "../models/registerRequest";
 
 const AppDataSource = new DataSource({
     type: "postgres",
@@ -24,7 +25,7 @@ const AppDataSource = new DataSource({
     //     rejectUnauthorized: false,
     // },
     entities: [
-        User, UserVerification, Bus, BusSchedule, Feedback, LostnFound, Reservation, Payment, Location, Refund, Expense
+        RegistrationRequest,User, UserVerification, Bus, BusSchedule, Feedback, LostnFound, Reservation, Payment, Location, Refund, Expense
     ],
     synchronize: true,
     logging: false
