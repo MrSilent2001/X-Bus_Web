@@ -88,7 +88,7 @@ const BusRegistrationRequests: React.FC = () => {
                         Bus Registration Request
                     </h1>
 
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 min-h-[500px]">
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
                         {/* Owner Details */}
                         <div>
                             <h2 className="text-lg font-semibold text-gray-800 mb-4">

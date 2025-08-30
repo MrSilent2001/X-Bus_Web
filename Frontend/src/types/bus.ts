@@ -10,4 +10,6 @@ export interface Bus {
     password?: string;
     confirmPassword?: string;
     profilePicture?: string | null | undefined;
+    operatorId?: string;
+    operatorName?: string;
 }

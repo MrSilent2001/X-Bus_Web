@@ -17,6 +17,7 @@ import EditBusProfile from "@/pages/EditBusProfile.tsx";
 import EditAdminProfile from "@/pages/EditAdminProfile.tsx";
 import BusRegistrationRequests from "@/pages/BusRegistrationRequests.tsx";
 import RegistrationRequests from "@/pages/SuperAdmin/RegistrationRequests.tsx";
+import BusOperators from "@/pages/BusOperators.tsx";
 
 const PageRoutes = () =>{
     return (
@@ -40,6 +41,7 @@ const PageRoutes = () =>{
                     <Route path="/locationTracking" element={<LocationTracking/>}/>
                     <Route path="/feedback" element={<Feedback/>}/>
                     <Route path="/summery" element={<SummeryReport/>}/>
+                    <Route path="/bus-operators" element={<BusOperators/>}/>
             </Route>
 
             <Route element={<ProtectedRoute roles={["superadmin"]}/> }>

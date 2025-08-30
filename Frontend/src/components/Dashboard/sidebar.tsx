@@ -1,6 +1,9 @@
 import CustomButton from "@/components/Button/CustomButton.tsx";
+import CustomAlert from "@/components/Alert/CustomAlert.tsx";
 import {Link, useNavigate} from "react-router-dom";
 import {Bus} from "@/types/bus.ts";
+import {useState, useEffect} from "react";
+import {getCurrentUser} from "@/api/userAPI";
 
 interface SidebarProps {
     busData: Bus[];
@@ -8,9 +11,34 @@ interface SidebarProps {
 
 const Sidebar = ({ busData }: SidebarProps) =>{
     const navigate = useNavigate();
+    const [userPermission, setUserPermission] = useState<string>("");
+    const [showAlert, setShowAlert] = useState(false);
+
+    useEffect(() => {
+        checkUserPermission();
+    }, []);
+
+    const checkUserPermission = async () => {
+        try {
+            const userData = await getCurrentUser();
+            if (userData.data) {
+                setUserPermission(userData.data.regPermStatus || "");
+            }
+        } catch (error) {
+            console.error("Error checking user permission:", error);
+        }
+    };
 
     const handleAddBus = () => {
-        navigate("/create-bus-account");
+        if (userPermission === "GRANTED") {
+            navigate("/create-bus-account");
+        } else {
+            setShowAlert(true);
+        }
+    };
+
+    const handleBusOperators = () => {
+        navigate("/bus-operators");
     };
 
     return (
@@ -49,6 +77,9 @@ const Sidebar = ({ busData }: SidebarProps) =>{
                                 <p className="text-sm text-gray-600">Route: {bus.routeNo}</p>
                                 <p className="text-xs text-gray-500">{bus.route}</p>
                                 <p className="text-xs text-gray-500">Capacity: {bus.seatingCapacity} seats</p>
+                                {bus.operatorName && (
+                                    <p className="text-xs text-blue-600">Operator: {bus.operatorName}</p>
+                                )}
                             </div>
                             <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
                         </div>
@@ -56,12 +87,21 @@ const Sidebar = ({ busData }: SidebarProps) =>{
                 ))}
             </div>
 
-            <CustomButton
-                type="button"
-                onClick={handleAddBus}
-                buttonLabel="+ Add New Bus"
-                buttonClassName="w-full bg-red-700 hover:bg-red-800 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-            />
+            <div className="space-y-3">
+                <CustomButton
+                    type="button"
+                    onClick={handleAddBus}
+                    buttonLabel="+ Add New Bus"
+                    buttonClassName="w-full bg-red-700 hover:bg-red-800 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                />
+
+                {/* <CustomButton
+                    type="button"
+                    onClick={handleBusOperators}
+                    buttonLabel="🚌 Manage Operators"
+                    buttonClassName="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                /> */}
+            </div>
 
             {/* Quick Stats */}
             <div className="mt-6 space-y-3">
@@ -89,6 +129,29 @@ const Sidebar = ({ busData }: SidebarProps) =>{
                     </div>
                 </div>
             </div>
+
+            <CustomAlert
+                isOpen={showAlert}
+                title="Permission Required"
+                message="You are not granted permission to add buses. Please submit a bus registration request."
+                variant="warning"
+                onClose={() => setShowAlert(false)}
+                actions={[
+                    {
+                        label: "Submit Request",
+                        onClick: () => {
+                            setShowAlert(false);
+                            navigate("/bus-registration-requests");
+                        },
+                        variant: "primary"
+                    },
+                    {
+                        label: "Cancel",
+                        onClick: () => setShowAlert(false),
+                        variant: "secondary"
+                    }
+                ]}
+            />
         </div>
     );
 }

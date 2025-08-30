@@ -6,7 +6,7 @@ import ImageUploader from "@/components/ImageUploader/ImageUpload.tsx";
 import {Bus} from "@/types/bus.ts";
 import {useParams, useNavigate} from "react-router-dom";
 import {useForm} from "react-hook-form";
-import { FaBus, FaRoute, FaUsers, FaMoneyBillWave, FaEdit, FaArrowLeft, FaBuilding, FaMapMarkedAlt } from "react-icons/fa";
+import { FaBus, FaRoute, FaUsers, FaMoneyBillWave, FaEdit, FaArrowLeft, FaBuilding, FaMapMarkedAlt, FaUserTie } from "react-icons/fa";
 
 const BusProfileForm = () => {
     const {regNo} = useParams();
@@ -28,6 +28,7 @@ const BusProfileForm = () => {
     });
     const seatingCapacity = watch("seatingCapacity");
     const busFare = watch("busFare");
+    const operatorName = watch("operatorName");
 
     const [errors, setErrors] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
@@ -143,6 +144,17 @@ const BusProfileForm = () => {
                                     </div>
                                 </div>
                             </div>
+                            {operatorName && (
+                                <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                                    <div className="flex items-center space-x-3">
+                                        <FaUserTie className="text-blue-600 text-xl" />
+                                        <div>
+                                            <p className="text-sm text-gray-500">Assigned Operator</p>
+                                            <p className="text-lg font-semibold text-gray-900">{operatorName}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -265,6 +277,44 @@ const BusProfileForm = () => {
                                     />
                                 </div>
                             </div>
+
+                            {/* Operator Information */}
+                            {operatorName && (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <label className="block text-sm font-semibold text-gray-700 flex items-center space-x-2">
+                                            <FaUserTie className="text-blue-600" />
+                                            <span>Assigned Operator</span>
+                                        </label>
+                                        <InputField
+                                            id="operatorName"
+                                            type="text"
+                                            placeholder="Operator Name"
+                                            {...register("operatorName")}
+                                            icon={undefined}
+                                            label={false}
+                                            labelName="operatorName"
+                                            disabled={true}
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="block text-sm font-semibold text-gray-700 flex items-center space-x-2">
+                                            <FaUserTie className="text-blue-600" />
+                                            <span>Operator ID</span>
+                                        </label>
+                                        <InputField
+                                            id="operatorId"
+                                            type="text"
+                                            placeholder="Operator ID"
+                                            {...register("operatorId")}
+                                            icon={undefined}
+                                            label={false}
+                                            labelName="operatorId"
+                                            disabled={true}
+                                        />
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         {/* Action Button */}
