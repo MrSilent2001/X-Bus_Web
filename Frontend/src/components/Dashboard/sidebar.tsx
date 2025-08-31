@@ -1,27 +1,31 @@
 import CustomButton from "@/components/Button/CustomButton.tsx";
 import CustomAlert from "@/components/Alert/CustomAlert.tsx";
-import {Link, useNavigate} from "react-router-dom";
-import {Bus} from "@/types/bus.ts";
-import {useState, useEffect} from "react";
-import {getCurrentUser} from "@/api/userAPI";
+import { Link, useNavigate } from "react-router-dom";
+import { Bus } from "@/types/bus.ts";
+import { useState, useEffect } from "react";
+import { getUserByEmail } from "@/api/userAPI";
+import { useAuth } from "@/context/authContext.tsx";
 
 interface SidebarProps {
     busData: Bus[];
 }
 
-const Sidebar = ({ busData }: SidebarProps) =>{
+const Sidebar = ({ busData }: SidebarProps) => {
     const navigate = useNavigate();
+    const { user } = useAuth();
     const [userPermission, setUserPermission] = useState<string>("");
     const [showAlert, setShowAlert] = useState(false);
 
     useEffect(() => {
         checkUserPermission();
-    }, []);
+    }, [user?.email]);
 
     const checkUserPermission = async () => {
+        if (!user?.email) return;
         try {
-            const userData = await getCurrentUser();
-            if (userData.data) {
+            const userData = await getUserByEmail(user.email);
+            console.log(userData);
+            if (userData?.data) {
                 setUserPermission(userData.data.regPermStatus || "");
             }
         } catch (error) {
@@ -37,10 +41,6 @@ const Sidebar = ({ busData }: SidebarProps) =>{
         }
     };
 
-    const handleBusOperators = () => {
-        navigate("/bus-operators");
-    };
-
     return (
         <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 h-fit">
             <div className="flex items-center justify-between mb-6">
@@ -54,24 +54,22 @@ const Sidebar = ({ busData }: SidebarProps) =>{
                 {busData.map((bus) => (
                     <Link key={bus.regNo} to={`/busProfile/${bus.regNo}`}>
                         <div className="flex items-center p-4 bg-gradient-to-r from-red-50 to-red-100 rounded-xl border border-red-200 hover:from-red-100 hover:to-red-200 hover:border-red-300 transition-all duration-300 transform hover:scale-105 cursor-pointer">
-                            {/* Bus Picture or Default Icon */}
                             {bus.profilePicture ? (
-                                <img 
-                                    src={bus.profilePicture} 
-                                    alt={`Bus ${bus.regNo}`} 
+                                <img
+                                    src={bus.profilePicture}
+                                    alt={`Bus ${bus.regNo}`}
                                     className="w-12 h-12 rounded-xl object-cover mr-4 border-2 border-red-200"
                                     onError={(e) => {
-                                        // Fallback to default icon if image fails to load
                                         const target = e.target as HTMLImageElement;
-                                        target.style.display = 'none';
-                                        target.nextElementSibling?.classList.remove('hidden');
+                                        target.style.display = "none";
+                                        target.nextElementSibling?.classList.remove("hidden");
                                     }}
                                 />
                             ) : null}
-                            <div className={`w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center mr-4 ${bus.profilePicture ? 'hidden' : ''}`}>
+                            <div className={`w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center mr-4 ${bus.profilePicture ? "hidden" : ""}`}>
                                 <span className="text-white font-bold text-sm">🚌</span>
                             </div>
-                            
+
                             <div className="flex-1">
                                 <p className="font-bold text-gray-900">{bus.regNo}</p>
                                 <p className="text-sm text-gray-600">Route: {bus.routeNo}</p>
@@ -94,16 +92,8 @@ const Sidebar = ({ busData }: SidebarProps) =>{
                     buttonLabel="+ Add New Bus"
                     buttonClassName="w-full bg-red-700 hover:bg-red-800 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
                 />
-
-                {/* <CustomButton
-                    type="button"
-                    onClick={handleBusOperators}
-                    buttonLabel="🚌 Manage Operators"
-                    buttonClassName="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-                /> */}
             </div>
 
-            {/* Quick Stats */}
             <div className="mt-6 space-y-3">
                 <div className="bg-gradient-to-r from-red-50 to-red-100 rounded-xl p-4 border border-red-200">
                     <div className="flex items-center justify-between">
@@ -143,17 +133,17 @@ const Sidebar = ({ busData }: SidebarProps) =>{
                             setShowAlert(false);
                             navigate("/bus-registration-requests");
                         },
-                        variant: "primary"
+                        variant: "primary",
                     },
                     {
                         label: "Cancel",
                         onClick: () => setShowAlert(false),
-                        variant: "secondary"
-                    }
+                        variant: "secondary",
+                    },
                 ]}
             />
         </div>
     );
-}
+};
 
 export default Sidebar;

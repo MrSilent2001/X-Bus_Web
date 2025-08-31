@@ -9,19 +9,7 @@ import Footer from "@/components/Footer/Footer";
 import { uploadFileToCloudinaryAuto } from "@/utils/functions/fileUpload";
 import { submitBusRegistrationRequest } from "@/api/busAPI";
 import Dropdown from "@/components/Dropdown/dropdown.tsx";
-
-interface BusRegistrationFormData {
-    ownerName: string;
-    email: string;
-    contact: string;
-    age: number;
-    gender: string;
-    regNo: string;
-    busType: string;
-    manufactureYear: number;
-    chassisNo: string;
-    proofLetter: FileList;
-}
+import {BusRegistrationFormData} from "@/types/bus.ts";
 
 const BusRegistrationRequests: React.FC = () => {
     const navigate = useNavigate();
@@ -41,7 +29,7 @@ const BusRegistrationRequests: React.FC = () => {
 
     const onSubmit = async (data: BusRegistrationFormData) => {
         try {
-            const file = data.proofLetter?.[0];
+            const file = data.proof?.[0];
             if (!file) throw new Error("Proof letter file is missing");
 
             const url = await uploadFileToCloudinaryAuto(file);
@@ -49,14 +37,14 @@ const BusRegistrationRequests: React.FC = () => {
             await submitBusRegistrationRequest({
                 ownerName: data.ownerName,
                 email: data.email,
-                contact: data.contact,
+                contactNo: data.contactNo,
                 age: Number(data.age),
                 gender: data.gender,
-                regNo: data.regNo,
-                busType: data.busType,
-                manufactureYear: Number(data.manufactureYear),
+                busRegNo: data.busRegNo,
+                type: data.type,
+                manufacturedYear: Number(data.manufacturedYear),
                 chassisNo: data.chassisNo,
-                proofLetterUrl: url,
+                proof: url,
             });
 
             setAlertVariant("success");
@@ -136,13 +124,13 @@ const BusRegistrationRequests: React.FC = () => {
                                         placeholder="Contact Number"
                                         label
                                         labelName="Contact Number"
-                                        register={register("contact", {
+                                        register={register("contactNo", {
                                             required: "Contact is required",
                                         })}
                                     />
-                                    {errors.contact && (
+                                    {errors.contactNo && (
                                         <p className="text-xs text-red-600 mt-1">
-                                            {errors.contact.message}
+                                            {errors.contactNo.message}
                                         </p>
                                     )}
                                 </div>
@@ -209,13 +197,13 @@ const BusRegistrationRequests: React.FC = () => {
                                         label
                                         labelName="Registration Number"
                                         uppercase
-                                        register={register("regNo", {
+                                        register={register("busRegNo", {
                                             required: "Registration number is required",
                                         })}
                                     />
-                                    {errors.regNo && (
+                                    {errors.busRegNo && (
                                         <p className="text-xs text-red-600 mt-1">
-                                            {errors.regNo.message}
+                                            {errors.busRegNo.message}
                                         </p>
                                     )}
                                 </div>
@@ -226,13 +214,13 @@ const BusRegistrationRequests: React.FC = () => {
                                         placeholder="Bus Type"
                                         label
                                         labelName="Bus Type"
-                                        register={register("busType", {
+                                        register={register("type", {
                                             required: "Bus type is required",
                                         })}
                                     />
-                                    {errors.busType && (
+                                    {errors.type && (
                                         <p className="text-xs text-red-600 mt-1">
-                                            {errors.busType.message}
+                                            {errors.type.message}
                                         </p>
                                     )}
                                 </div>
@@ -243,14 +231,14 @@ const BusRegistrationRequests: React.FC = () => {
                                         placeholder="Manufacture Year"
                                         label
                                         labelName="Manufacture Year"
-                                        register={register("manufactureYear", {
+                                        register={register("manufacturedYear", {
                                             required: "Manufacture year is required",
                                             valueAsNumber: true,
                                         })}
                                     />
-                                    {errors.manufactureYear && (
+                                    {errors.manufacturedYear && (
                                         <p className="text-xs text-red-600 mt-1">
-                                            {errors.manufactureYear.message}
+                                            {errors.manufacturedYear.message}
                                         </p>
                                     )}
                                 </div>
@@ -280,13 +268,13 @@ const BusRegistrationRequests: React.FC = () => {
                                         type="file"
                                         accept="application/pdf,image/*"
                                         className="block w-full h-10 py-2 px-3 text-sm text-black border rounded-md border-gray-400 focus:outline-none focus:ring-gray-700 focus:border-carnation-300 bg-white"
-                                        {...register("proofLetter", {
+                                        {...register("proof", {
                                             required: "Proof letter is required",
                                         })}
                                     />
-                                    {errors.proofLetter && (
+                                    {errors.proof && (
                                         <p className="text-xs text-red-600 mt-1">
-                                            {errors.proofLetter.message as string}
+                                            {errors.proof.message as string}
                                         </p>
                                     )}
                                 </div>

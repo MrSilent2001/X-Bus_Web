@@ -7,26 +7,6 @@ const api = axios.create({
 
 const token = localStorage.getItem("accessToken");
 
-export const getCurrentUser = async () => {
-    try {
-        const response = await api.get("/user/current", {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
-
-        if (response.status === 200) {
-            const userData = response.data?.data || response.data;
-            return { data: userData };
-        }
-
-        return { data: null };
-    } catch (error) {
-        console.error("Failed to fetch current user data:", error);
-        throw error;
-    }
-};
-
 export const getUserByEmail = async (email: string) =>{
     try {
         const response = await api.get("/user/getUserByEmail", {

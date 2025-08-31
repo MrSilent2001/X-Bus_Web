@@ -6,7 +6,7 @@ import ExpenseChart from "@/components/Dashboard/expenseChart.tsx";
 import Sidebar from "@/components/Dashboard/sidebar.tsx";
 import ChartFilters from "@/components/Dashboard/chartFilters.tsx";
 import { getAllBuses } from "@/api/busAPI.ts";
-import { getTotalIncome, getTotalExpenses } from "@/api/paymentAPI.ts";
+import { getTotalIncome } from "@/api/paymentAPI.ts";
 import { Bus } from "@/types/bus.ts";
 
 const Dashboard = () => {
@@ -16,7 +16,7 @@ const Dashboard = () => {
     const [totalRevenue, setTotalRevenue] = useState<number>(0);
     const [monthlyRevenue, setMonthlyRevenue] = useState<number>(0);
     const [totalTrips, setTotalTrips] = useState<number>(0);
-    const [customerSatisfaction, setCustomerSatisfaction] = useState<number>(4.8);
+    const [customerSatisfaction] = useState<number>(4.8);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {

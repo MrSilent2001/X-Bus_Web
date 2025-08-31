@@ -18,7 +18,7 @@ interface InputFieldProps {
     min?: number | string;
     max?: number | string;
     disabled?: boolean;
-    register?: UseFormRegisterReturn; // React Hook Form support
+    register?: UseFormRegisterReturn;
 }
 
 const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
@@ -50,10 +50,11 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         const handleFocus = () => setIsFocused(true);
         const handleBlur = () => setIsFocused(false);
 
-        // Exclude onChange and onBlur from register to avoid TS warning
-        const { onChange: _, onBlur: __, ref: registerRef, ...registerRest } = register || {};
+        // Safely extract RHF props
+        const { onChange: rhfOnChange, onBlur: rhfOnBlur, ref: registerRef, ...registerRest } =
+        register || {};
 
-        // Combine register.ref and forwarded ref
+        // Combine refs (RHF + forwarded ref)
         const setRefs = useCallback(
             (el: HTMLInputElement) => {
                 if (registerRef) registerRef(el);
@@ -83,12 +84,17 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
                         id={id}
                         type={type}
                         value={value}
-                        onChange={onChange}
                         placeholder={type !== "file" ? (label ? "" : placeholder) : undefined}
                         accept={type === "file" ? accept : undefined}
                         onFocus={handleFocus}
-                        onBlur={handleBlur}
-                        {...registerRest}
+                        onBlur={(e) => {
+                            rhfOnBlur?.(e); // RHF blur
+                            handleBlur();
+                        }}
+                        onChange={(e) => {
+                            rhfOnChange?.(e); // RHF change
+                            onChange?.(e);    // your optional change handler
+                        }}
                         ref={setRefs}
                         className={`block ${width} h-10 py-2 px-3 text-sm text-black border rounded-md border-gray-400 focus:outline-none focus:ring-gray-700 focus:border-carnation-300 ${
                             uppercase ? "uppercase" : ""
@@ -98,6 +104,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
                         min={type === "number" ? min : undefined}
                         max={type === "number" ? max : undefined}
                         disabled={disabled}
+                        {...registerRest}
                         {...rest}
                     />
                     {icon && type !== "file" && (

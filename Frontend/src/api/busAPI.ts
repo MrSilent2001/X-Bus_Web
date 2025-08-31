@@ -37,19 +37,19 @@ export const registerBus = async (formData: Bus) => {
 export type BusRegistrationRequestPayload = {
     ownerName: string;
     email: string;
-    contact: string;
+    contactNo: string;
     age: number;
     gender: string;
-    regNo: string;
-    busType: string;
-    manufactureYear: number;
+    busRegNo: string;
+    type: string;
+    manufacturedYear: number;
     chassisNo: string;
-    proofLetterUrl: string;
+    proof: string;
 };
 
 export const submitBusRegistrationRequest = async (payload: BusRegistrationRequestPayload) => {
     try {
-        const response = await api.post("/bus/registration-request", payload, {
+        const response = await api.post("/bus/requestBusReg", payload, {
             headers: {
                 Authorization: token ? `Bearer ${token}` : undefined
             }
@@ -61,13 +61,13 @@ export const submitBusRegistrationRequest = async (payload: BusRegistrationReque
     }
 }
 
-export type BusRegistrationRequest = BusRegistrationRequestPayload & { id: string; status: "pending" | "approved" | "rejected"; createdAt: string };
+export type BusRegistrationRequest = BusRegistrationRequestPayload & { id: string; status: "GRANTED" | "NOTGRANTED" | "TERMINATED"; createdAt: string };
 
 export const listBusRegistrationRequests = async (): Promise<BusRegistrationRequest[]> => {
     try {
-        const response = await api.get("/bus/registration-requests", {
+        const response = await api.get("/bus/getAllBusRegRequests", {
             headers: {
-                Authorization: token ? `Bearer ${token}` : undefined
+                Authorization: `Bearer ${token}`
             }
         });
         return response.data;
@@ -77,30 +77,18 @@ export const listBusRegistrationRequests = async (): Promise<BusRegistrationRequ
     }
 }
 
-export const approveBusRegistrationRequest = async (id: string) => {
+export const updateBusRegistrationRequest = async (busRegNo: string, status: "GRANTED" | "NOTGRANTED") => {
     try {
-        const response = await api.post(`/bus/registration-requests/${id}/approve`, {}, {
+        const response = await api.patch(`/bus/updateBusRegRequestStatus/${busRegNo}`, {
+            status: status
+        }, {
             headers: {
-                Authorization: token ? `Bearer ${token}` : undefined
+                Authorization: `Bearer ${token}`
             }
         });
         return response.data;
     } catch (error) {
-        console.error("Approve registration request failed:", error);
-        throw error;
-    }
-}
-
-export const rejectBusRegistrationRequest = async (id: string) => {
-    try {
-        const response = await api.post(`/bus/registration-requests/${id}/reject`, {}, {
-            headers: {
-                Authorization: token ? `Bearer ${token}` : undefined
-            }
-        });
-        return response.data;
-    } catch (error) {
-        console.error("Reject registration request failed:", error);
+        console.error("Update registration request failed:", error);
         throw error;
     }
 }

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Navbar from "@/components/TopNavbar/Navbar";
 import Footer from "@/components/Footer/Footer";
 import CustomButton from "@/components/Button/CustomButton";
-import { approveBusRegistrationRequest, BusRegistrationRequest, listBusRegistrationRequests, rejectBusRegistrationRequest } from "@/api/busAPI";
+import { updateBusRegistrationRequest, BusRegistrationRequest, listBusRegistrationRequests } from "@/api/busAPI";
 
 const RegistrationRequests: React.FC = () => {
     const [requests, setRequests] = useState<BusRegistrationRequest[]>([]);
@@ -19,18 +19,18 @@ const RegistrationRequests: React.FC = () => {
 
     useEffect(() => { load(); }, []);
 
-    const handleApprove = async (id: string) => {
+    const handleApprove = async (busRegNo: string) => {
         try {
-            await approveBusRegistrationRequest(id);
+            await updateBusRegistrationRequest(busRegNo, "GRANTED");
             await load();
         } catch (e) {
             setError("Failed to approve request");
         }
     };
 
-    const handleReject = async (id: string) => {
+    const handleReject = async (busRegNo: string) => {
         try {
-            await rejectBusRegistrationRequest(id);
+            await updateBusRegistrationRequest(busRegNo, "NOTGRANTED");
             await load();
         } catch (e) {
             setError("Failed to reject request");
@@ -68,13 +68,13 @@ const RegistrationRequests: React.FC = () => {
                                         <tr key={r.id} className="border-b">
                                             <td className="px-4 py-3">{r.ownerName}</td>
                                             <td className="px-4 py-3">{r.email}</td>
-                                            <td className="px-4 py-3">{r.contact}</td>
-                                            <td className="px-4 py-3 font-medium">{r.regNo}</td>
-                                            <td className="px-4 py-3">{r.busType}</td>
-                                            <td className="px-4 py-3">{r.manufactureYear}</td>
+                                            <td className="px-4 py-3">{r.contactNo}</td>
+                                            <td className="px-4 py-3 font-medium">{r.busRegNo}</td>
+                                            <td className="px-4 py-3">{r.type}</td>
+                                            <td className="px-4 py-3">{r.manufacturedYear}</td>
                                             <td className="px-4 py-3">{r.chassisNo}</td>
                                             <td className="px-4 py-3">
-                                                <a href={r.proofLetterUrl} target="_blank" rel="noreferrer" className="text-blue-600 underline">View</a>
+                                                <a href={r.proof} target="_blank" rel="noreferrer" className="text-blue-600 underline">View</a>
                                             </td>
                                             <td className="px-4 py-3 capitalize">{r.status}</td>
                                             <td className="px-4 py-3 flex gap-2">
@@ -82,14 +82,14 @@ const RegistrationRequests: React.FC = () => {
                                                     buttonLabel="Approve"
                                                     variant="success"
                                                     size="sm"
-                                                    disabled={r.status !== "pending"}
+                                                    disabled={r.status !== "NOTGRANTED"}
                                                     onClick={() => handleApprove(r.id)}
                                                 />
                                                 <CustomButton
                                                     buttonLabel="Reject"
                                                     variant="danger"
                                                     size="sm"
-                                                    disabled={r.status !== "pending"}
+                                                    disabled={r.status !== "GRANTED"}
                                                     onClick={() => handleReject(r.id)}
                                                 />
                                             </td>
