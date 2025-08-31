@@ -5,8 +5,7 @@ import {
     getAllUsers,
     getUserByEmail,
     getUserById,
-    removeUser,
-    requestBusRegistration, updateBusRegistrationStatus
+    removeUser
 } from "../services/userService";
 
 export const userController = {
@@ -56,32 +55,4 @@ export const userController = {
             next(error);
         }
     },
-
-    requestBusRegistration: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-        try{
-            const request = await requestBusRegistration(req.body);
-            res.status(OK).json(request);
-        } catch (error) {
-            next(error);
-        }
-    },
-
-    updateBusStatusController : async (req: Request, res: Response, next: NextFunction) => {
-        try{
-            const { busRegNo, status } = req.body;
-            const updatedRequest = await updateBusRegistrationStatus(busRegNo, status);
-            res.status(OK).json(updatedRequest);
-        }catch (error) {
-            next(error);
-        }
-    },
-
-    getAllBusRegistrationRequests: async (req: Request, res: Response, next: NextFunction) => {
-        try{
-            const requests = await getAllUsers();
-            res.status(OK).json(requests);
-        } catch (error){
-            next(error);
-        }
-    }
 }

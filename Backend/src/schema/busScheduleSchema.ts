@@ -16,11 +16,7 @@ const busScheduleSchema = z.object({
         })
         .positive("Seating capacity must be a positive number")
         .optional(),
-    totalIncome: z
-        .number({
-            required_error: "Total Income is required",
-            invalid_type_error: "Total Income must be a number",
-        }),
+
     busId: z.number({
         required_error: "busId is required",
         invalid_type_error: "busId must be a number",

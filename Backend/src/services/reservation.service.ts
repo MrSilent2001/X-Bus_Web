@@ -53,7 +53,6 @@ export const addNewReservation = async (data: Reserve) => {
 
         // Decrement seating and update income
         schedule!.seatingCapacity -= 1;
-        schedule!.totalIncome += busFare;
         await manager.save(schedule);
 
         // Create and save reservation

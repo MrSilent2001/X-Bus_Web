@@ -3,11 +3,11 @@ import {CREATED, OK} from "../constants/http";
 import {
     editBus, findBusByRegNo,
     getAllBuses,
-    getBusById,
+    getBusById, getBusRegistrationRequests,
     getBusRegNo,
     getBusRoutes, getBusScheduleById,
     registerNewBus,
-    removeBus
+    removeBus, requestBusRegistration, updateBusRegistrationStatus
 } from "../services/bus.service";
 import {busSchema} from "../schema/busSchema";
 
@@ -90,6 +90,34 @@ export const busController = {
             const buses = await getBusRegNo();
             res.status(OK).json(buses);
         }catch(error){
+            next(error);
+        }
+    },
+
+    requestBusRegistration: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try{
+            const request = await requestBusRegistration(req.body);
+            res.status(OK).json(request);
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    updateBusReqRequestStatus : async (req: Request, res: Response, next: NextFunction) => {
+        try{
+            const { busRegNo, status } = req.body;
+            const updatedRequest = await updateBusRegistrationStatus(busRegNo, status);
+            res.status(OK).json(updatedRequest);
+        }catch (error) {
+            next(error);
+        }
+    },
+
+    getAllBusRegistrationRequests: async (req: Request, res: Response, next: NextFunction) => {
+        try{
+            const requests = await getBusRegistrationRequests();
+            res.status(OK).json(requests);
+        } catch (error){
             next(error);
         }
     }

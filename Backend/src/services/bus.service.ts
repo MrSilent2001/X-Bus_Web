@@ -1,13 +1,18 @@
 import {Bus} from "../models/bus.model";
 import {BusReg} from "../schema/busSchema";
 import appAssert from "../utils/appAssert";
-import {CONFLICT, NOT_FOUND} from "../constants/http";
+import {CONFLICT, FORBIDDEN, NOT_FOUND} from "../constants/http";
 import {hashPassword} from "../utils/bcrypt";
 import AppDataSource from "../config/connectDB";
 import {BusSchedule} from "../models/schedule.model";
+import {RegistrationRequest} from "../models/registerRequest";
+import {RegistrationRequestDTO} from "../schema/regRequestSchema";
+import {RegPermStatus, User} from "../models/user.model";
 
 const busRepository = AppDataSource.getRepository(Bus);
 const busScheduleRepository = AppDataSource.getRepository(BusSchedule);
+const requestRepository = AppDataSource.getRepository(RegistrationRequest);
+const userRepository = AppDataSource.getRepository(User);
 
 export const registerNewBus = async (busData: BusReg) => {
     const existingBus = await busRepository.findOneBy({regNo: busData.regNo});
@@ -104,4 +109,57 @@ export const getBusRegNo = async () => {
 
     return buses.map(bus => bus.regNo);
 };
+
+export const requestBusRegistration = async (request: RegistrationRequestDTO) => {
+
+    const existingUser = await userRepository.findOneBy({ email: request.email });
+    appAssert(existingUser, NOT_FOUND, "User not found");
+
+    appAssert(
+        existingUser!.role === "owner",
+        FORBIDDEN,
+        "Only users with role owner can request bus registration"
+    );
+
+    const existingRequest = await requestRepository.findOneBy({
+        busRegNo: request.busRegNo,
+    });
+    appAssert(!existingRequest, CONFLICT, "Registration request for this bus already exists");
+
+    const newRequest = requestRepository.create(request);
+
+    await requestRepository.save(newRequest);
+    return newRequest;
+};
+
+export const updateBusRegistrationStatus = async (
+    busRegNo: string,
+    status: "NOTGRANTED" | "GRANTED" | "TERMINATED"
+) => {
+    const existingRequest = await requestRepository.findOneBy({ busRegNo });
+    appAssert(existingRequest, NOT_FOUND, "Registration request for this bus not found");
+
+    // Update the bus registration status
+    existingRequest!.status = status;
+    await requestRepository.save(existingRequest!);
+
+    // Update the user's regPermStatus using email
+    if (existingRequest!.email) {
+        const user = await userRepository.findOneBy({ email: existingRequest!.email });
+        if (user) {
+            // Map string to enum
+            user.regPermStatus = RegPermStatus[status as keyof typeof RegPermStatus];
+            await userRepository.save(user);
+        }
+    }
+
+    return existingRequest;
+};
+
+export const getBusRegistrationRequests = async (): Promise<RegistrationRequest[]> => {
+    const registrationRequests = await requestRepository.find();
+    console.log(registrationRequests);
+    return registrationRequests;
+}
+
 

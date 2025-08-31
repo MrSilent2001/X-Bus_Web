@@ -16,9 +16,6 @@ export class BusSchedule {
     @Column({nullable:false })
     seatingCapacity!:number;
 
-    @Column({nullable:false, default: 0})
-    totalIncome!:number;
-
     @ManyToOne(() => Bus, bus => bus.schedules)
     bus!: Bus;
 
