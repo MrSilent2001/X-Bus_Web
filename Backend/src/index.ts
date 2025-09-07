@@ -14,6 +14,7 @@ import scheduleRoutes from "./routes/schedule.routes";
 import lostnfoundRoutes from "./routes/lostnfound.routes";
 import reservationRoutes from "./routes/reservation.routes";
 import paymentRoutes from "./routes/payment.routes";
+import operatorRoutes from "./routes/operator.routes";
 
 dotenv.config();
 
@@ -54,6 +55,7 @@ app.use("/schedule", scheduleRoutes);
 app.use("/lostnfound", lostnfoundRoutes);
 app.use("/reservation", reservationRoutes);
 app.use("/payment", paymentRoutes);
+app.use("/operator", operatorRoutes);
 
 app.get("/", (req: Request, res: Response, next: NextFunction) => {
         res.status(OK).json({
