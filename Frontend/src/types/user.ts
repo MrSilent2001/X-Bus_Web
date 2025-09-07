@@ -17,7 +17,7 @@ export interface BusOperator {
     contactNo: string;
     nic: string;
     licenseNo: string;
-    experience: number;
-    assignedBusRegNo?: string;
+    yearsOfExperience: number;
+    busRegNo?: string;
     profilePicture?: string;
 }

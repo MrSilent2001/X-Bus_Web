@@ -47,14 +47,14 @@ export const getOperatorById = async (id: string): Promise<BusOperator | null> =
 
 export const createOperator = async (operatorData: BusOperator) => {
     try {
-        const response = await api.post("/operator/create", {
+        const response = await api.post("/operator/newOperator", {
             name: operatorData.name,
             email: operatorData.email,
             contactNo: operatorData.contactNo,
             nic: operatorData.nic,
             licenseNo: operatorData.licenseNo,
-            experience: operatorData.experience,
-            profilePicture: operatorData.profilePicture
+            yearsOfExperience: operatorData.yearsOfExperience,
+            busRegNo: operatorData.busRegNo
         }, {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -70,6 +70,7 @@ export const createOperator = async (operatorData: BusOperator) => {
         throw error;
     }
 };
+
 
 export const assignOperatorToBus = async (operatorId: string, busRegNo: string) => {
     try {
@@ -120,7 +121,7 @@ export const updateOperator = async (operatorData: BusOperator) => {
             contactNo: operatorData.contactNo,
             nic: operatorData.nic,
             licenseNo: operatorData.licenseNo,
-            experience: operatorData.experience,
+            yearsOfExperience: operatorData.yearsOfExperience,
             profilePicture: operatorData.profilePicture
         }, {
             headers: {

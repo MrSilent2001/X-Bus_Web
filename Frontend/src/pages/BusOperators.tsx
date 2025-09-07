@@ -29,7 +29,7 @@ const BusOperators = () => {
         contactNo: "",
         nic: "",
         licenseNo: "",
-        experience: 0,
+        yearsOfExperience: 0,
         selectedBusRegNo: ""
     });
 
@@ -83,18 +83,23 @@ const BusOperators = () => {
         if (!operatorForm.contactNo.trim()) return showAlertMessage("Please enter contact number", "warning");
         if (!operatorForm.nic.trim()) return showAlertMessage("Please enter NIC", "warning");
         if (!operatorForm.licenseNo.trim()) return showAlertMessage("Please enter license number", "warning");
-        if (operatorForm.experience < 0) return showAlertMessage("Experience cannot be negative", "warning");
+        if (operatorForm.yearsOfExperience < 0) return showAlertMessage("Experience cannot be negative", "warning");
         if (!operatorForm.selectedBusRegNo) return showAlertMessage("Please select a bus", "warning");
 
         try {
             const operatorData = {
-                ...operatorForm,
+                name: operatorForm.name,
+                email: operatorForm.email,
+                contactNo: operatorForm.contactNo,
+                nic: operatorForm.nic,
+                licenseNo: operatorForm.licenseNo,
+                yearsOfExperience: operatorForm.yearsOfExperience,
+                busRegNo: operatorForm.selectedBusRegNo,
                 profilePicture: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face"
             };
             const newOperator = await createOperator(operatorData);
 
             if (newOperator?.id) {
-                await assignOperatorToBus(newOperator.id, operatorForm.selectedBusRegNo);
                 showAlertMessage("Operator added and assigned to bus successfully!", "success");
 
                 setOperatorForm({
@@ -103,7 +108,7 @@ const BusOperators = () => {
                     contactNo: "",
                     nic: "",
                     licenseNo: "",
-                    experience: 0,
+                    yearsOfExperience: 0,
                     selectedBusRegNo: ""
                 });
 
@@ -227,17 +232,22 @@ const BusOperators = () => {
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     <div className="text-sm text-gray-900">{operator.licenseNo}</div>
-                                                    <div className="text-sm text-gray-500">{operator.experience} years experience</div>
+                                                    <div className="text-sm text-gray-500">{operator.yearsOfExperience} years experience</div>
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap">
-                                                    {operator.assignedBusRegNo ? (
-                                                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">{operator.assignedBusRegNo}</span>
+                                                    {operator.busRegNo ? (
+                                                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                            {operator.busRegNo}
+                                                        </span>
                                                     ) : (
-                                                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Unassigned</span>
+                                                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                                            Unassigned
+                                                        </span>
                                                     )}
                                                 </td>
+
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium flex space-x-2">
-                                                    {operator.assignedBusRegNo && (
+                                                    {operator.busRegNo && (
                                                         <CustomButton
                                                             type="button"
                                                             onClick={() => handleUnassignOperator(operator.id!)}
@@ -274,7 +284,7 @@ const BusOperators = () => {
                                         <InputField id="contactNo" type="tel" value={operatorForm.contactNo} onChange={e => setOperatorForm({...operatorForm, contactNo: e.target.value})} label={true} labelName="Contact Number" placeholder="Enter contact number" />
                                         <InputField id="nic" type="text" value={operatorForm.nic} onChange={e => setOperatorForm({...operatorForm, nic: e.target.value})} label={true} labelName="NIC" placeholder="Enter NIC number" />
                                         <InputField id="licenseNo" type="text" value={operatorForm.licenseNo} onChange={e => setOperatorForm({...operatorForm, licenseNo: e.target.value})} label={true} labelName="License Number" placeholder="Enter license number" />
-                                        <InputField id="experience" type="number" value={operatorForm.experience} onChange={e => setOperatorForm({...operatorForm, experience: parseInt(e.target.value) || 0})} label={true} labelName="Years of Experience" placeholder="Enter years of experience" min="0" />
+                                        <InputField id="experience" type="number" value={operatorForm.yearsOfExperience} onChange={e => setOperatorForm({...operatorForm, yearsOfExperience: parseInt(e.target.value) || 0})} label={true} labelName="Years of Experience" placeholder="Enter years of experience" min="0" />
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-2">Assign to Bus</label>
