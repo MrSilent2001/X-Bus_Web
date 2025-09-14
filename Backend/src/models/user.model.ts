@@ -2,12 +2,6 @@ import {Entity, PrimaryGeneratedColumn, Column, OneToMany} from 'typeorm';
 import {Reservation} from "./reservation.model";
 import {Payment} from "./payment.model";
 
-export enum RegPermStatus {
-    NOTGRANTED = "NOTGRANTED",
-    GRANTED = "GRANTED",
-    TERMINATED = "TERMINATED"
-}
-
 @Entity()
 export class User {
     @PrimaryGeneratedColumn()
@@ -33,13 +27,6 @@ export class User {
 
     @Column({nullable:false})
     role!:string;
-
-    @Column({
-        type: "enum",
-        enum: RegPermStatus,
-        default: RegPermStatus.NOTGRANTED
-    })
-    regPermStatus!: RegPermStatus;
 
     @OneToMany(() => Reservation, reservation => reservation.user)
     reservations!: Reservation[];

@@ -7,12 +7,14 @@ import AppDataSource from "../config/connectDB";
 import {BusSchedule} from "../models/schedule.model";
 import {RegistrationRequest} from "../models/registerRequest";
 import {RegistrationRequestDTO} from "../schema/regRequestSchema";
-import {RegPermStatus, User} from "../models/user.model";
+import { User} from "../models/user.model";
+import {Permission} from "../models/permission.model";
 
 const busRepository = AppDataSource.getRepository(Bus);
 const busScheduleRepository = AppDataSource.getRepository(BusSchedule);
 const requestRepository = AppDataSource.getRepository(RegistrationRequest);
 const userRepository = AppDataSource.getRepository(User);
+const permissionRepository = AppDataSource.getRepository(Permission);
 
 export const registerNewBus = async (busData: BusReg) => {
     const existingBus = await busRepository.findOneBy({regNo: busData.regNo});
@@ -127,39 +129,55 @@ export const requestBusRegistration = async (request: RegistrationRequestDTO) =>
     appAssert(!existingRequest, CONFLICT, "Registration request for this bus already exists");
 
     const newRequest = requestRepository.create(request);
-
     await requestRepository.save(newRequest);
-    return newRequest;
+
+    const newPermission = permissionRepository.create({
+        ownerName: request.ownerName,
+        email: request.email,
+        busRegNo: request.busRegNo,
+        status: "NOTGRANTED",
+    });
+    await permissionRepository.save(newPermission);
+
+    return { request: newRequest, permission: newPermission };
 };
 
 export const updateBusRegistrationStatus = async (
     busRegNo: string,
     status: "NOTGRANTED" | "GRANTED" | "TERMINATED"
 ) => {
-    const existingRequest = await requestRepository.findOneBy({ busRegNo });
+    const existingRequest = await permissionRepository.findOneBy({ busRegNo });
     appAssert(existingRequest, NOT_FOUND, "Registration request for this bus not found");
 
     // Update the bus registration status
     existingRequest!.status = status;
-    await requestRepository.save(existingRequest!);
-
-    // Update the user's regPermStatus using email
-    if (existingRequest!.email) {
-        const user = await userRepository.findOneBy({ email: existingRequest!.email });
-        if (user) {
-            // Map string to enum
-            user.regPermStatus = RegPermStatus[status as keyof typeof RegPermStatus];
-            await userRepository.save(user);
-        }
-    }
+    await permissionRepository.save(existingRequest!);
 
     return existingRequest;
 };
 
-export const getBusRegistrationRequests = async (): Promise<RegistrationRequest[]> => {
+export const getBusRegistrationRequests = async () => {
+    // Fetch requests
     const registrationRequests = await requestRepository.find();
-    console.log(registrationRequests);
-    return registrationRequests;
-}
+
+    // Fetch permissions
+    const permissions = await permissionRepository.find();
+
+    // Map busRegNo -> status
+    const permissionMap = new Map(permissions.map(p => [p.busRegNo, p.status]));
+
+    // Append permission status to each request
+    const result = registrationRequests.map(req => {
+        const { status: _, ...rest } = req;
+        return {
+            ...rest,
+            status: permissionMap.get(req.busRegNo)
+        };
+    });
+
+    console.log(result);
+    return result;
+};
+
 
 
