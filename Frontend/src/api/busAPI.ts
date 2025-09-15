@@ -77,7 +77,7 @@ export const listBusRegistrationRequests = async (): Promise<BusRegistrationRequ
     }
 }
 
-export const updateBusRegistrationRequest = async (busRegNo: string, status: "GRANTED" | "NOTGRANTED") => {
+export const updateBusRegistrationRequest = async (busRegNo: string, status: string) => {
     try {
         const response = await api.patch(`/bus/updateBusRegRequestStatus/${busRegNo}`, {
             status: status
@@ -86,7 +86,10 @@ export const updateBusRegistrationRequest = async (busRegNo: string, status: "GR
                 Authorization: `Bearer ${token}`
             }
         });
-        return response.data;
+
+        if (response.status === 200) {
+            console.log("Status Update Successful:");
+        }
     } catch (error) {
         console.error("Update registration request failed:", error);
         throw error;

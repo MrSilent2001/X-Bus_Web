@@ -6,7 +6,7 @@ import CustomAlert from "@/components/Alert/CustomAlert.tsx";
 import InputField from "@/components/InputField/InputField.tsx";
 import { BusOperator } from "@/types/user";
 import { Bus } from "@/types/bus";
-import { getAllOperators, createOperator, assignOperatorToBus, unassignOperatorFromBus, deleteOperator } from "@/api/operatorAPI";
+import { getAllOperators, createOperator, unassignOperatorFromBus, deleteOperator } from "@/api/operatorAPI";
 import { getAllBuses } from "@/api/busAPI";
 import { getUserByEmail } from "@/api/userAPI";
 import { useAuth } from "@/context/authContext.tsx";

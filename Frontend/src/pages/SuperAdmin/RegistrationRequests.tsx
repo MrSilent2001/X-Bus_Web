@@ -19,9 +19,10 @@ const RegistrationRequests: React.FC = () => {
 
     useEffect(() => { load(); }, []);
 
-    const handleApprove = async (busRegNo: string) => {
+    const handleApprove = async (busRegNo: string, status = "GRANTED") => {
         try {
-            await updateBusRegistrationRequest(busRegNo, "GRANTED");
+            console.log("Approve clicked for", busRegNo);
+            await updateBusRegistrationRequest(busRegNo, status);
             await load();
         } catch (e) {
             setError("Failed to approve request");
@@ -83,14 +84,14 @@ const RegistrationRequests: React.FC = () => {
                                                     variant="success"
                                                     size="sm"
                                                     disabled={r.status !== "NOTGRANTED"}
-                                                    onClick={() => handleApprove(r.id)}
+                                                    onClick={() => handleApprove(r.busRegNo)}
                                                 />
                                                 <CustomButton
                                                     buttonLabel="Reject"
                                                     variant="danger"
                                                     size="sm"
                                                     disabled={r.status !== "GRANTED"}
-                                                    onClick={() => handleReject(r.id)}
+                                                    onClick={() => handleReject(r.busRegNo)}
                                                 />
                                             </td>
                                         </tr>
