@@ -10,7 +10,7 @@ import {useNavigate} from "react-router-dom";
 import {getDecodedTokenValue} from "@/utils/functions/decodeToken.ts";
 import {useEffect, useState} from "react";
 import {getUserByEmail} from "@/api/userAPI.ts";
-import { FaUser, FaEdit, FaSignOutAlt, FaCog, FaShieldAlt } from "react-icons/fa";
+import { FaEdit, FaSignOutAlt, FaCog, FaShieldAlt } from "react-icons/fa";
 
 const PopOver = () => {
     const navigate = useNavigate();
@@ -43,8 +43,8 @@ const PopOver = () => {
             const fetchUser = async () => {
                 try {
                     const response = await getUserByEmail(email);
-                    setName(response.name);
-                    setProfilePic(response.profilePicture);
+                    setName(response.data.name);
+                    setProfilePic(response.data.profilePicture || "");
                 } catch (error) {
                     console.error("Error fetching user data:", error);
                 }

@@ -6,8 +6,7 @@ import {
     FaBus, 
     FaCalendarAlt, 
     FaClock, 
-    FaStar, 
-    FaCheckCircle,
+    FaStar,
     FaFileAlt
 } from "react-icons/fa";
 import { MdCelebration } from "react-icons/md";
@@ -22,7 +21,6 @@ const FeedbackCard = () => {
     const [hasMore, setHasMore] = useState(true);
     const [initialLoading, setInitialLoading] = useState(true);
     const observerRef = useRef<IntersectionObserver | null>(null);
-    const loadingRef = useRef<HTMLDivElement>(null);
 
     // Fetch all feedbacks on component mount
     useEffect(() => {
