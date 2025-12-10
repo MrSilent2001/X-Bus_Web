@@ -1,4 +1,4 @@
-import React, {useState, forwardRef, useCallback} from "react";
+import React, { useState, forwardRef, useCallback } from "react";
 import { UseFormRegisterReturn } from "react-hook-form";
 
 interface InputFieldProps {
@@ -18,7 +18,7 @@ interface InputFieldProps {
     min?: number | string;
     max?: number | string;
     disabled?: boolean;
-    register?: UseFormRegisterReturn; // React Hook Form support
+    register?: UseFormRegisterReturn;
 }
 
 const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
@@ -48,15 +48,20 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         const [isFocused, setIsFocused] = useState(false);
 
         const handleFocus = () => setIsFocused(true);
+        const handleBlur = () => setIsFocused(false);
 
-        // Combine register.ref and forwarded ref
+        // Safely extract RHF props
+        const { onChange: rhfOnChange, onBlur: rhfOnBlur, ref: registerRef, ...registerRest } =
+        register || {};
+
+        // Combine refs (RHF + forwarded ref)
         const setRefs = useCallback(
             (el: HTMLInputElement) => {
-                if (register?.ref) register.ref(el);
+                if (registerRef) registerRef(el);
                 if (typeof ref === "function") ref(el);
                 else if (ref) (ref as React.MutableRefObject<HTMLInputElement | null>).current = el;
             },
-            [ref, register]
+            [ref, registerRef]
         );
 
         return (
@@ -78,20 +83,28 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
                     <input
                         id={id}
                         type={type}
-                        defaultValue={value} // Uses defaultValue for React Hook Form
-                        placeholder={type !== "file" ? placeholder : undefined}
+                        value={value}
+                        placeholder={type !== "file" ? (label ? "" : placeholder) : undefined}
                         accept={type === "file" ? accept : undefined}
                         onFocus={handleFocus}
-                        {...(register ? { ...register, onBlur: undefined, onChange: undefined } : {})} // Prevents duplicate props
+                        onBlur={(e) => {
+                            rhfOnBlur?.(e); // RHF blur
+                            handleBlur();
+                        }}
+                        onChange={(e) => {
+                            rhfOnChange?.(e); // RHF change
+                            onChange?.(e);    // your optional change handler
+                        }}
                         ref={setRefs}
                         className={`block ${width} h-10 py-2 px-3 text-sm text-black border rounded-md border-gray-400 focus:outline-none focus:ring-gray-700 focus:border-carnation-300 ${
                             uppercase ? "uppercase" : ""
                         } ${disabled ? "bg-gray-200 cursor-not-allowed text-gray-500" : ""} ${className}`}
                         style={{ textTransform: uppercase ? "uppercase" : "none" }}
-                        aria-label={ariaLabel || placeholder}
+                        aria-label={ariaLabel || (!label ? placeholder : labelName)}
                         min={type === "number" ? min : undefined}
                         max={type === "number" ? max : undefined}
                         disabled={disabled}
+                        {...registerRest}
                         {...rest}
                     />
                     {icon && type !== "file" && (

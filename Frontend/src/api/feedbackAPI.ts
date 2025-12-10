@@ -17,7 +17,7 @@ export const getAllFeedbacks = async (): Promise<Feedback[]> =>{
         });
 
         if (response.status === 200) {
-            console.log("Data Fetching Successful:");
+            console.log("Data Fetching Successful:", response.data);
             return response.data;
         }
 

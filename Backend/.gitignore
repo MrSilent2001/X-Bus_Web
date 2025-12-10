@@ -6,3 +6,5 @@ build/
 
 #Environment Variables
 .env
+
+dist

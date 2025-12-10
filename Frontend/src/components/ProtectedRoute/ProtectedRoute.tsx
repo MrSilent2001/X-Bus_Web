@@ -1,17 +1,30 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/authContext";
 
-const ProtectedRoute = () => {
+interface Props { roles?: string[] }
+
+const ProtectedRoute = ({ roles }: Props) => {
     const { user, loading } = useAuth();
-    console.log("Protected Route - User:", user);
+    const location = useLocation();
 
     if (loading) {
         return <div>Loading...</div>;
     }
 
-    return user ? <Outlet /> : <Navigate to="/login" replace />;
+    if (!user) {
+        return <Navigate to="/login" replace state={{ from: location }} />
+    }
+
+    if (roles && roles.length > 0) {
+        const normalizedUserRole = (user.role || "").replace(/-/g, "_");
+        const normalizedRoles = roles.map(r => r.replace(/-/g, "_"));
+        const hasRole = normalizedRoles.includes(normalizedUserRole);
+        if (!hasRole) {
+            return <Navigate to="/dashboard" replace />;
+        }
+    }
+
+    return <Outlet />;
 };
-
-
 
 export default ProtectedRoute;

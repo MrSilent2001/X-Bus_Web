@@ -13,7 +13,7 @@ export class BusSchedule {
     @Column({ type: 'time', nullable: false })
     scheduledTime!: string;
 
-    @Column({nullable:false})
+    @Column({nullable:false })
     seatingCapacity!:number;
 
     @ManyToOne(() => Bus, bus => bus.schedules)

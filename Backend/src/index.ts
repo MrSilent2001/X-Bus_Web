@@ -11,7 +11,10 @@ import busRoutes from "./routes/bus.routes";
 import userRoutes from "./routes/userRoutes";
 import feedbackRoutes from "./routes/feedback.routes";
 import scheduleRoutes from "./routes/schedule.routes";
+import lostnfoundRoutes from "./routes/lostnfound.routes";
 import reservationRoutes from "./routes/reservation.routes";
+import paymentRoutes from "./routes/payment.routes";
+import operatorRoutes from "./routes/operator.routes";
 
 dotenv.config();
 
@@ -21,12 +24,27 @@ const app:Application = express();
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ limit: '20mb', extended: true }));
 
+const allowedOrigins = [
+    "http://localhost:5173",
+    "http://192.168.1.100:8081",
+    "http://localhost:8081",
+    "exp://127.0.0.1:19000",
+    "exp://localhost:19000"
+];
+
 app.use(
     cors({
-        origin: APP_ORIGIN,
+        origin: (origin, callback) => {
+            if (!origin || allowedOrigins.includes(origin)) {
+                callback(null, true);
+            } else {
+                callback(new Error("Not allowed by CORS"));
+            }
+        },
         credentials: true,
     })
 );
+
 app.use(cookieParser());
 
 //Routes
@@ -35,7 +53,10 @@ app.use("/bus", busRoutes);
 app.use("/user", userRoutes);
 app.use("/feedback", feedbackRoutes);
 app.use("/schedule", scheduleRoutes);
+app.use("/lostnfound", lostnfoundRoutes);
 app.use("/reservation", reservationRoutes);
+app.use("/payment", paymentRoutes);
+app.use("/operator", operatorRoutes);
 
 app.get("/", (req: Request, res: Response, next: NextFunction) => {
         res.status(OK).json({

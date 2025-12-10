@@ -1,11 +1,21 @@
 import {Bus} from "../models/bus.model";
 import {BusReg} from "../schema/busSchema";
 import appAssert from "../utils/appAssert";
-import {CONFLICT, NOT_FOUND} from "../constants/http";
+import {CONFLICT, FORBIDDEN, NOT_FOUND} from "../constants/http";
 import {hashPassword} from "../utils/bcrypt";
 import AppDataSource from "../config/connectDB";
+import {BusSchedule} from "../models/schedule.model";
+import {RegistrationRequest} from "../models/registerRequest";
+import {RegistrationRequestDTO} from "../schema/regRequestSchema";
+import { User} from "../models/user.model";
+import {Permission} from "../models/permission.model";
 
 const busRepository = AppDataSource.getRepository(Bus);
+const busScheduleRepository = AppDataSource.getRepository(BusSchedule);
+const requestRepository = AppDataSource.getRepository(RegistrationRequest);
+const userRepository = AppDataSource.getRepository(User);
+const permissionRepository = AppDataSource.getRepository(Permission);
+
 export const registerNewBus = async (busData: BusReg) => {
     const existingBus = await busRepository.findOneBy({regNo: busData.regNo});
     appAssert(!existingBus, CONFLICT,"Bus already exists");
@@ -23,17 +33,39 @@ export const getAllBuses = async(): Promise<Bus[]>=> {
     return busData;
 }
 
-export const getBusById = async (regNo: string): Promise<Bus | null> => {
-    const bus = await busRepository.findOneBy({regNo});
+export const getBusById = async (identifier: string): Promise<Bus | null> => {
+    let bus = await busRepository.findOneBy({ id: Number(identifier) });
 
-    if (!bus) return null;
-    const {password, ... busData} = bus;
-    return busData;
-}
+    if (!bus) {
+        bus = await busRepository.findOneBy({ regNo: identifier });
+    }
+
+    return bus;
+};
+
+export const getBusScheduleById = async (scheduleId: string): Promise<Bus | null> => {
+    const schedule = await busScheduleRepository.findOne({
+        where: { id: Number(scheduleId) },
+        relations: ["bus"],
+    });
+
+    return schedule ? schedule.bus : null;
+};
+
+export const findBusByRegNo = async (regNo   : string): Promise<Bus | null> => {
+    let bus = await busRepository.findOneBy({ regNo: regNo });
+
+    if (!bus) {
+        bus = await busRepository.findOneBy({ regNo: regNo });
+    }
+
+    return bus;
+};
+
 
 export const editBus = async (busData: any): Promise<Bus | null> => {
     console.log(busData)
-    const bus = await getBusById(busData.regNo);
+    const bus = await findBusByRegNo(busData.regNo);
     appAssert(bus, NOT_FOUND, "Bus not found");
 
     bus!.fleetName = busData.fleetName ?? bus!.fleetName;
@@ -42,6 +74,10 @@ export const editBus = async (busData: any): Promise<Bus | null> => {
     bus!.seatingCapacity = busData.seatingCapacity ?? bus!.seatingCapacity;
     bus!.busFare = busData.busFare ?? bus!.busFare;
     bus!.profilePicture = busData.profilePicture ?? bus!.profilePicture;
+
+    if (busData.password) {
+        bus!.password = await hashPassword(busData.password, 10);
+    }
 
     await busRepository.save(bus!);
     console.log("Updated bus:", bus!);
@@ -57,3 +93,91 @@ export const removeBus = async (regNo: string): Promise<Bus | null> => {
 
     return bus;
 };
+
+export const getBusRoutes = async() => {
+    const routes = await busRepository
+        .createQueryBuilder('bus')
+        .select('DISTINCT bus.route')
+        .getRawMany();
+
+    return routes.map(route => route.route);
+};
+
+export const getBusRegNo = async () => {
+    const buses = await busRepository
+        .createQueryBuilder('bus')
+        .select('bus.regNo', 'regNo')
+        .getRawMany();
+
+    return buses.map(bus => bus.regNo);
+};
+
+export const requestBusRegistration = async (request: RegistrationRequestDTO) => {
+
+    const existingUser = await userRepository.findOneBy({ email: request.email });
+    appAssert(existingUser, NOT_FOUND, "User not found");
+
+    appAssert(
+        existingUser!.role === "owner",
+        FORBIDDEN,
+        "Only users with role owner can request bus registration"
+    );
+
+    const existingRequest = await requestRepository.findOneBy({
+        busRegNo: request.busRegNo,
+    });
+    appAssert(!existingRequest, CONFLICT, "Registration request for this bus already exists");
+
+    const newRequest = requestRepository.create(request);
+    await requestRepository.save(newRequest);
+
+    const newPermission = permissionRepository.create({
+        ownerName: request.ownerName,
+        email: request.email,
+        busRegNo: request.busRegNo,
+        status: "NOTGRANTED",
+    });
+    await permissionRepository.save(newPermission);
+
+    return { request: newRequest, permission: newPermission };
+};
+
+export const updateBusRegistrationStatus = async (
+    busRegNo: string,
+    status: "NOTGRANTED" | "GRANTED" | "TERMINATED"
+) => {
+    const existingRequest = await permissionRepository.findOneBy({ busRegNo });
+    appAssert(existingRequest, NOT_FOUND, "Registration request for this bus not found");
+
+    // Update the bus registration status
+    existingRequest!.status = status;
+    await permissionRepository.save(existingRequest!);
+
+    return existingRequest;
+};
+
+export const getBusRegistrationRequests = async () => {
+    // Fetch requests
+    const registrationRequests = await requestRepository.find();
+
+    // Fetch permissions
+    const permissions = await permissionRepository.find();
+
+    // Map busRegNo -> status
+    const permissionMap = new Map(permissions.map(p => [p.busRegNo, p.status]));
+
+    // Append permission status to each request
+    const result = registrationRequests.map(req => {
+        const { status: _, ...rest } = req;
+        return {
+            ...rest,
+            status: permissionMap.get(req.busRegNo)
+        };
+    });
+
+    console.log(result);
+    return result;
+};
+
+
+

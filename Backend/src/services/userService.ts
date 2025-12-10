@@ -1,27 +1,29 @@
 import appAssert from "../utils/appAssert";
-import {NOT_FOUND} from "../constants/http";
-import {hashPassword} from "../utils/bcrypt";
+import { NOT_FOUND } from "../constants/http";
+import { hashPassword } from "../utils/bcrypt";
 import AppDataSource from "../config/connectDB";
-import {User} from "../models/user.model";
-import {UserReg} from "../schema/userSchema";
+import { User } from "../models/user.model";
 
 const userRepository = AppDataSource.getRepository(User);
-export const getAllUsers = async(): Promise<User[]>=> {
+
+export const getAllUsers = async (): Promise<User[]> => {
     const userData = await userRepository.find();
     console.log(userData);
-
     return userData;
-}
+};
 
 export const getUserByEmail = async (email: string): Promise<User | null> => {
-    const user = await userRepository.findOneBy({email});
+    return await userRepository.findOneBy({ email });
+};
 
-    return user;
-}
+export const getUserById = async (id: string): Promise<User | null> => {
+    return await userRepository.findOneBy({ id: Number(id) });
+};
 
 export const editUser = async (userData: any): Promise<User | null> => {
-    const user = await getUserByEmail(userData.email);
-    appAssert(!user, NOT_FOUND, "User not found");
+    const user = await getUserById(userData.id);
+    console.log("Found user:", user);
+    appAssert(user, NOT_FOUND, "User not found");
 
     user!.name = userData.name ?? user!.name;
     user!.nic = userData.nic ?? user!.nic;
@@ -34,16 +36,17 @@ export const editUser = async (userData: any): Promise<User | null> => {
     }
 
     await userRepository.save(user!);
-    console.log("Updated bus:", user!);
+    console.log("Updated user:", user!);
     return user;
 };
 
 export const removeUser = async (email: string): Promise<User | null> => {
     const user = await getUserByEmail(email);
-    appAssert(user, NOT_FOUND, "Bus not found");
+    appAssert(user, NOT_FOUND, "User not found");
 
     await userRepository.remove(user!);
-    console.log(`Bus with email: ${email} deleted`);
+    console.log(`User with email: ${email} deleted`);
 
     return user;
 };
+

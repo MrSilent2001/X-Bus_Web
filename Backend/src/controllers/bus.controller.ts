@@ -1,6 +1,14 @@
 import {NextFunction, Request, Response} from "express";
 import {CREATED, OK} from "../constants/http";
-import {editBus, getAllBuses, getBusById, registerNewBus, removeBus} from "../services/bus.service";
+import {
+    editBus, findBusByRegNo,
+    getAllBuses,
+    getBusById, getBusRegistrationRequests,
+    getBusRegNo,
+    getBusRoutes, getBusScheduleById,
+    registerNewBus,
+    removeBus, requestBusRegistration, updateBusRegistrationStatus
+} from "../services/bus.service";
 import {busSchema} from "../schema/busSchema";
 
 export const busController = {
@@ -25,7 +33,25 @@ export const busController = {
 
     getBusById: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const bus = await getBusById(req.query.regNo as string);
+            const bus = await getBusById(req.query.userId as string);
+            res.status(OK).json(bus);
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    getBusByScheduleId: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const bus = await getBusScheduleById(req.query.scheduleId as string);
+            res.status(OK).json(bus);
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    getBusByRegNo: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const bus = await findBusByRegNo(req.query.regNo as string);
             res.status(OK).json(bus);
         } catch (error) {
             next(error);
@@ -46,6 +72,52 @@ export const busController = {
             const bus = await removeBus(req.body);
             res.status(OK).json(bus);
         } catch (error) {
+            next(error);
+        }
+    },
+
+    getBusRoutes: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try{
+            const routes = await getBusRoutes();
+            res.status(OK).json(routes);
+        }catch(error){
+            next(error);
+        }
+    },
+
+    getBusRegNo: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const buses = await getBusRegNo();
+            res.status(OK).json(buses);
+        }catch(error){
+            next(error);
+        }
+    },
+
+    requestBusRegistration: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try{
+            const request = await requestBusRegistration(req.body);
+            res.status(OK).json(request);
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    updateBusReqRequestStatus : async (req: Request, res: Response, next: NextFunction) => {
+        try{
+            const { busRegNo, status } = req.body;
+            const updatedRequest = await updateBusRegistrationStatus(busRegNo, status);
+            res.status(OK).json(updatedRequest);
+        }catch (error) {
+            next(error);
+        }
+    },
+
+    getAllBusRegistrationRequests: async (req: Request, res: Response, next: NextFunction) => {
+        try{
+            const requests = await getBusRegistrationRequests();
+            res.status(OK).json(requests);
+        } catch (error){
             next(error);
         }
     }

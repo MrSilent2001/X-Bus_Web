@@ -5,18 +5,30 @@ import {UserVerification} from "../models/userVerification.model";
 import {Bus} from "../models/bus.model";
 import {Feedback} from "../models/feedback.model";
 import {BusSchedule} from "../models/schedule.model";
+import {LostnFound} from "../models/lostnfound.model";
 import {Reservation} from "../models/reservation.model";
-
+import {Payment} from "../models/payment.model";
+import {Location} from "../models/location.model";
+import {Refund} from "../models/refund.model";
+import {Expense} from "../models/expense.model";
+import {RegistrationRequest} from "../models/registerRequest";
+import {Operator} from "../models/operator.model";
+import {Permission} from "../models/permission.model";
 
 const AppDataSource = new DataSource({
     type: "postgres",
-    // host: DB_HOST,
-    // port: parseInt(DB_PORT, 10),
-    // username: DB_USERNAME,
-    // password: DB_PASSWORD,
-    // database: DB_NAME,
-    url: process.env.DATABASE_URL,
-    entities: [User, UserVerification, Bus, Feedback, BusSchedule, Reservation],
+    host: DB_HOST,
+    port: parseInt(DB_PORT, 10),
+    username: DB_USERNAME,
+    password: DB_PASSWORD,
+    database: DB_NAME,
+    //url: process.env.DATABASE_URL,
+    // ssl: {
+    //     rejectUnauthorized: false,
+    // },
+    entities: [
+        RegistrationRequest,User, UserVerification, Bus, BusSchedule, Feedback, LostnFound, Reservation, Payment, Location, Refund, Expense, Operator, Permission
+    ],
     synchronize: true,
     logging: false
 });

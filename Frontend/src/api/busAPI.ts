@@ -34,6 +34,68 @@ export const registerBus = async (formData: Bus) => {
     }
 }
 
+export type BusRegistrationRequestPayload = {
+    ownerName: string;
+    email: string;
+    contactNo: string;
+    age: number;
+    gender: string;
+    busRegNo: string;
+    type: string;
+    manufacturedYear: number;
+    chassisNo: string;
+    proof: string;
+};
+
+export const submitBusRegistrationRequest = async (payload: BusRegistrationRequestPayload) => {
+    try {
+        const response = await api.post("/bus/requestBusReg", payload, {
+            headers: {
+                Authorization: token ? `Bearer ${token}` : undefined
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Submit registration request failed:", error);
+        throw error;
+    }
+}
+
+export type BusRegistrationRequest = BusRegistrationRequestPayload & { id: string; status: "GRANTED" | "NOTGRANTED" | "TERMINATED"; createdAt: string };
+
+export const listBusRegistrationRequests = async (): Promise<BusRegistrationRequest[]> => {
+    try {
+        const response = await api.get("/bus/getAllBusRegRequests", {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("List registration requests failed:", error);
+        return [];
+    }
+}
+
+export const updateBusRegistrationRequest = async (busRegNo: string, status: string) => {
+    try {
+        const response = await api.patch(`/bus/updateBusRegRequestStatus/${busRegNo}`, {
+            status: status
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        if (response.status === 200) {
+            console.log("Status Update Successful:");
+        }
+    } catch (error) {
+        console.error("Update registration request failed:", error);
+        throw error;
+    }
+}
+
 export const getAllBuses = async (): Promise<Bus[]> =>{
     try {
         const response = await api.get("/bus/getAllBuses",{
@@ -55,9 +117,9 @@ export const getAllBuses = async (): Promise<Bus[]> =>{
     }
 }
 
-export const getBusById = async (regNo: string): Promise<Bus | null> =>{
+export const getBusByRegNo = async (regNo: string): Promise<Bus | null> =>{
     try {
-        const response = await api.get("/bus/getBusById",{
+        const response = await api.get("/bus/getBusByRegNo",{
             params:{
                 regNo: regNo
             },

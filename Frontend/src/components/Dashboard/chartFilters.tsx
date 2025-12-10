@@ -1,21 +1,39 @@
-import {DatePicker} from "@/components/DatePicker/datepicker.tsx";
+"use client";
+
+import { useEffect, useState } from "react";
 import Dropdown from "@/components/Dropdown/dropdown.tsx";
-import {useState} from "react";
+import { getAllBuses } from "@/api/busAPI.ts";
+import { Bus } from "@/types/bus.ts";
 
-const ChartFilters = () =>{
-    const [fromDate, setFromDate] = useState<Date | undefined>();
-    const [toDate, setToDate] = useState<Date | undefined>();
-
-    const busOptions = [{ label: "Bus ID", value: "bus_id" }];
-
-    return(
-        <div className="flex space-x-2">
-            <DatePicker onDateChange={setFromDate} width="120px"
-                        placeholder="From"/>
-            <DatePicker onDateChange={setToDate} width="120px" placeholder="To"/>
-            <Dropdown options={busOptions} width="120px" placeholder="Bus Id"/>
-        </div>
-    );
+interface ChartFiltersProps {
+    selectedBus: string;
+    setSelectedBus: (bus: string) => void;
 }
+
+const ChartFilters = ({ selectedBus, setSelectedBus }: ChartFiltersProps) => {
+    const [busOptions, setBusOptions] = useState<{ label: string; value: string }[]>([]);
+
+    useEffect(() => {
+        const fetchBuses = async () => {
+            const buses: Bus[] = await getAllBuses();
+            const options = buses.map((bus) => ({
+                label: bus.regNo,
+                value: bus.id?.toString() ?? bus.regNo,
+            }));
+            setBusOptions([{ label: "All", value: "all" }, ...options]);
+        };
+        fetchBuses();
+    }, []);
+
+    return (
+        <Dropdown
+            options={busOptions}
+            width="180px"
+            placeholder="Bus Reg. No."
+            value={selectedBus}
+            onChange={(value) => setSelectedBus(value)}
+        />
+    );
+};
 
 export default ChartFilters;

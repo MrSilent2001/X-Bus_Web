@@ -8,6 +8,7 @@ const scheduleRoutes = Router();
 scheduleRoutes.post("/newSchedule", authenticate, busScheduleController.addNewSchedule);
 scheduleRoutes.get("/getAllSchedules", authenticate, busScheduleController.getAllSchedules);
 scheduleRoutes.get("/getSchedulesByBusId", authenticate, busScheduleController.getSchedulesByBusId);
+scheduleRoutes.get("/getDailyRouteSchedule", authenticate, busScheduleController.getDailyRouteSchedule);
 scheduleRoutes.delete("/removeScheduleById", authenticate, busScheduleController.deleteScheduleById);
 // scheduleRoutes.delete("/removeBus", authenticate, busScheduleController.removeBus);
 

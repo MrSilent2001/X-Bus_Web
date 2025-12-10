@@ -15,11 +15,15 @@ import ResetPassword from "@/pages/auth/ResetPassword.tsx";
 import ProtectedRoute from "@/components/ProtectedRoute/ProtectedRoute.tsx";
 import EditBusProfile from "@/pages/EditBusProfile.tsx";
 import EditAdminProfile from "@/pages/EditAdminProfile.tsx";
+import BusRegistrationRequests from "@/pages/BusRegistrationRequests.tsx";
+import RegistrationRequests from "@/pages/SuperAdmin/RegistrationRequests.tsx";
+import BusOperators from "@/pages/BusOperators.tsx";
 
 const PageRoutes = () =>{
     return (
         <Routes>
             <Route path="/" element={<LandingPage/>}/>
+            <Route path="/bus-registration-requests-form" element={<BusRegistrationRequests/>}/>
 
             <Route path="/signup" element={<SignUp/>}/>
             <Route path="/login" element={<Login/>}/>
@@ -37,6 +41,11 @@ const PageRoutes = () =>{
                     <Route path="/locationTracking" element={<LocationTracking/>}/>
                     <Route path="/feedback" element={<Feedback/>}/>
                     <Route path="/summery" element={<SummeryReport/>}/>
+                    <Route path="/bus-operators" element={<BusOperators/>}/>
+            </Route>
+
+            <Route element={<ProtectedRoute roles={["superadmin"]}/> }>
+                <Route path="/bus-registration-requests" element={<RegistrationRequests/>} />
             </Route>
         </Routes>
     );

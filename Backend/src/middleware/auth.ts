@@ -9,7 +9,7 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
 
         // Ensure the Authorization header exists and starts with "Bearer "
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
-            appAssert(false, UNAUTHORIZED, "Authorization token missing or invalid");
+            appAssert(false, UNAUTHORIZED, "Authorization token missing");
             return;
         }
 
@@ -20,8 +20,9 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
         const decoded = verifyToken(token);
         appAssert(decoded, UNAUTHORIZED, "Invalid or expired token");
 
-        req.body.user = decoded;
+        (req as any).user = decoded;
         next();
+
     } catch (error) {
         appAssert(false, UNAUTHORIZED, "Invalid or expired token");
     }

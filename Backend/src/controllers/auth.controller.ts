@@ -17,8 +17,9 @@ export const authController = {
 
     login: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
       try{
-          const {email, password} = req.body;
-          const {userId, accessToken, refreshToken} = await loginUser(email, password);
+          const {identifier, password} = req.body;
+          console.log(identifier, password);
+          const {userId, accessToken, refreshToken} = await loginUser(identifier, password);
 
           setAuthCookies({res, accessToken, refreshToken})
           res.status(OK).json({userId, accessToken, refreshToken});
